@@ -1,0 +1,42 @@
+body {
+    background-image: url("../images/background.png");
+    font-family: Ubuntu, sans-serif;
+}
+
+.topmenu{
+    margin-bottom: 10%;
+}
+
+.tabletankscore{
+    font-weight: bold;
+}
+.dynatable-sort-header {
+    color:black;
+}
+.btn-diep{
+    border:2px solid black;
+    color:white;
+}
+.diep-gradient-red{
+    background: linear-gradient(#ff8e8e, #cd7272); /* Standard syntax */
+}
+.diep-gradient-blue{
+    background: linear-gradient(#5ba4a1, #71ccc8); /* Standard syntax */
+}
+
+.table td, .table th,.table-bordered td, .table-bordered th, .table thead th {
+    border: 2px solid black;
+}
+
+.thFFA {
+    background: linear-gradient(#5ba4a1, #71ccc8); /* Standard syntax */
+}
+.th2-TDM {
+    background: linear-gradient(#b4ff8e, #91cd72); /* Standard syntax */
+}
+.th4-TDM {
+    background: linear-gradient(#ff8e8e, #cd7272); /* Standard syntax */
+}
+.thMaze{
+    background: linear-gradient(#adadad, #8b8b8b); /* Standard syntax */
+}
