@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  //  $('#submission-table').dynatable();
+    $('#submission-table').dynatable();
     $('.decisionbtnfucker').click(function () {
         var proof_id = $(this).val();
         var element=$(this);
