@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class SubmissionsController extends Controller
 {
-    public function show(){
-        $submissions=DB::select("
+    public function show()
+    {
+        //Get all records that aren't approved and haven't been decided by a manager yet.
+        $submissions = DB::select("
 SELECT proofs.id, 
        records.name, 
        records.score, 
@@ -31,41 +33,50 @@ WHERE  proofs.approved = '0'
        AND proofs.decided = '0' ");
 
 
-        return view('submissions',['submissions'=>$submissions]);
+        return view('submissions', ['submissions' => $submissions]);
     }
 
-    public function decide(Request $request){
+    /**
+     *
+     * @param Request $request
+     *
+     * This is function to handle the ajax request when a manager approves (or not) a record.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function decide(Request $request)
+    {
 
 
         $input = $request->all();
 
+        //make sure the manager actually sends a request as expected
         $validator = Validator::make($request->all(), [
             'answ' => 'boolean',
             'id' => 'integer'
         ]);
 
+        //complain to user if they sent crap
         if ($validator->fails()) {
-            return response()->json(array('msg'=> 'something went wrong','err'=>$validator->messages()->toJson(),'input'=>$input), 200);
+            return response()->json(array('msg' => 'something went wrong', 'err' => $validator->messages()->toJson(), 'input' => $input), 200);
         }
+        //don't believe the manager to actually send a valid id
+        $proof = Proofs::find($request->input('id'));
 
-        $proof=Proofs::find($request->input('id'));
-
-        if ($proof==null)
-        {
-            return response()->json(array('msg'=> 'Record not found'), 200);
+        if ($proof == null) {
+            //complain to user if they sent crap
+            return response()->json(array('msg' => 'Record not found'), 200);
         }
-
-        DB::transaction(function () use ($proof,$request){
-            $proof->approved=$request->input('answ');
-            $proof->decided=true;
+        //The proof has been decided and will be aved.
+        DB::transaction(function () use ($proof, $request) {
+            $proof->approved = $request->input('answ');
+            $proof->decided = true;
             $proof->save();
         });
 
 
-
-
-        $msg = "Successfully changed recoed";
-        return response()->json(array('msg'=> $msg,'input'=>$input), 200);
+        $msg = 'Successfully changed record. It was approved: ' . ($proof->approved == '1' ? 'true' : 'false');
+        return response()->json(array('msg' => $msg, 'input' => $input), 200);
 
 
     }

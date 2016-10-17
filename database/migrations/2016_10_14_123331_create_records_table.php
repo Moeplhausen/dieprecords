@@ -26,6 +26,7 @@ class CreateRecordsTable extends Migration
         Schema::table('records',function($table){
             $table->foreign('tank_id')->references('id')->on('tanks');
             $table->foreign('gamemode_id')->references('id')->on('gamemodes');
+            $table->unique('proof_id');
             $table->foreign('proof_id')->references('id')->on('proofs');
          });
     }

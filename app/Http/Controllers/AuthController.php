@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    protected $loginPath = '/';
     public function login(Request $request){
 
         $validator = Validator::make($request->all(), [
@@ -24,9 +23,8 @@ class AuthController extends Controller
                 ->withErrors($validator);
         }
 
-        if(Auth::attempt(['email'=>$request->inputname,'password'=>$request->password])){
-
-        }
+        //Attempt to login. If login fails, we simply redirect back to startpage. Too lazy to show something like 'wrong passowrd'
+        Auth::attempt(['email'=>$request->inputname,'password'=>$request->password]);
         return redirect('/');
 
     }

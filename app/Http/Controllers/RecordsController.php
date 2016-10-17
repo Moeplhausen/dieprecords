@@ -8,23 +8,60 @@ use App\Tanks;
 use App\Gamemodes;
 use App\Proofs;
 use App\Record;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 use App\Http\Requests;
 
 class RecordsController extends Controller
 {
-    public function show(){
+    /**
+     * This function returns the default records view.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show()
+    {
 
+        //we need all tank names and ids to show them in the form where to submit a new score
         $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
 
+        $records = '';
+
+        //Non managers don't need up to date records.
+        // So the highscore will be cached for 60minutes for them. This should decrease cpu cycles by a great deal.
+        if (Auth::guest()) {
+            $records = Cache::remember('records', 60, function () {
+                return $this->recordsFetcher();
+            });
+        } else { //Managers need up to date records
+            $records = $this->recordsFetcher();
+        }
+
+        //get all gamemodes for the form
+        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
+
+        return view('records', ["tanknames" => $tanks, "allrecords" => $records, 'gamemodes' => $gamemodes]);
+    }
+
+    /**
+     * This function returns the tank with the highest score by tank class and gamemode
+     * @return Records
+     */
+    private function recordsFetcher()
+    {
+        /*General idea: Get all scores and join them with proofs to get only approved ones.
+        Then get the max score by grouping tank_id and gamemode_id.
+        Afterwards we join the result with scores again to get the other collumns of the record (like the id of the record).
+        Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
+        */
         $records = DB::select("
-SELECT DISTINCT sortedrecords.NAME, 
+SELECT DISTINCT sortedrecords.name, 
                 sortedrecords.score, 
                 sortedrecords.tank_id, 
                 tanks.tankname, 
                 sortedrecords.gamemode_id, 
-                gamemodes.NAME    AS gamemode, 
+                gamemodes.name    AS gamemode, 
                 proofs.proof_link AS link 
 FROM   (SELECT record.* 
         FROM   records record 
@@ -48,25 +85,26 @@ FROM   (SELECT record.*
                ON sortedrecords.proof_id = proofs.id 
 ORDER  BY tank_id, 
           gamemode_id");
-        //echo "<pre>"; print_r($records);
+        //Format scores to shorten them
         foreach ($records as $record) {
             $record->score = $this->thousandsCurrencyFormat($record->score);
         }
-        $records = collect($records)->groupBy('tank_id');
-
-        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-        //echo "<pre>"; print_r($records);
-
-        return view('records', ["tanknames" => $tanks, "allrecords" => $records, 'gamemodes' => $gamemodes]);
+        //now group this array by tank_id to make it simply to put it in a table.
+        return collect($records)->groupBy('tank_id');
     }
+
 
     public function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:255',
             'selectclass' => 'required|integer|max:100',
-            'score' => 'required|integer|between:0,99999999',
-            'proof' => 'required|url'
+            'score' => 'required|integer|between:0,999999999',
+            'proof' => [
+                'required',
+                'url',
+                'regex:~^(?:https?://)?(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:/watch\?v=([^&]+)|.*.png|.*.jpg)~x'
+            ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
 
 
@@ -75,94 +113,95 @@ ORDER  BY tank_id,
                 ->withInput()
                 ->withErrors($validator);
         }
-
+        //make sure the tank actually exists and not just believe the user
         $tank = Tanks::where('id', '=', $request->selectclass)->get();
+        //same with gamemode
         $gamemode = Gamemodes::where('id', '=', $request->gamemode_id)->get();
 
-        if ($gamemode->isEmpty()|| $tank->isEmpty()||!$this->isImageOrYoutube($request->proof))
+        if ($gamemode->isEmpty() || $tank->isEmpty())
             return redirect('/');
 
-        DB::transaction(function () use ($request){
-            $proof= new Proofs();
-            $proof->proof_link=$request->proof;
-            $proof->approved=false;
+        $tankinfo = $tank[0];
+        $gamemodeinfo = $gamemode[0];
+
+
+        //get current record for this tank and gamemode
+        $matchThese = [
+            'proofs.approved' => '1',
+            'records.tank_id' => $tankinfo->id,
+            'records.gamemode_id' => $gamemodeinfo->id];
+        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
+
+        //Deny if current record is higher if exists
+        if ($currentbestone && $currentbestone > $request->score)
+            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone which is higher than $request->score."]]);
+
+
+        //The case that there are two undecided submissions with the same score,gamemode,tank must be prevented (should never happen anyway)
+        //get current record for this tank and gamemode
+        $matchThese = [
+            'proofs.decided' => '0',
+            'records.tank_id' => $tankinfo->id,
+            'records.gamemode_id' => $gamemodeinfo->id,
+            'records.score' => $request->score];
+        $samescore = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->get();
+        if (!$samescore->isEmpty()) {
+            $name = $samescore[0]->name;
+            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
+        }
+
+
+        //Everything seems fine, let us add them
+        DB::transaction(function () use ($request) {
+            $proof = new Proofs();
+            $proof->proof_link = $request->proof;
+            $proof->approved = false;
             $proof->save();
 
-            $record=new Record();
-            $record->name=$request->inputname;
-            $record->score=$request->score;
-            $record->tank_id=$request->selectclass;
-            $record->gamemode_id=$request->gamemode_id;
-            $record->proof_id=$proof->id;
-            $record->ip_address=$request->ip();
+            $record = new Record();
+            $record->name = $request->inputname;
+            $record->score = $request->score;
+            $record->tank_id = $request->selectclass;
+            $record->gamemode_id = $request->gamemode_id;
+            $record->proof_id = $proof->id;
+            $record->ip_address = $request->ip();
             $record->save();
         });
 
-        return redirect('/');
+        return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
     }
 
 
-    public  function isImageOrYoutube($url)
+    // http://stackoverflow.com/questions/4371059/shorten-long-numbers-to-k-m-b
+    function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
     {
-        $params = array('http' => array(
-            'method' => 'HEAD'
-        ));
-        $ctx = stream_context_create($params);
-        $fp = @fopen($url, 'rb', false, $ctx);
-        if (!$fp)
-            return false;  // Problem with url
 
-        $meta = stream_get_meta_data($fp);
-        if ($meta === false)
-        {
-            fclose($fp);
-            return false;  // Problem reading data from url
+        // Setup default $divisors if not provided
+        if (!isset($divisors)) {
+            $divisors = array(
+                pow(1000, 0) => '', // 1000^0 == 1
+                pow(1000, 1) => 'K', // Thousand
+                pow(1000, 2) => 'M', // Million
+                pow(1000, 3) => 'B', // Billion
+                pow(1000, 4) => 'T', // Trillion
+                pow(1000, 5) => 'Qa', // Quadrillion
+                pow(1000, 6) => 'Qi', // Quintillion
+            );
         }
 
-        $wrapper_data = $meta["wrapper_data"];
-        if(is_array($wrapper_data)){
-            foreach(array_keys($wrapper_data) as $hh){
-                if (substr($wrapper_data[$hh], 0, 19) == "Content-Type: image") // strlen("Content-Type: image") == 19
-                {
-                    fclose($fp);
-                    return true;
-                }
+        // Loop through each $divisor and find the
+        // lowest amount that matches
+        foreach ($divisors as $divisor => $shorthand) {
+            if ($number < ($divisor * 1000)) {
+                // We found a match!
+                break;
             }
         }
 
-        fclose($fp);
-
-        $rx = '~
-    ^(?:https?://)?              # Optional protocol
-     (?:www\.)?                  # Optional subdomain
-     (?:youtube\.com|youtu\.be)  # Mandatory domain name
-     /watch\?v=([^&]+)           # URI with video id as capture group 1
-     ~x';
-
-        $has_match = preg_match($rx, $url, $matches);
-        return $has_match;
-
-
-
+        // We found our match, or there were no matches.
+        // Either way, use the last defined value for $divisor.
+        return number_format($number / $divisor, $precision) . $shorthand;
     }
-
-
-
-
-//http://stackoverflow.com/a/36365553
-    public  function thousandsCurrencyFormat($num)
-    {
-        $x = round($num);
-        $x_number_format = number_format($x);
-        $x_array = explode(',', $x_number_format);
-        $x_parts = array('k', 'm', 'b', 't');
-        $x_count_parts = count($x_array) - 1;
-        $x_display = $x;
-        $x_display = $x_array[0] . ((int)$x_array[1][0] !== 0 ? '.' . $x_array[1][0] : '');
-        $x_display .= $x_parts[$x_count_parts - 1];
-        return $x_display;
-    }
-
 
 
 }
