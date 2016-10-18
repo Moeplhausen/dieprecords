@@ -27,7 +27,9 @@ class CreateRecordsTable extends Migration
             $table->foreign('tank_id')->references('id')->on('tanks');
             $table->foreign('gamemode_id')->references('id')->on('gamemodes');
             $table->unique('proof_id');
-            $table->foreign('proof_id')->references('id')->on('proofs');
+            $table->foreign('proof_id')->references('id')->on('proofs')->onDelete('cascade');
+            $table->unique(array('score','tank_id','gamemode_id'));
+            $table->unique(array('name','tank_id','score','proof_id'));
          });
     }
 

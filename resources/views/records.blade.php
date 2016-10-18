@@ -1,4 +1,8 @@
 @extends('layouts.app')
+
+
+@section('title', 'Diep.io World Records')
+
 @section('content')
 
     @include('errors.common')
@@ -52,10 +56,11 @@
                     </div>
                     <div class="form-group">
                         <label for="proof">Proof of your score</label>
-                        <input type="url" class="form-control" name="proof" id="proof" required
+                        <input type="url" class="form-control" name="proof" id="proof" required pattern="(?:https?:\/\/)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)"
+                               title="Link needs to be a https:// link, from youtube if video, or must be from one of the following sites and end with .jpg or .png: discordapp.com, reddit.com and imgur.com"
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
-                            Your proof must be a <strong>direct link over HTTPS</strong> to an image (or link to youtube.com). This
+                            Your proof must be a <strong>direct link</strong> to an image (or link to youtube.com). This
                             means <strong>for images the link must end in *.jpg or *.png</strong>
                             <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp.
                         </p>
@@ -100,6 +105,8 @@
     </div>
 </div>
 
+
+<p class="center diep-title">Diep.io World Records</p>
 
 @if (session('status'))
     @foreach(session('status') as $status)
