@@ -55,7 +55,7 @@
                         <input type="url" class="form-control" name="proof" id="proof" required
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
-                            Your proof must be a <strong>direct link</strong> to an image (or link to youtube.com). This
+                            Your proof must be a <strong>direct link over HTTPS</strong> to an image (or link to youtube.com). This
                             means <strong>for images the link must end in *.jpg or *.png</strong>
                             <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp.
                         </p>

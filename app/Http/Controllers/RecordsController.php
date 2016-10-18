@@ -105,7 +105,7 @@ ORDER  BY tank_id,
             'proof' => [
                 'required',
                 'url',
-                'regex:~^(?:https?://)?(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:/watch\?v=([^&]+)|.*.png|.*.jpg)~x'
+                'regex:~^(?:https://)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:/watch\?v=([^&]+)|.*.png|.*.jpg)~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
 
