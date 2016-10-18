@@ -50,7 +50,7 @@ class RecordsTableSeeder extends Seeder
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/214953543558234115/219209584408002560/ice_screenshot_20160827-233439.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'Cronut','score'=>'326000','tank_id'=>6,'gamemode_id'=>2,'ip_address'=>'127.0.0.1','proof_id'=>12]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/226997272632623104/unknown.png','approver_id'=>1,'approved'=>true]);
-        DB::table('records')->insert(['name'=>'Platypuslover(Reserved)','score'=>'441000','tank_id'=>6,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>13]);
+        DB::table('records')->insert(['name'=>'Platypuslover®','score'=>'441000','tank_id'=>6,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>13]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/214953543558234115/220043372897894400/T2.jpg','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'TESSERACT','score'=>'1010000','tank_id'=>7,'gamemode_id'=>2,'ip_address'=>'127.0.0.1','proof_id'=>14]);
         DB::table('proofs')->insert(['proof_link'=>'https://www.youtube.com/watch?v=c6vVwfBXfTg','approver_id'=>1,'approved'=>true]);
@@ -78,7 +78,7 @@ class RecordsTableSeeder extends Seeder
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/214953543558234115/219851441181818882/unknown.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'{O}TIZZU','score'=>'1770000','tank_id'=>12,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>26]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/231819742615306241/Fighter_708k.png','approver_id'=>1,'approved'=>true]);
-        DB::table('records')->insert(['name'=>'Platypuslover(Reserved)','score'=>'708000','tank_id'=>12,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>27]);
+        DB::table('records')->insert(['name'=>'Platypuslover®','score'=>'708000','tank_id'=>12,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>27]);
         DB::table('proofs')->insert(['proof_link'=>'https://www.youtube.com/watch?v=vBOSzNFaLNo','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'JustThatGood','score'=>'450000','tank_id'=>14,'gamemode_id'=>1,'ip_address'=>'127.0.0.1','proof_id'=>28]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/235873376407781376/Screenshot_313.png','approver_id'=>1,'approved'=>true]);
@@ -132,7 +132,7 @@ class RecordsTableSeeder extends Seeder
         DB::table('proofs')->insert(['proof_link'=>'https://i.redd.it/ex8spp6aedfx.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'Maikri','score'=>'891000','tank_id'=>28,'gamemode_id'=>2,'ip_address'=>'127.0.0.1','proof_id'=>53]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/226816460977078272/WorldrecordPred2.png','approver_id'=>1,'approved'=>true]);
-        DB::table('records')->insert(['name'=>'Platypuslover(Reserved)','score'=>'829000','tank_id'=>28,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>54]);
+        DB::table('records')->insert(['name'=>'Platypuslover®','score'=>'829000','tank_id'=>28,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>54]);
         DB::table('proofs')->insert(['proof_link'=>'https://i.imgur.com/0f8tPlP.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'Androsynth1000','score'=>'430000','tank_id'=>29,'gamemode_id'=>1,'ip_address'=>'127.0.0.1','proof_id'=>55]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/214953543558234115/219893881817268225/quadtank2.png','approver_id'=>1,'approved'=>true]);
@@ -146,7 +146,7 @@ class RecordsTableSeeder extends Seeder
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/236362880256049153/2016-10-13_22_40_23-Greenshot.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'~❂~ Sterlon','score'=>'573000','tank_id'=>31,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>60]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/230789915506376709/Sniper_3.png','approver_id'=>1,'approved'=>true]);
-        DB::table('records')->insert(['name'=>'Platypuslover(Reserved)','score'=>'153000','tank_id'=>32,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>61]);
+        DB::table('records')->insert(['name'=>'Platypuslover®','score'=>'153000','tank_id'=>32,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>61]);
         DB::table('proofs')->insert(['proof_link'=>'https://www.youtube.com/watch?v=EtBRti6N0jk&feature=youtu.be','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'Snapwing','score'=>'1140000','tank_id'=>33,'gamemode_id'=>2,'ip_address'=>'127.0.0.1','proof_id'=>62]);
         DB::table('proofs')->insert(['proof_link'=>'https://www.youtube.com/watch?v=lwkA-cgF9G0','approver_id'=>1,'approved'=>true]);

@@ -1,4 +1,8 @@
 @extends('layouts.app')
+
+
+@section('title', 'Diep.io World Records')
+
 @section('content')
 
     @include('errors.common')
@@ -100,6 +104,8 @@
     </div>
 </div>
 
+
+<p class="center diep-title">Diep.io World Records</p>
 
 @if (session('status'))
     @foreach(session('status') as $status)

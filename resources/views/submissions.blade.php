@@ -1,4 +1,7 @@
 @extends('layouts.app')
+
+@section('title', 'Approve or disapprove submitted records')
+
 @section('content')
 
 

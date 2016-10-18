@@ -23,7 +23,7 @@ class CreateProofsTable extends Migration
         });
 
         Schema::table('proofs',function($table){
-            $table->foreign('approver_id')->references('id')->on('users');
+            $table->foreign('approver_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
