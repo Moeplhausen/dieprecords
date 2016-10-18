@@ -124,7 +124,7 @@
     <tbody>
     @foreach ($allrecords as $recordsbytankid)
         <tr>
-            <td>{{$recordsbytankid[0]->tankname}}</td>
+            <td><span class="tanksandname"><div class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div>{{$recordsbytankid[0]->tankname}}</span></td>
             <?php $pos = 0 ?>
             @foreach($gamemodes as $gamemode)
                 @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
@@ -145,46 +145,6 @@
     </tbody>
 </table>
 
-
-
-
-<!--<table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th>Class</th>
-        <th class="thffa" data-dynatable-sorts="sortffa">ffa</th>
-        <th style="display:none">sortffa</th>
-        <th class="thffa" data-dynatable-sorts="sortmaze">maze</th>
-        <th style="display:none">sortmaze</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Test1</td>
-            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter1</span><span class="tabletankname"><small>test</small></span></a></td>
-            <th>1</th>
-            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter1</span><span class="tabletankname"><small>maze1</small></span></a></td>
-            <th>3</th>
-        </tr>
-        <tr>
-            <td>Test2</td>
-            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter2</span><span class="tabletankname"><small>test</small></span></a></td>
-            <th>3</th>
-            <td></td>
-            <th></th>
-        </tr>
-        <tr>
-            <td>Test3</td>
-            <td></td>
-            <th></th>
-            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter3</span><span class="tabletankname"><small>maze3</small></span></a></td>
-            <th>1</th>
-        </tr>
-    </tbody>
-
-
-
-</table>-->
 
 
 @endsection

@@ -18,6 +18,7 @@
 
 
     <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('css/tanks.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/jquery.dynatable.css') }}">
 
 

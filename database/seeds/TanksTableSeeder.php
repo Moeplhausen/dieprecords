@@ -54,7 +54,7 @@ class TanksTableSeeder extends Seeder
             "Triple Shot",
             "Triplet",
             "Triple Twin",
-            "Tri Trapper",
+            "Tri-Trapper",
             "Twin",
             "Twin Flank");
         foreach ($tanks as $tank){

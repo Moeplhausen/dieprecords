@@ -49,3 +49,7 @@ body {
 .thMaze{
     background: linear-gradient(#adadad 50%, #8b8b8b 50%); /* Standard syntax */
 }
+
+.scoretanksimage{
+    margin-right: 5px;
+}
