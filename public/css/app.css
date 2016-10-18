@@ -14,29 +14,38 @@ body {
     color:black;
 }
 .btn-diep{
-    border:2px solid black;
+    border:4px solid black;
     color:white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+.dynatable-sort-header{
+    color:white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 .diep-gradient-red{
-    background: linear-gradient(#ff8e8e, #cd7272); /* Standard syntax */
+    background: linear-gradient(#ff8e8e 50%, #cd7272 50%); /* Standard syntax */
 }
 .diep-gradient-blue{
-    background: linear-gradient(#5ba4a1, #71ccc8); /* Standard syntax */
+    background: linear-gradient(#5ba4a1 50%, #71ccc8 50%); /* Standard syntax */
 }
 
 .table td, .table th,.table-bordered td, .table-bordered th, .table thead th {
     border: 2px solid black;
 }
 
+
 .thFFA {
-    background: linear-gradient(#5ba4a1, #71ccc8); /* Standard syntax */
+    background: linear-gradient(#71ccc8 50%, #5ba4a1  50%); /* Standard syntax */
 }
+
 .th2-TDM {
-    background: linear-gradient(#b4ff8e, #91cd72); /* Standard syntax */
+    background: linear-gradient(#b4ff8e 50%, #91cd72 50%); /* Standard syntax */
 }
+
 .th4-TDM {
-    background: linear-gradient(#ff8e8e, #cd7272); /* Standard syntax */
+    background: linear-gradient(#ff8e8e 50%, #cd7272 50%); /* Standard syntax */
 }
+
 .thMaze{
-    background: linear-gradient(#adadad, #8b8b8b); /* Standard syntax */
+    background: linear-gradient(#adadad 50%, #8b8b8b 50%); /* Standard syntax */
 }

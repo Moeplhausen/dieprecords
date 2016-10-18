@@ -87,8 +87,10 @@ ORDER  BY tank_id,
           gamemode_id");
         //Format scores to shorten them
         foreach ($records as $record) {
+            $record->scorefull = $record->score;
             $record->score = $this->thousandsCurrencyFormat($record->score);
         }
+        //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         return collect($records)->groupBy('tank_id');
     }

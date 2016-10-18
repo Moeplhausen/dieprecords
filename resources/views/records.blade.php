@@ -111,15 +111,13 @@
 
 
 
-
-
-
 <table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
     <tr>
         <th>Class</th>
         @foreach ($gamemodes as $gamemode)
-            <th class="th{{$gamemode->name}}">{{$gamemode->name}}</th>
+            <th class="th{{$gamemode->name}}" data-dynatable-sorts="sort{{str_replace("-","",strtolower($gamemode->name))}}">{{$gamemode->name}}</th>
+            <th style="display:none">sort{{str_replace("-","",strtolower($gamemode->name))}}</th>
         @endforeach
     </tr>
     </thead>
@@ -135,22 +133,75 @@
                                     class="tabletankscore">{{$recordsbytankid[$pos]->score}}</span> <span
                                     class="tabletankname"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
                     </td>
+                    <td>{{$recordsbytankid[$pos]->scorefull}}</td>
                     <?php  $pos++  ?>
 
                 @else
-                    <td></td>
+                    <td></td> <td></td>
                 @endif
             @endforeach
         </tr>
     @endforeach
     </tbody>
 </table>
+
+
+
+
+<!--<table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>Class</th>
+        <th class="thffa" data-dynatable-sorts="sortffa">ffa</th>
+        <th style="display:none">sortffa</th>
+        <th class="thffa" data-dynatable-sorts="sortmaze">maze</th>
+        <th style="display:none">sortmaze</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Test1</td>
+            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter1</span><span class="tabletankname"><small>test</small></span></a></td>
+            <th>1</th>
+            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter1</span><span class="tabletankname"><small>maze1</small></span></a></td>
+            <th>3</th>
+        </tr>
+        <tr>
+            <td>Test2</td>
+            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter2</span><span class="tabletankname"><small>test</small></span></a></td>
+            <th>3</th>
+            <td></td>
+            <th></th>
+        </tr>
+        <tr>
+            <td>Test3</td>
+            <td></td>
+            <th></th>
+            <td><a href="asdfsdf" data-toggle="lightbox"><span class="tabletankscore">Hunter3</span><span class="tabletankname"><small>maze3</small></span></a></td>
+            <th>1</th>
+        </tr>
+    </tbody>
+
+
+
+</table>-->
+
+
 @endsection
 @section('customscripts')
     <script>$(document).ready(function () {
-            $('#scoretable').dynatable();
+            $('#scoretable').dynatable({
+                readers:{
+                @foreach ($gamemodes as $gamemode)
+                        'sort{{str_replace("-","",strtolower($gamemode->name))}}':function(el,record){
+                            return Number(el.innerHTML)||0;
+                },
+                         @endforeach
+                }
+            });
         });</script>
 @endsection
+
 
 
 
