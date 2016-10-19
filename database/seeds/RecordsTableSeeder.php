@@ -126,7 +126,7 @@ class RecordsTableSeeder extends Seeder
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/231282455984734210/unknown.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'Bela','score'=>'3290000','tank_id'=>27,'gamemode_id'=>2,'ip_address'=>'127.0.0.1','proof_id'=>50]);
         DB::table('proofs')->insert(['proof_link'=>'https://cdn.discordapp.com/attachments/222132681394225155/228521587941310465/unknown.png','approver_id'=>1,'approved'=>true]);
-        DB::table('records')->insert(['name'=>'Bela','score'=>'3520000','tank_id'=>27,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>51]);
+        DB::table('records')->insert(['name'=>'Bela','score'=>'2520000','tank_id'=>27,'gamemode_id'=>3,'ip_address'=>'127.0.0.1','proof_id'=>51]);
         DB::table('proofs')->insert(['proof_link'=>'https://i.imgur.com/uNvoXyT.png','approver_id'=>1,'approved'=>true]);
         DB::table('records')->insert(['name'=>'xc0xupx','score'=>'492000','tank_id'=>27,'gamemode_id'=>4,'ip_address'=>'127.0.0.1','proof_id'=>52]);
         DB::table('proofs')->insert(['proof_link'=>'https://i.redd.it/ex8spp6aedfx.png','approver_id'=>1,'approved'=>true]);

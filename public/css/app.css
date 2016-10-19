@@ -54,7 +54,7 @@ button{
     background: linear-gradient(#b4ff8e 50%, #91cd72 50%); /* Standard syntax */
 }
 
-.th4-TDM,.diep-gradient-red {
+.th4-TDM,.diep-gradient-red,.btn-danger {
     background: linear-gradient(#ff8e8e 50%, #cd7272 50%); /* Standard syntax */
 }
 
