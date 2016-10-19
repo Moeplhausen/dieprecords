@@ -19,7 +19,7 @@ This was a quick&dirty attempt to build a website to handle highscores for diep.
 composer install
 npm install
 php artisan migrate:refresh --seed
-gulp production
+gulp --production
 ```
 
 5. Point your webserver to the public subfolder
