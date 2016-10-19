@@ -15,7 +15,7 @@
     <!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.0.0/ekko-lightbox.min.css">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
--->
+
 
     <link rel="stylesheet" href="{{ URL::asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/ekko-lightbox.min.css') }}">
@@ -23,8 +23,8 @@
     <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/tanks.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/jquery.dynatable.css') }}">
-
-
+    -->
+    <link rel="stylesheet" href="{{ URL::asset('css/all.css') }}">
     <!-- Styles -->
     <style>
     </style>
@@ -58,7 +58,7 @@
 
     @yield('content')
 </div>
-
+<!--
 <script src="{{ URL::asset('js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('js/tether.min.js') }}"></script>
 
@@ -67,7 +67,8 @@
 
 <script src="{{ URL::asset('js/jquery.dynatable.js') }}"></script>
 <script src="{{ URL::asset('js/ajaxfucker.js') }}"></script>
-
+-->
+<script src="{{ URL::asset('js/all.js') }}"></script>
 
 <script>
 
