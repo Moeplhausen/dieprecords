@@ -9,6 +9,8 @@ This was a quick&dirty attempt to build a website to handle highscores for diep.
 ## Server Requirements
 * laravel and it's needed dependencies
 * composer
+* nodejs
+* gulp
 
 ## Installation
 1. Clone this project into a folder

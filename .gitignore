@@ -2,9 +2,7 @@
 /public/storage
 /storage/*.key
 /vendor
-/public/build/js/
-/public/build/css/
-/public/build/rev-manifest.json
+/public
 /.idea
 Homestead.json
 Homestead.yaml

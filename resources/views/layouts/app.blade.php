@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{  elixir('css/all.css')}}">
 
     <style>
+        @yield('customstyle')
     </style>
 </head>
 <body>

@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('customstyle')
+
+@endsection
 
 @section('title', 'Diep.io World Records')
 
