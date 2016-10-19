@@ -8,7 +8,8 @@ elixir(function(mix) {
         'bootstrap.min.css',
         'ekko-lightbox.min.css',
         'jquery.dynatable.css',
-        'tanks.css'
+        'tanks.css',
+        'ubuntufont.css',
     ]);
     mix.copy('resources/assets/images', 'public/images');
 });
