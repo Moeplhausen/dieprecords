@@ -59,7 +59,8 @@
                     </div>
                     <div class="form-group">
                         <label for="proof">Proof of your score</label>
-                        <input type="url" class="form-control" name="proof" id="proof" required pattern="(?:https?:\/\/)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)"
+                        <input type="url" class="form-control" name="proof" id="proof" required
+                               pattern="(?:https?:\/\/)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)"
                                title="Link needs to be a https:// link, from youtube if video, or must be from one of the following sites and end with .jpg or .png: discordapp.com, reddit.com and imgur.com"
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
@@ -120,53 +121,57 @@
 @endif
 
 
-
-<table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th>Class</th>
-        @foreach ($gamemodes as $gamemode)
-            <th class="th{{$gamemode->name}}" data-dynatable-sorts="sort{{str_replace("-","",strtolower($gamemode->name))}}">{{$gamemode->name}}</th>
-            <th style="display:none">sort{{str_replace("-","",strtolower($gamemode->name))}}</th>
-        @endforeach
-    </tr>
-    </thead>
-    <tbody>
-    @foreach ($allrecords as $recordsbytankid)
+<div class="table-responsive">
+    <table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
         <tr>
-            <td><span class="tanksandname"><div class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div>{{$recordsbytankid[0]->tankname}}</span></td>
-            <?php $pos = 0 ?>
-            @foreach($gamemodes as $gamemode)
-                @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
-                    <td>
-                        <a href="{{$recordsbytankid[$pos]->link}}" data-toggle="lightbox"><span
-                                    class="tabletankscore">{{$recordsbytankid[$pos]->score}}</span> <span
-                                    class="tabletankname"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
-                    </td>
-                    <td>{{$recordsbytankid[$pos]->scorefull}}</td>
-                    <?php  $pos++  ?>
-
-                @else
-                    <td></td> <td></td>
-                @endif
+            <th>Class</th>
+            @foreach ($gamemodes as $gamemode)
+                <th class="th{{$gamemode->name}}"
+                    data-dynatable-sorts="sort{{str_replace("-","",strtolower($gamemode->name))}}">{{$gamemode->name}}</th>
+                <th style="display:none">sort{{str_replace("-","",strtolower($gamemode->name))}}</th>
             @endforeach
         </tr>
-    @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach ($allrecords as $recordsbytankid)
+            <tr>
+                <td><span class="tanksandname"><div
+                                class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div>{{$recordsbytankid[0]->tankname}}</span>
+                </td>
+                <?php $pos = 0 ?>
+                @foreach($gamemodes as $gamemode)
+                    @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
+                        <td>
+                            <a href="{{$recordsbytankid[$pos]->link}}" data-toggle="lightbox"><span
+                                        class="tabletankscore">{{$recordsbytankid[$pos]->score}}</span> <span
+                                        class="tabletankname"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
+                        </td>
+                        <td>{{$recordsbytankid[$pos]->scorefull}}</td>
+                        <?php  $pos++  ?>
 
+                    @else
+                        <td></td>
+                        <td></td>
+                    @endif
+                @endforeach
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+</div>
 
 
 @endsection
 @section('customscripts')
     <script>$(document).ready(function () {
             $('#scoretable').dynatable({
-                readers:{
-                @foreach ($gamemodes as $gamemode)
-                        'sort{{str_replace("-","",strtolower($gamemode->name))}}':function(el,record){
-                            return Number(el.innerHTML)||0;
-                },
-                         @endforeach
+                readers: {
+                    @foreach ($gamemodes as $gamemode)
+                    'sort{{str_replace("-","",strtolower($gamemode->name))}}': function (el, record) {
+                        return Number(el.innerHTML) || 0;
+                    },
+                    @endforeach
                 }
             });
         });</script>
