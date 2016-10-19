@@ -11,6 +11,7 @@
     <!-- Fonts -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
 
+
     <!-- Styles -->
     <link rel="stylesheet" href="{{  elixir('css/all.css')}}">
 
