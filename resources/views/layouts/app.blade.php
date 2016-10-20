@@ -8,9 +8,11 @@
 
     <title>@yield('title')</title>
 
- 
+    <link rel="icon" type="image/png" href="{{elixir('images/favicon.png')}}" sizes="32x32">
     <!-- Styles -->
     <link rel="stylesheet" href="{{  elixir('css/all.css')}}">
+
+
 
     <style>
         @yield('customstyle')

@@ -22,26 +22,13 @@ class RecordsController extends Controller
      */
     public function show()
     {
-
-        //we need all tank names and ids to show them in the form where to submit a new score
-        $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
-
-        $records = '';
-
-        //Non managers don't need up to date records.
-        // So the highscore will be cached for 60minutes for them. This should decrease cpu cycles by a great deal.
         if (Auth::guest()) {
-            $records = Cache::remember('records', 60, function () {
+            return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
             });
         } else { //Managers need up to date records
-            $records = $this->recordsFetcher();
+            return $this->recordsFetcher();
         }
-
-        //get all gamemodes for the form
-        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-
-        return view('records', ["tanknames" => $tanks, "allrecords" => $records, 'gamemodes' => $gamemodes]);
     }
 
     /**
@@ -50,6 +37,12 @@ class RecordsController extends Controller
      */
     private function recordsFetcher()
     {
+
+
+        //we need all tank names and ids to show them in the form where to submit a new score
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
+
+
         /*General idea: Get all scores and join them with proofs to get only approved ones.
         Then get the max score by grouping tank_id and gamemode_id.
         Afterwards we join the result with scores again to get the other collumns of the record (like the id of the record).
@@ -92,7 +85,13 @@ ORDER  BY tank_id,
         }
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
-        return collect($records)->groupBy('tank_id');
+        $records=collect($records)->groupBy('tank_id');
+
+        //get all gamemodes for the form
+        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
+
+        return view('records', ["tanknames" => $tanks, "allrecords" => $records, 'gamemodes' => $gamemodes])->render();
+
     }
 
 
