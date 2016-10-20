@@ -129,7 +129,7 @@
             @foreach ($gamemodes as $gamemode)
                 <th class="th{{$gamemode->name}}"
                     data-dynatable-sorts="sort{{str_replace("-","",strtolower($gamemode->name))}}">{{$gamemode->name}}</th>
-                <th style="display:none">sort{{str_replace("-","",strtolower($gamemode->name))}}</th>
+                <th class="nodisplay">sort{{str_replace("-","",strtolower($gamemode->name))}}</th>
             @endforeach
         </tr>
         </thead>
@@ -137,7 +137,7 @@
         @foreach ($allrecords as $recordsbytankid)
             <tr>
                 <td><span class="tanksandname"><div
-                                class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div>{{$recordsbytankid[0]->tankname}}</span>
+                                class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div><span class="mobilehide">{{$recordsbytankid[0]->tankname}}</span></span>
                 </td>
                 <?php $pos = 0 ?>
                 @foreach($gamemodes as $gamemode)
@@ -145,7 +145,7 @@
                         <td>
                             <a href="{{$recordsbytankid[$pos]->link}}" data-toggle="lightbox"><span
                                         class="tabletankscore">{{$recordsbytankid[$pos]->score}}</span> <span
-                                        class="tabletankname"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
+                                        class="tabletankname mobilehide"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
                         </td>
                         <td>{{$recordsbytankid[$pos]->scorefull}}</td>
                         <?php  $pos++  ?>
@@ -166,6 +166,7 @@
 @section('customscripts')
     <script>$(document).ready(function () {
             $('#scoretable').dynatable({
+                table:{copyHeaderClass:true},
                 readers: {
                     @foreach ($gamemodes as $gamemode)
                     'sort{{str_replace("-","",strtolower($gamemode->name))}}': function (el, record) {

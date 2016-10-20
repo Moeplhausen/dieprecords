@@ -3,6 +3,19 @@ body {
     font-family: Ubuntu, sans-serif;
 }
 
+.nodisplay{
+    display: none;
+}
+
+/* Portrait phones and smaller */
+@media all and (max-width: 480px) {
+    .mobilehide{
+        display:none;
+    }
+}
+
+
+
 button{
     font-weight: bold !important;
 }

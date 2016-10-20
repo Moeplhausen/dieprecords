@@ -24,8 +24,8 @@ class CreateRecordsTable extends Migration
             $table->timestamps();
         });
         Schema::table('records',function($table){
-            $table->foreign('tank_id')->references('id')->on('tanks');
-            $table->foreign('gamemode_id')->references('id')->on('gamemodes');
+            $table->foreign('tank_id')->references('id')->on('tanks')->onDelete('cascade');
+            $table->foreign('gamemode_id')->references('id')->on('gamemodes')->onDelete('cascade');
             $table->unique('proof_id');
             $table->foreign('proof_id')->references('id')->on('proofs')->onDelete('cascade');
             $table->unique(array('score','tank_id','gamemode_id'));
