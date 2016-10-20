@@ -82,7 +82,7 @@ FROM   (SELECT record.*
        INNER JOIN tanks 
                ON sortedrecords.tank_id = tanks.id 
        INNER JOIN proofs 
-               ON sortedrecords.proof_id = proofs.id 
+               ON sortedrecords.id = proofs.id 
 ORDER  BY tank_id, 
           gamemode_id");
         //Format scores to shorten them
@@ -158,19 +158,20 @@ ORDER  BY tank_id,
 
         //Everything seems fine, let us add them
         DB::transaction(function () use ($request) {
-            $proof = new Proofs();
-            $proof->proof_link = $request->proof;
-            $proof->approved = false;
-            $proof->save();
+
 
             $record = new Record();
             $record->name = $request->inputname;
             $record->score = $request->score;
             $record->tank_id = $request->selectclass;
             $record->gamemode_id = $request->gamemode_id;
-            $record->proof_id = $proof->id;
             $record->ip_address = $request->ip();
             $record->save();
+
+            $proof = new Proofs();
+            $proof->proof_link = $request->proof;
+            $proof->approved = false;
+            $proof->save();
         });
 
         return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);

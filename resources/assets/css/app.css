@@ -53,7 +53,6 @@ button{
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
 
-
 .table td, .table th,.table-bordered td, .table-bordered th, .table thead th {
     border: 2px solid black !important;
 }
