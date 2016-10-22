@@ -1,6 +1,6 @@
 body {
     background-image: url("images/background.png");
-    font-family: Ubuntu, sans-serif;
+    font-family: Ubuntu, sans-serif !important;
 }
 
 .nodisplay{
