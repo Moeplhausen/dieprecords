@@ -2,6 +2,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/components
 /public/build
 /public/css
 /public/images

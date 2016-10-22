@@ -24,7 +24,6 @@ class RecordsController extends Controller
     public function show()
     {
         if (Auth::guest() && !(App::isLocal())) {
-            echo "Cached";
             return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
             });
