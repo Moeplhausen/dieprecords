@@ -1,14 +1,11 @@
 @extends('layouts.app')
 
-@section('customstyle')
-
-@endsection
-
 @section('title', 'Diep.io World Records')
 
-@section('content')
 
+@section('content')
     @include('errors.common')
+
 
 @section('leftnavitem')
     <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red" data-toggle="modal"
@@ -16,98 +13,8 @@
     </button>
 @endsection
 
-<!-- Modal -->
-<div class="modal fade" id="sbmrecord" tabindex="-1" role="dialog" aria-labelledby="sbmrecordlabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="sbmrecordlabel">Submit your record</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Add a new world record form -->
-                <form action="/submitrecord" method="POST">
-                    {{ csrf_field() }}
-                    <div class="form-group">
-                        <label for="inputname">Your name</label>
-                        <input type="text" class="form-control" name="inputname" id="inputname" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="selectgamemode">The gamemode you played</label>
-                        <select default="1" class="custom-select form-control" name="gamemode_id"
-                                id="selectgamemode">
-                            @foreach ($gamemodes as $gamemode)
-                                <option value="{{$gamemode->id}}">{{$gamemode->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="selectclass">The tank you used</label>
-                        <select default="1" class="custom-select form-control" name="selectclass"
-                                id="selectclass">
-                            @foreach ($tanknames as $tank)
-                                <option value="{{$tank->id}}">{{$tank->tankname}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="score">Your Score</label>
-                        <input type="number" class="form-control" name="score" id="score" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="proof">Proof of your score</label>
-                        <input type="url" class="form-control" name="proof" id="proof" required
-                               pattern="(?:https?:\/\/)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)"
-                               title="Link needs to be a https:// link, from youtube if video, or must be from one of the following sites and end with .jpg or .png: discordapp.com, reddit.com and imgur.com"
-                               aria-describedby="urlHelpBlock">
-                        <p id="urlHelpBlock" class="form-text text-muted">
-                            Your proof must be a <strong>direct link</strong> to an image (or link to youtube.com). This
-                            means <strong>for images the link must end in *.jpg or *.png</strong>
-                            <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp.
-                        </p>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="managerlogin" tabindex="-1" role="dialog" aria-labelledby="managerloginlabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="managerloginlabel">Login</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Add login for managers form -->
-                <form action="/login" method="POST">
-                    {{ csrf_field() }}
-                    <div class="form-group">
-                        <label for="inputname">email:</label>
-                        <input type="email" class="form-control" id="inputname" name="inputname">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Pasword:</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                               placeholder="password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
+<!-- To make this file a bit more readable. The actual modal to submit records is in another file -->
+@include('modals.recordSubmitModal',['gamemodes'=>$gamemodes,'tanknames'=>$tanknames])
 
 
 <p class="center diep-title">Diep.io World Records</p>
@@ -120,12 +27,16 @@
     @endforeach
 @endif
 
-
+<!-- Create a table for all the scores. The table should be the form of n x m. Where n=1(header)+NumberOfTanks and m=1(ClassName)+NumberOfGamemodes*2 -->
 <div class="table-responsive">
     <table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
-        <tr>
-            <th>Class</th>
+        <tr><!-- The first row shall consist of "Class" and the names of all the gamemodes in the database-->
+            <th class="diep-gradient-yellow">Class</th>
+            <!-- Loop through each gamemode and create 2 columns.
+                The first column will consist of score and name (like 12.12M Moepl) and is basically that what the user sees.
+                The second row will always be the raw score (unformatted). That column will be invisible but used for sorting by dynatable
+            -->
             @foreach ($gamemodes as $gamemode)
                 <th class="th{{$gamemode->name}}"
                     data-dynatable-sorts="sort{{str_replace("-","",strtolower($gamemode->name))}}">{{$gamemode->name}}</th>
@@ -134,24 +45,56 @@
         </tr>
         </thead>
         <tbody>
+        <!-- Now we loop through each record we have. Thankfully, they are sorted by tankid and gamemode. So we "just" need to print them out.
+        -->
         @foreach ($allrecords as $recordsbytankid)
             <tr>
-                <td><span class="tanksandname"><div
-                                class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}"></div><span class="mobilehide">{{$recordsbytankid[0]->tankname}}</span></span>
+                <!-- The first column shall always be the tankimage and the tankname. If we are on a small screen, we only display the image
+                -->
+                <td><span class="tanksandname">
+                        <div class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}">
+                        </div>
+                        <span class="mobilehide">{{$recordsbytankid[0]->tankname}}
+                        </span>
+                    </span>
                 </td>
+                <!-- Now we need to print the actual scores. The problem is that we might now have scores for every gamemode.
+                    As a consequence, we need to initialize a counter to make sure we print the records we have into the correct column.
+                    If we don't have a record for the gamemode, we create two empty columns.
+                -->
                 <?php $pos = 0 ?>
                 @foreach($gamemodes as $gamemode)
                     @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
-                        <td>
-                            <a href="{{$recordsbytankid[$pos]->link}}" data-toggle="lightbox"><span
-                                        class="tabletankscore">{{$recordsbytankid[$pos]->score}}</span> <span
-                                        class="tabletankname mobilehide"><small>{{$recordsbytankid[$pos]->name}}</small></span></a>
+                        <td> <!-- Okay, we have a record for the gamemode. We wrap the other stuff (score and name) around a span to
+                                 display a tooltip which shows who approved the record and when.
+                                 If we don't know when it was approved, we only display the name
+                              -->
+                            <span data-toggle="tooltip"
+                                  data-placement="top"
+                                  title="Approved by {{$recordsbytankid[$pos]->approvername}}
+                                  @if(isset($recordsbytankid[$pos]->approvedDate))
+                                          on {{$recordsbytankid[$pos]->approvedDate}}
+                                  @endif
+                                          ">
+                                    <!--Okay, we got the tooltip done.
+                                    Now we need to actually display the score and name. We use a link for that and open it when pressed with lightbox -->
+                                     <a href="{{$recordsbytankid[$pos]->link}}"
+                                     data-toggle="lightbox">
+                                     <span class="tabletankscore">{{$recordsbytankid[$pos]->score}}
+                                     </span>
+                                     <span class="tabletankname mobilehide"> <!-- If we are on small devices,
+                                                                                only display the score and not the name.
+                                                                                The name should use a smaller font anyway -->
+                                        <small>{{$recordsbytankid[$pos]->name}}</small>
+                                    </span>
+                                    </a>
+
+                            </span>
                         </td>
                         <td>{{$recordsbytankid[$pos]->scorefull}}</td>
-                        <?php  $pos++  ?>
-
+                        <?php  $pos++  ?> <!-- Okay, we had a record for the gamemode, time to increase the counter -->
                     @else
-                        <td></td>
+                        <td></td> <!-- No record for the gamemode found. We just create 2 empty columns -->
                         <td></td>
                     @endif
                 @endforeach
@@ -162,13 +105,12 @@
 </div>
 
 
-
 @endsection
 
 @section('customscripts')
     <script>$(document).ready(function () {
-        console.log("yo");
-                    $('#scoretable').dynatable({
+        //Initialize dynatable and make sure the columns we declared to use for sorting, interpret the scores as numbers and not as text
+            $('#scoretable').dynatable({
                 readers: {
                     @foreach ($gamemodes as $gamemode)
                     'sort{{str_replace("-","",strtolower($gamemode->name))}}': function (el, record) {
@@ -177,6 +119,7 @@
                     @endforeach
                 }
             });
+            $('[data-toggle="tooltip"]').tooltip()
         });</script>
 
 @endsection

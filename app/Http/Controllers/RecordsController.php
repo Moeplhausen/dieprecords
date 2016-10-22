@@ -23,7 +23,7 @@ class RecordsController extends Controller
      */
     public function show()
     {
-        if (Auth::guest() && !(App::isLocal())) {
+        if (Auth::guest() && !App::isLocal()) {
             return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
             });
@@ -56,7 +56,9 @@ SELECT DISTINCT sortedrecords.name,
                 tanks.tankname, 
                 sortedrecords.gamemode_id, 
                 gamemodes.name    AS gamemode, 
-                proofs.proof_link AS link 
+                proofs.proof_link AS link,
+                users.name AS approvername,
+                proofs.updated_at AS approvedDate
 FROM   (SELECT record.* 
         FROM   records record 
                INNER JOIN (SELECT gamemode_id, 
@@ -77,6 +79,8 @@ FROM   (SELECT record.*
                ON sortedrecords.tank_id = tanks.id 
        INNER JOIN proofs 
                ON sortedrecords.id = proofs.id 
+       INNER JOIN users
+               ON proofs.approver_id = users.id
 ORDER  BY tank_id, 
           gamemode_id");
         //Format scores to shorten them
@@ -99,8 +103,8 @@ ORDER  BY tank_id,
     public function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'inputname' => 'required|max:255',
-            'selectclass' => 'required|integer|max:100',
+            'inputname' => 'required|max:32',
+            'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:0,999999999',
             'proof' => [
                 'required',

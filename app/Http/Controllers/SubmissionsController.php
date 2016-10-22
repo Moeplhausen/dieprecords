@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SubmissionsController extends Controller
 {
     public function show()
     {
+
+
         //Get all records that aren't approved and haven't been decided by a manager yet.
         $submissions = DB::select("
 SELECT proofs.id, 

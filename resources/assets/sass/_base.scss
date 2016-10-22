@@ -60,8 +60,13 @@ button,.tabletankscore{
 }
 
 
-.thFFA,.diep-gradient-blue,.btn {
+.thFFA,.diep-gradient-blue,.btn,.dynatable-active-page {
   @include gradient-vertical(#71ccc8,#5ba4a1,50%,50%);
+}
+
+
+.diep-gradient-yellow{
+  @include gradient-vertical(#ffeb8e,#cdbd72,50%,50%);
 }
 
 

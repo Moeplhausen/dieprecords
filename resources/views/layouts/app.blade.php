@@ -47,8 +47,12 @@
             </span>
         </div>
     </nav> <!-- /navbar -->
+    @include('modals.loginModal')
+
     @yield('content')
 </div>
+
+
 
 
 <script src="{{  asset(elixir('js/app.js')) }}"></script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,6 +31,7 @@ class AuthController extends Controller
     }
     public function logout(Request $request){
         Auth::logout();
+        Session::flush();
         return redirect('/');
     }
 }
