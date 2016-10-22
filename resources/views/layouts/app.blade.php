@@ -10,7 +10,7 @@
 
     <link rel="icon" type="image/png" href="{{elixir('images/favicon.png')}}" sizes="32x32">
     <!-- Styles -->
-    <link rel="stylesheet" href="{{  elixir('css/all.css')}}">
+    <link rel="stylesheet" href="{{  elixir('css/app.css')}}">
 
 
 
@@ -48,7 +48,8 @@
     @yield('content')
 </div>
 
-<script src="{{  elixir('js/all.js') }}"></script>
+
+<script src="{{  asset(elixir('js/app.js')) }}"></script>
 
 <script>
 

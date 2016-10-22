@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use App;
 use App\Tanks;
 use App\Gamemodes;
 use App\Proofs;
@@ -22,7 +23,8 @@ class RecordsController extends Controller
      */
     public function show()
     {
-        if (Auth::guest()) {
+        if (Auth::guest() && !(App::isLocal())) {
+            echo "Cached";
             return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
             });

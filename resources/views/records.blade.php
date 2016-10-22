@@ -162,10 +162,13 @@
 </div>
 
 
+
 @endsection
+
 @section('customscripts')
     <script>$(document).ready(function () {
-            $('#scoretable').dynatable({
+        console.log("yo");
+                    $('#scoretable').dynatable({
                 readers: {
                     @foreach ($gamemodes as $gamemode)
                     'sort{{str_replace("-","",strtolower($gamemode->name))}}': function (el, record) {
@@ -175,6 +178,7 @@
                 }
             });
         });</script>
+
 @endsection
 
 
