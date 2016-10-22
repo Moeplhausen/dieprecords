@@ -25,8 +25,7 @@ class CreateRecordsTable extends Migration
         Schema::table('records',function($table){
             $table->foreign('tank_id')->references('id')->on('tanks')->onDelete('cascade');
             $table->foreign('gamemode_id')->references('id')->on('gamemodes')->onDelete('cascade');
-            $table->unique(array('score','tank_id','gamemode_id'));
-            $table->unique(array('name','tank_id','score'));
+            //$table->unique(array('score','tank_id','gamemode_id')); //prevents a valid submission when an invalid submission has the same score, tank, gamemode
          });
         Schema::table('proofs',function($table){
             $table->foreign('id')->references('id')->on('records')->onDelete('cascade');
@@ -40,8 +39,9 @@ class CreateRecordsTable extends Migration
      */
     public function down()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('records');
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Schema::enableForeignKeyConstraints();
+
     }
 }

@@ -14,11 +14,11 @@ class TanksTableSeeder extends Seeder
         $tanks=array(
             "Annihilator",
             "Assassin",
-            "Auto 5",
             "Auto Gunner",
             "Auto Smasher",
-            "Auto 3",
             "Auto Trapper",
+            "Auto 3",
+            "Auto 5",
             "Basic Tank",
             "Battleship",
             "Booster",
