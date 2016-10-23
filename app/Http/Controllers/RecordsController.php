@@ -8,22 +8,38 @@ use App;
 use App\Tanks;
 use App\Gamemodes;
 use App\Proofs;
-use App\Record;
+use App\Records;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
 
 use App\Http\Requests;
+use Kurt\Imgur\Imgur;
 
 class RecordsController extends Controller
 {
+
+    /**
+     * Imgur instance.
+     *
+     * @var \Kurt\Imgur\Imgur
+     */
+    private $imgur;
+
+    public function __construct(Imgur $imgur)
+    {
+        $this->imgur = $imgur;
+    }
+
+
     /**
      * This function returns the default records view.
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show()
     {
-        if (Auth::guest() && !App::isLocal()) {
+
+        if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
             });
@@ -50,14 +66,14 @@ class RecordsController extends Controller
         Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
         */
         $records = DB::select("
-SELECT DISTINCT sortedrecords.name, 
-                sortedrecords.score, 
-                sortedrecords.tank_id, 
-                tanks.tankname, 
-                sortedrecords.gamemode_id, 
+SELECT DISTINCT sortedrecords.name AS name, 
+                sortedrecords.score AS score, 
+                sortedrecords.tank_id AS tank_id, 
+                tanks.tankname AS tankname, 
+                sortedrecords.gamemode_id as gamemode_id, 
                 gamemodes.name    AS gamemode, 
-                proofs.proof_link AS link,
                 users.name AS approvername,
+                proofs.id AS proof_id,
                 proofs.updated_at AS approvedDate
 FROM   (SELECT record.* 
         FROM   records record 
@@ -85,12 +101,20 @@ ORDER  BY tank_id,
           gamemode_id");
         //Format scores to shorten them
         foreach ($records as $record) {
+
             $record->scorefull = $record->score;
             $record->score = $this->thousandsCurrencyFormat($record->score);
+            $links = array();
+            // Have to think about something better than this
+            foreach (App\Proofslink::where('proof_id', $record->proof_id)->cursor() as $prooflink) {
+                array_push($links, $prooflink->proof_link);
+            }
+            $record->links = $links;
+            //var_dump($record);
         }
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
-        $records=collect($records)->groupBy('tank_id');
+        $records = collect($records)->groupBy('tank_id');
 
         //get all gamemodes for the form
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
@@ -104,24 +128,50 @@ ORDER  BY tank_id,
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:32',
+            'gamemode_id'=>'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:0,999999999',
             'proof' => [
                 'required',
                 'url',
-                'regex:~^(?:https?://)(?:www\.)?(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:/watch\?v=([^&]+)|.*.png|.*.jpg)~x'
+                'regex:~^(?:https?:\/\/)(?:www\.)?(?:(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)|imgur\.com|m.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
-
-
-
-
         if ($validator->fails()) {
             return redirect('/')
                 ->withInput()
                 ->withErrors($validator);
         }
-        $request->proof=str_replace("http://","https://",$request->proof);
+        $request->proof = str_replace("http://", "https://", $request->proof);
+
+
+        //Test if we have an imgur link that is not linking directly to an image
+
+        if (preg_match("~^(?:https?:\/\/)(?:www\.)?(?:imgur\.com|m\.imgur\.com)(?:.*)~x", $request->proof)) {
+            try {
+                //get imgur id
+                $output = "";
+                if (preg_match("/\/\K\w+(?=[^\/]*$)/", $request->proof, $output)) {
+                    for ($i = 0; $i < count($output); $i++) {
+                        $request->proof = $this->getImgurDirectLinks($output[$i]);
+                        if (count($request->proof) == 0)
+                            return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
+                    }
+                }
+            } catch (Exception $e) {
+                //echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
+                return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
+            } finally {
+
+            }
+        } else {
+            $request->proof = array($request->proof);
+        }
+
+
+
+
+
         //make sure the tank actually exists and not just believe the user
         $tank = Tanks::where('id', '=', $request->selectclass)->get();
         //same with gamemode
@@ -164,7 +214,7 @@ ORDER  BY tank_id,
         DB::transaction(function () use ($request) {
 
 
-            $record = new Record();
+            $record = new Records();
             $record->name = $request->inputname;
             $record->score = $request->score;
             $record->tank_id = $request->selectclass;
@@ -173,9 +223,15 @@ ORDER  BY tank_id,
             $record->save();
 
             $proof = new Proofs();
-            $proof->proof_link = $request->proof;
             $proof->approved = false;
             $proof->save();
+
+            for ($i = 0; $i < count($request->proof); $i++) {
+                $prooflink = new App\Proofslink();
+                $prooflink->proof_id = $proof->id;
+                $prooflink->proof_link = $request->proof[$i];
+                $prooflink->save();
+            }
         });
 
         return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
@@ -183,7 +239,7 @@ ORDER  BY tank_id,
 
 
     // http://stackoverflow.com/questions/4371059/shorten-long-numbers-to-k-m-b
-    function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
+    private function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
     {
 
         // Setup default $divisors if not provided
@@ -211,6 +267,30 @@ ORDER  BY tank_id,
         // We found our match, or there were no matches.
         // Either way, use the last defined value for $divisor.
         return number_format($number / $divisor, $precision) . $shorthand;
+    }
+
+    private function getImgurDirectLinks($id)
+    {
+
+        $albumApi = $this->imgur->getAlbumApi();
+        $imageApi = $this->imgur->getApi("AlbumOrImage");
+
+        $return = array();
+        $imglinkarray = $imageApi->find($id);
+
+        if (0 === strpos($imglinkarray['link'], 'http://i.')) {//directimage
+            array_push($return, $imglinkarray['link']);
+        } else {
+
+            for ($i = 0; $i < count($imglinkarray['images']); $i++) {
+                array_push($return, $imglinkarray['images'][$i]['link']);
+            }
+        }
+
+
+        return $return;
+
+
     }
 
 

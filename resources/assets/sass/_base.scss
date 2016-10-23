@@ -4,7 +4,7 @@ body {
   background-image: url("images/background.png");
 }
 
-.nodisplay{
+.nodisplay {
   display: none;
 }
 
@@ -13,78 +13,103 @@ body {
   @extend .nodisplay
 }
 
-button,.tabletankscore{
+button, .tabletankscore {
   font-weight: bold !important;
 }
 
-.topmenu{
+.topmenu {
   margin-bottom: 10%;
 }
 
-.center{
+.center {
   text-align: center;
 }
 
 .dynatable-sort-header {
-  color:black;
+  color: black;
 }
 
-.diep-shadow{
+.diep-shadow {
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
-.diep-border{
-  border:4px solid black!important;
+
+.diep-border {
+  border: 4px solid black !important;
 }
 
-.btn-diep,.dynatable-search,.btn{
+.dropdown-toggle {
+  border: 1px solid rgba(0, 0, 0, 0.14902) !important;
+  background: transparent !important;
+  text-shadow: none !important;
+  color: black !important;
+  font-weight: normal !important;
+
+}
+/* make the images on the record submit select a bit more to the right */
+.dropdown-menu li{
+  padding:0px 15px 1px !important;
+}
+
+.btn-diep, .dynatable-search, .btn {
   @extend .diep-shadow;
   @extend .diep-border;
-  color:white;
+  color: white;
 }
-.dynatable-search{
+
+.dynatable-search {
   background: linear-gradient(#fb8eff 50%, #ca72cd 50%); /* Standard syntax */
 }
 
-.dynatable-sort-header{
-  color:white;
+.dynatable-sort-header {
+  color: white;
   @extend .diep-shadow;
 }
-.diep-title{
-  color:whitesmoke;
+
+.diep-title {
+  color: whitesmoke;
   font-size: 3em;
   @extend .diep-shadow;
 }
 
-.table td, .table th,.table-bordered td, .table-bordered th, .table thead th {
+.table td, .table th, .table-bordered td, .table-bordered th, .table thead th {
   border: 3px solid black !important;
 }
 
-
-.thFFA,.diep-gradient-blue,.btn,.dynatable-active-page {
-  @include gradient-vertical(#71ccc8,#5ba4a1,50%,50%);
+.thFFA, .diep-gradient-blue, .btn, .dynatable-active-page {
+  @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%);
 }
 
-
-.diep-gradient-yellow{
-  @include gradient-vertical(#ffeb8e,#cdbd72,50%,50%);
+.diep-gradient-yellow {
+  @include gradient-vertical(#ffeb8e, #cdbd72, 50%, 50%);
 }
-
 
 .th2-TDM {
-  @include gradient-vertical(#b4ff8e , #91cd72,50%,50%);
+  @include gradient-vertical(#b4ff8e, #91cd72, 50%, 50%);
 }
 
-.th4-TDM,.diep-gradient-red,.btn-danger {
-  @include gradient-vertical(#ff8e8e ,#cd7272,50%,50%);
+.th4-TDM, .diep-gradient-red, .btn-danger {
+  @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
 }
 
-.thMaze{
-  @include gradient-vertical(#adadad ,#8b8b8b,50%,50%);
+.thMaze {
+  @include gradient-vertical(#adadad, #8b8b8b, 50%, 50%);
 }
 
-.scoretanksimage{
+.scoretanksimage {
   margin-right: 5px;
 }
-#dynatable-search-scoretable{
 
+#dynatable-search-scoretable {
+
+}
+
+button {
+  &.working {
+    @include animation('working-bg 1s');
+    @include animation-property('iteration-count', 'infinite');
+  }
+}
+@include keyframes('working-bg') {
+  from { @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%); }
+  to { @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%); }
 }

@@ -5,3 +5,24 @@
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down
 }
+
+@mixin animation($value) {
+  -webkit-animation: unquote($value);
+  -moz-animation: unquote($value);
+  -o-animation: unquote($value);
+  animation: unquote($value);
+}
+
+@mixin animation-property($property, $value) {
+  -webkit-animation-#{$property}: unquote($value);
+  -moz-animation-#{$property}: unquote($value);
+  -o-animation-#{$property}: unquote($value);
+  animation-#{$property}: unquote($value);
+}
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} { @content; }
+  @-moz-keyframes #{$name} { @content; }
+  @-o-keyframes #{$name} { @content; }
+  @keyframes #{$name} { @content; }
+}

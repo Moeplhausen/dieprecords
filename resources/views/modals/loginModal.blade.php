@@ -1,4 +1,4 @@
-<!-- Modal -->
+{{-- Modal --}}
 <div class="modal fade" id="managerlogin" tabindex="-1" role="dialog" aria-labelledby="managerloginlabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -10,7 +10,7 @@
                 <h4 class="modal-title" id="managerloginlabel">Login</h4>
             </div>
             <div class="modal-body">
-                <!-- Add login for managers form -->
+                {{-- Add login for managers form --}}
                 <form action="/login" method="POST">
                     {{ csrf_field() }}
                     <div class="form-group">

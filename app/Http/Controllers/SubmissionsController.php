@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Proofs;
+use App\Records;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -10,21 +11,26 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+
+
 class SubmissionsController extends Controller
 {
+
+
+
     public function show()
     {
 
 
         //Get all records that aren't approved and haven't been decided by a manager yet.
         $submissions = DB::select("
-SELECT proofs.id, 
-       records.name, 
-       records.score, 
+SELECT proofs.id AS id, 
+       records.name AS name, 
+       records.score AS score, 
        tanks.id       AS tank_id, 
-       tanks.tankname, 
+       tanks.tankname AS tankname, 
        gamemodes.NAME AS gamemode, 
-       proofs.proof_link 
+       prooflinks.proof_link AS link
 FROM   records 
        INNER JOIN tanks 
                ON tanks.id = tank_id 
@@ -32,9 +38,12 @@ FROM   records
                ON records.id = proofs.id 
        INNER JOIN gamemodes 
                ON gamemodes.id = records.gamemode_id 
+       INNER JOIN prooflinks
+               ON proofs.id=prooflinks.proof_id
 WHERE  proofs.approved = '0' 
        AND proofs.decided = '0' ");
-
+        $submissions=collect($submissions)->groupBy('id');
+        //echo '<pre>'; print_r($submissions); echo '</pre>';
 
         return view('submissions', ['submissions' => $submissions]);
     }
@@ -53,10 +62,12 @@ WHERE  proofs.approved = '0'
 
         $input = $request->all();
 
+
         //make sure the manager actually sends a request as expected
         $validator = Validator::make($request->all(), [
-            'answ' => 'boolean',
-            'id' => 'integer'
+            'answ' => 'required|boolean',
+            'id' => 'required|integer',
+            'score'=>'required|integer|between:0,999999999'
         ]);
 
         //complain to user if they sent crap
@@ -70,16 +81,26 @@ WHERE  proofs.approved = '0'
             //complain to user if they sent crap
             return response()->json(array('msg' => 'Record not found'), 200);
         }
-        //The proof has been decided and will be aved.
-        DB::transaction(function () use ($proof, $request) {
+
+        $record=Records::find($proof->id);
+
+
+        //The proof has been decided and will be saved.
+        DB::transaction(function () use ($proof, $request,$record) {
+
+            $record->score=$request->input('score');
+            $record->save();
             $proof->approved = $request->input('answ');
             $proof->decided = true;
+            $proof->approver_id=Auth::user()->id;
             $proof->save();
+
+
         });
 
 
         $msg = 'Successfully changed record. It was approved: ' . ($proof->approved == '1' ? 'true' : 'false');
-        return response()->json(array('msg' => $msg, 'input' => $input), 200);
+        return response()->json(array('msg' => $msg, 'input' => $input,'score'=>$record->score), 200);
 
 
     }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProofsTable extends Migration
+class CreateProoflinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,16 @@ class CreateProofsTable extends Migration
      */
     public function up()
     {
-        Schema::create('proofs', function (Blueprint $table) {
+        Schema::create('prooflinks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('approver_id')->unsigned()->default(1);
-            $table->boolean('approved')->default(false);
-            $table->boolean('decided')->default(0);
+            $table->integer('proof_id')->unsigned()->default(1);
+            $table->string('proof_link',255);
             $table->timestamps();
             $table->engine = 'InnoDB';
 
         });
-
-        Schema::table('proofs',function($table){
-            $table->foreign('approver_id')->references('id')->on('users')->onDelete('cascade');
+        Schema::table('prooflinks',function($table){
+            $table->foreign('proof_id')->references('id')->on('proofs')->onDelete('cascade');
         });
     }
 
@@ -35,6 +33,6 @@ class CreateProofsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proofs');
+        Schema::dropIfExists('prooflinks');
     }
 }

@@ -62,6 +62,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        return; //we don't want new registrations
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

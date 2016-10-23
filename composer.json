@@ -3,6 +3,8 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
+    "minimum-stability": "beta",
+"prefer-stable":true,
     "type": "project",
     "require": {
         "php": ">=5.6.4",
@@ -10,7 +12,8 @@
         "predis/predis": "^1.1",
         "twbs/bootstrap": "4.0.0-alpha.5",
         "components/jquery": "^3.1",
-        "drmonty/ekko-lightbox": "^5.0"
+        "drmonty/ekko-lightbox": "^5.0",
+        "moeplhausen/imgurlaravel": "1.0.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -21,6 +21,8 @@ class CreateRecordsTable extends Migration
             $table->integer('gamemode_id')->unsigned();
             $table->string('ip_address',45);
             $table->timestamps();
+            $table->engine = 'InnoDB';
+
         });
         Schema::table('records',function($table){
             $table->foreign('tank_id')->references('id')->on('tanks')->onDelete('cascade');

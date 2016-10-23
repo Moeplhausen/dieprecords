@@ -16,6 +16,9 @@ class CreateGamemodeTable extends Migration
         Schema::create('gamemodes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',32);
+            $table->timestamps();
+            $table->engine = 'InnoDB';
+
         });
 
         Schema::table('gamemodes',function($table){

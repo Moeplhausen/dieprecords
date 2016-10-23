@@ -9,7 +9,7 @@
     <title>@yield('title')</title>
 
     <link rel="icon" type="image/png" href="{{elixir('images/favicon.png')}}" sizes="32x32">
-    <!-- Styles -->
+    {{-- Styles --}}
     <link rel="stylesheet" href="{{  elixir('css/app.css')}}">
 
 
@@ -46,7 +46,7 @@
                 @endif
             </span>
         </div>
-    </nav> <!-- /navbar -->
+    </nav>
     @include('modals.loginModal')
 
     @yield('content')

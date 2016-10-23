@@ -16,6 +16,9 @@ class CreateTanksTable extends Migration
         Schema::create('tanks', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tankname',32);
+            $table->timestamps();
+            $table->engine = 'InnoDB';
+
         });
 
         Schema::table('tanks',function($table){

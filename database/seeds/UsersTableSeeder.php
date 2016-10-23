@@ -11,6 +11,11 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert(['name'=>"admin",'email'=>"test@example.com",'password'=>Hash::make('test')]);
+        DB::table('users')->insert(
+            ['name'=>"admin",
+            'email'=>"test@example.com",
+            'password'=>Hash::make('test'),
+            'enabled'=>App::isLocal(),
+            ]);
     }
 }

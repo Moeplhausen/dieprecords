@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -24,8 +25,13 @@ class AuthController extends Controller
                 ->withErrors($validator);
         }
 
-        //Attempt to login. If login fails, we simply redirect back to startpage. Too lazy to show something like 'wrong passowrd'
-        Auth::attempt(['email'=>$request->inputname,'password'=>$request->password]);
+        $user = User::where('email', '=', $request->inputname)->get();
+        if (!$user->isEmpty()&&$user[0]->enabled)
+            //Attempt to login. If login fails, we simply redirect back to startpage. Too lazy to show something like 'wrong passowrd'
+            Auth::attempt(['email'=>$request->inputname,'password'=>$request->password]);
+
+
+
         return redirect('/');
 
     }

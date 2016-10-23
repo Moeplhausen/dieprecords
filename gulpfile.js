@@ -8,6 +8,3 @@ elixir(function(mix) {
         .version(['css/app.css', 'js/app.js','public/images']);
 
 });
-
-
-console.log(elixir);
