@@ -37,12 +37,33 @@
                     <span class="mobilehide">{{$submission[0]->tankname}}</span>
                 </td>
                 <td>{{$submission[0]->gamemode}}</td>
-                <td><input type="number" class="form-control" name="score" id="score" value="{{$submission[0]->score}}"
+                <td><input type="number"
+                           class="form-control copyMe{{$submission[0]->id}} listscore{{$submission[0]->id}}"
+                           name="score" id="score"
+                           value="{{$submission[0]->score}}"
                            required></td>
-                <td><a href="{{$submission[0]->link}}" data-toggle="lightbox" data-gallery="hidden{{$submission[0]->id}}">lightbox</a>
+                <td><a href="{{$submission[0]->link}}"
+                       data-toggle="lightbox"
+                       data-gallery="hidden{{$submission[0]->id}}"
+                       data-footer="<input type='number' class='form-control copyMe{{$submission[0]->id}}' name='footerscore' id='footerscore{{$submission[0]->id}}' value='{{$submission[0]->score}}' required>
+                       <script>
+                                    $('#footerscore{{$submission[0]->id}}').val($('.listscore{{$submission[0]->id}}').val())
+                                  $('.copyMe{{$submission[0]->id}}').change(function(){
+                                         $('.copyMe{{$submission[0]->id}}').val($(this).val());
+                                    });
+                       </script>"
+                    >lightbox</a>
                     @if(count($submission)>1) {{-- We have more than one proof. We add them invisible to the lightboxgallery --}}
                     @for($i=1;$i<count($submission);$i++)
-                        <div data-toggle="lightbox" data-gallery="hidden{{$submission[0]->id}}" data-remote="{{$submission[$i]->link}}"></div>
+                        <div data-toggle="lightbox" data-gallery="hidden{{$submission[0]->id}}"
+                             data-remote="{{$submission[$i]->link}}"
+                             data-footer="<input type='number' class='form-control copyMe{{$submission[0]->id}}' name='footerscore' id='footerscore{{$submission[0]->id}}' value='{{$submission[0]->score}}' required>
+                                  <script>
+                                    $('#footerscore{{$submission[0]->id}}').val($('.listscore{{$submission[0]->id}}').val())
+                                  $('.copyMe{{$submission[0]->id}}').change(function(){
+                                         $('.copyMe{{$submission[0]->id}}').val($(this).val());
+                                    });
+                       </script>"></div>
                     @endfor
                     @endif
                 </td>
