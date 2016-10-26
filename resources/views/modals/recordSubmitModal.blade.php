@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label for="proof">Proof of your score</label>
                         <input type="url" class="form-control" name="proof" id="proof" required
-                               pattern="(?:https?:\/\/)(?:www\.)?(?:(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)|imgur\.com|m.imgur\.com).*"
+                               pattern="http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(.*.png|.*.jpg|.*.PNG|.*.JPG)|imgur\.com|m.imgur\.com).*"
                                title="Link needs to be a https:// link, from youtube if video, or must be from one of the following sites and end with .jpg or .png: discordapp.com, reddit.com and imgur.com"
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">

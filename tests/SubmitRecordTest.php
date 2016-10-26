@@ -220,6 +220,12 @@ class SubmitRecordTest extends TestCase
         $this->notSeeInDatabase('records', [
             'id'=>2
         ]);
+        $this->notSeeInDatabase('proofs', [
+            'id'=>2
+        ]);
+        $this->notSeeInDatabase('prooflinks', [
+            'id'=>2
+        ]);
 
 
 

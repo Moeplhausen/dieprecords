@@ -27,6 +27,7 @@ class CreateRecordsTable extends Migration
         Schema::table('records',function($table){
             $table->foreign('tank_id')->references('id')->on('tanks')->onDelete('cascade');
             $table->foreign('gamemode_id')->references('id')->on('gamemodes')->onDelete('cascade');
+            $table->index(['score','tank_id','gamemode_id']); //should improve the sorting speed
             //$table->unique(array('score','tank_id','gamemode_id')); //prevents a valid submission when an invalid submission has the same score, tank, gamemode
          });
         Schema::table('proofs',function($table){

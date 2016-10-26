@@ -11,10 +11,16 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+
+        $password='test';
+        if (!App::isLocal()){
+            $password=str_random(40);
+        }
+
         DB::table('users')->insert(
             ['name'=>"admin",
             'email'=>"test@example.com",
-            'password'=>Hash::make('test'),
+            'password'=>Hash::make($password),
             'enabled'=>App::isLocal(),
             ]);
     }

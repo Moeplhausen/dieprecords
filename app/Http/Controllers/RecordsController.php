@@ -134,7 +134,7 @@ ORDER  BY tank_id,
             'proof' => [
                 'required',
                 'url',
-                'regex:~^(?:https?:\/\/)(?:www\.)?(?:(?:youtube\.com|youtu\.be|cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(?:\/watch\\?v=([^&]+)|.*.png|.*.jpg)|imgur\.com|m.imgur\.com).*~x'
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(.*.png|.*.jpg|.*.PNG|.*.JPG)|imgur\.com|m.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
@@ -145,28 +145,7 @@ ORDER  BY tank_id,
         $request->proof = str_replace("http://", "https://", $request->proof);
 
 
-        //Test if we have an imgur link that is not linking directly to an image
 
-        if (preg_match("~^(?:https?:\/\/)(?:www\.)?(?:imgur\.com|m\.imgur\.com)(?:.*)~x", $request->proof)) {
-            try {
-                //get imgur id
-                $output = "";
-                if (preg_match("/\/\K\w+(?=[^\/]*$)/", $request->proof, $output)) {
-                    for ($i = 0; $i < count($output); $i++) {
-                        $request->proof = $this->getImgurDirectLinks($output[$i]);
-                        if (count($request->proof) == 0)
-                            return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
-                    }
-                }
-            } catch (Exception $e) {
-                //echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
-                return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
-            } finally {
-
-            }
-        } else {
-            $request->proof = array($request->proof);
-        }
 
 
 
@@ -210,12 +189,37 @@ ORDER  BY tank_id,
         }
 
 
+        //Test if we have an imgur link that is not linking directly to an image
+        if (preg_match("~^(?:https?:\/\/)(?:www\.)?(?:imgur\.com|m\.imgur\.com)(?:.*)~x", $request->proof)) {
+            try {
+                //get imgur id
+                $output = "";
+                if (preg_match("/\/\K\w+(?=[^\/]*$)/", $request->proof, $output)) {
+                    for ($i = 0; $i < count($output); $i++) {
+                        $request->proof = $this->getImgurDirectLinks($output[$i]);
+                        if (count($request->proof) == 0)
+                            return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
+                    }
+                }
+            } catch (Exception $e) {
+                //echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
+                return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
+            } finally {
+
+            }
+        } else {
+            $request->proof = array($request->proof);
+        }
+
+
+
+
         //Everything seems fine, let us add them
         DB::transaction(function () use ($request) {
 
 
             $record = new Records();
-            $record->name = $request->inputname;
+            $record->name = strip_tags($request->inputname);
             $record->score = $request->score;
             $record->tank_id = $request->selectclass;
             $record->gamemode_id = $request->gamemode_id;
@@ -272,7 +276,6 @@ ORDER  BY tank_id,
     private function getImgurDirectLinks($id)
     {
 
-        $albumApi = $this->imgur->getAlbumApi();
         $imageApi = $this->imgur->getApi("AlbumOrImage");
 
         $return = array();
@@ -281,17 +284,10 @@ ORDER  BY tank_id,
         if (0 === strpos($imglinkarray['link'], 'http://i.')) {//directimage
             array_push($return, $imglinkarray['link']);
         } else {
-
             for ($i = 0; $i < count($imglinkarray['images']); $i++) {
                 array_push($return, $imglinkarray['images'][$i]['link']);
             }
         }
-
-
         return $return;
-
-
     }
-
-
 }

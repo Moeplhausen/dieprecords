@@ -14,10 +14,11 @@
 Route::get('/', 'RecordsController@show');
 Route::post('/submitrecord','RecordsController@submit');
 
+
 Route::post('/login','AuthController@login');
 
 
-Route::group(['middleware'=>'auth.basic'],function (){
+Route::group(['middleware'=>['redirectGuests','auth.basic']],function (){
     Route::get('/submissions', 'SubmissionsController@show');
     Route::post('/decidesubmission','SubmissionsController@decide');
     Route::post('/logout','AuthController@logout');

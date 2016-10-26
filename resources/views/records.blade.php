@@ -77,7 +77,7 @@
                                   data-placement="top"
                                   title="Score: {{number_format($recordsbytankid[$pos]->scorefull)}}<br>Approved by: {{$recordsbytankid[$pos]->approvername}}
                                   @if(isset($recordsbytankid[$pos]->approvedDate))
-                                          <br>Date: {{$recordsbytankid[$pos]->approvedDate}}
+                                          <br>Date: <span class='approvedDateTooltip'>{{$recordsbytankid[$pos]->approvedDate}}</span>
                                   @endif
                                           ">
                                     {{--Okay, we got the tooltip done.
@@ -119,7 +119,13 @@
 @endsection
 
 @section('customscripts')
-    <script>$(document).ready(function () {
+    <script>
+
+        function updateTableContents(){
+             $('[data-toggle="tooltip"]').tooltip();
+        }
+
+        $(document).ready(function () {
             {{--Initialize dynatable and make sure the columns we declared to use for sorting, interpret the scores as numbers and not as text --}}
                 $('#scoretable').dynatable({
                 readers: {
@@ -130,9 +136,9 @@
                     @endforeach
                 }
             }).bind('dynatable:afterUpdate', function (e, dynatable) {
-                $('[data-toggle="tooltip"]').tooltip();{{-- we must run this again whenever the search function was used because it messes things up --}}
+                updateTableContents(){{-- we must run this again whenever the search function was used because it messes things up --}}
             });
-            $('[data-toggle="tooltip"]').tooltip()
+            updateTableContents()
 
             $('#recordsubmit').submit(function (event) {
                 $('#recordsubmitbtn').addClass('working');

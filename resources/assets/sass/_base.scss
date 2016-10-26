@@ -9,8 +9,10 @@ body {
 }
 
 /* Portrait phones and smaller */
-@media all and (max-width: 480px) {
-  @extend .nodisplay
+@media screen and (max-width: 768px) {
+  .mobilehide {
+    display:none;
+  }
 }
 
 button, .tabletankscore {
@@ -30,7 +32,10 @@ button, .tabletankscore {
 }
 
 .diep-shadow {
-  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+  text-shadow: 2px 2px 2px black,
+  2px -2px 2px black,
+  -2px 2px 2px black,
+  -2px -2px 2px black;
 }
 
 .diep-border {
@@ -45,9 +50,10 @@ button, .tabletankscore {
   font-weight: normal !important;
 
 }
+
 /* make the images on the record submit select a bit more to the right */
-.dropdown-menu li{
-  padding:0px 15px 1px !important;
+.dropdown-menu li {
+  padding: 0px 15px 1px !important;
 }
 
 .btn-diep, .dynatable-search, .btn {
@@ -68,7 +74,7 @@ button, .tabletankscore {
 .diep-title {
   color: whitesmoke;
   font-size: 3em;
-  @extend .diep-shadow;
+  @extend .diep-shadow
 }
 
 .table td, .table th, .table-bordered td, .table-bordered th, .table thead th {
@@ -109,7 +115,12 @@ button {
     @include animation-property('iteration-count', 'infinite');
   }
 }
+
 @include keyframes('working-bg') {
-  from { @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%); }
-  to { @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%); }
+  from {
+    @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%);
+  }
+  to {
+    @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
+  }
 }
