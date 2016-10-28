@@ -127,14 +127,16 @@ ORDER  BY tank_id,
         for ($i = 0; $i < count($records); $i++) {
             $record = $records[$i];
 
+
+
             $record->scorefull = $record->score;
             $record->score = $this->thousandsCurrencyFormat($record->score);
             $links = array($record->link);
             // Records with the same id but different prooflink should be next to each.
             // We simply look ahead if there are other records with the same id behind this one and add the links on them.
             while ($i + 1 < count($records) && $record->record_id == $records[$i + 1]->record_id) {
-                $i++;
-                array_push($links, $records[$i]->link);
+                array_push($links, $records[$i+1]->link);
+                array_splice($records,$i+1,1);
             }
 
             $record->links = $links;
@@ -159,7 +161,7 @@ ORDER  BY tank_id,
     function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'inputname' => 'required|max:32',
+            'inputname' => 'required|max:20',
             'gamemode_id' => 'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:0,999999999',
@@ -251,7 +253,7 @@ ORDER  BY tank_id,
             $record->save();
 
             $proof = new Proofs();
-            $proof->approved = false;
+            $proof->approved = true;
             $proof->save();
 
             for ($i = 0; $i < count($request->proof); $i++) {

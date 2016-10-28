@@ -15,7 +15,7 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="inputname">Your name</label>
-                        <input type="text" class="form-control" name="inputname" id="inputname" maxlength="32" required>
+                        <input type="text" class="form-control" name="inputname" id="inputname" maxlength="20" required>
                     </div>
                     <div class="form-group">
                         <label for="selectgamemode">The gamemode you played</label>
