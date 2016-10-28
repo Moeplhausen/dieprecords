@@ -39,14 +39,14 @@ class RecordsController extends Controller
     public function show()
     {
 
-        $recordsdata=$this->getRecordsData();
+        $recordsdata = $this->getRecordsData();
 
         return view('records', ["tanknames" => $recordsdata->tanks, "allrecords" => $recordsdata->records, 'gamemodes' => $recordsdata->gamemodes]);
     }
 
 
-
-    private function getRecordsData(){
+    private function getRecordsData()
+    {
 
 
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
@@ -58,7 +58,6 @@ class RecordsController extends Controller
         }
 
     }
-
 
 
     /**
@@ -77,17 +76,22 @@ class RecordsController extends Controller
         Then get the max score by grouping tank_id and gamemode_id.
         Afterwards we join the result with scores again to get the other collumns of the record (like the id of the record).
         Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
+        Be aware that for a records with multiple proof-links we get a result each
         */
         $records = DB::select("
-SELECT DISTINCT sortedrecords.name AS name, 
+SELECT DISTINCT 
+                sortedrecords.id AS record_id,
+                sortedrecords.name AS name, 
                 sortedrecords.score AS score, 
                 sortedrecords.tank_id AS tank_id, 
                 tanks.tankname AS tankname, 
-                sortedrecords.gamemode_id as gamemode_id, 
+                sortedrecords.gamemode_id AS gamemode_id, 
                 gamemodes.name    AS gamemode, 
                 users.name AS approvername,
                 proofs.id AS proof_id,
-                proofs.updated_at AS approvedDate
+                proofs.updated_at AS approvedDate,
+                prooflinks.id AS prooflink_id,
+                prooflinks.proof_link AS link
 FROM   (SELECT record.* 
         FROM   records record 
                INNER JOIN (SELECT gamemode_id, 
@@ -110,21 +114,33 @@ FROM   (SELECT record.*
                ON sortedrecords.id = proofs.id 
        INNER JOIN users
                ON proofs.approver_id = users.id
+       INNER JOIN prooflinks
+               ON proofs.id=prooflinks.proof_id
 ORDER  BY tank_id, 
-          gamemode_id");
-        //Format scores to shorten them
-        foreach ($records as $record) {
+          gamemode_id,
+          prooflink_id");
+     /*   echo '<pre>';
+        print_r($records);
+        echo '</pre>';*/
+
+
+        for ($i = 0; $i < count($records); $i++) {
+            $record = $records[$i];
 
             $record->scorefull = $record->score;
             $record->score = $this->thousandsCurrencyFormat($record->score);
-            $links = array();
-            // Have to think about something better than this
-            foreach (App\Proofslink::where('proof_id', $record->proof_id)->cursor() as $prooflink) {
-                array_push($links, $prooflink->proof_link);
+            $links = array($record->link);
+            // Records with the same id but different prooflink should be next to each.
+            // We simply look ahead if there are other records with the same id behind this one and add the links on them.
+            while ($i + 1 < count($records) && $record->record_id == $records[$i + 1]->record_id) {
+                $i++;
+                array_push($links, $records[$i]->link);
             }
+
             $record->links = $links;
             //var_dump($record);
         }
+
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         $records = collect($records)->groupBy('tank_id');
@@ -133,17 +149,18 @@ ORDER  BY tank_id,
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
 
 
-        return (object)array('tanks'=>$tanks,'gamemodes'=>$gamemodes,'records'=>$records);
+        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records);
 
 
     }
 
 
-    public function submit(Request $request)
+    public
+    function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:32',
-            'gamemode_id'=>'required|integer|max:256',
+            'gamemode_id' => 'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:0,999999999',
             'proof' => [
@@ -158,12 +175,6 @@ ORDER  BY tank_id,
                 ->withErrors($validator);
         }
         $request->proof = str_replace("http://", "https://", $request->proof);
-
-
-
-
-
-
 
 
         //make sure the tank actually exists and not just believe the user
@@ -227,8 +238,6 @@ ORDER  BY tank_id,
         }
 
 
-
-
         //Everything seems fine, let us add them
         DB::transaction(function () use ($request) {
 
@@ -257,8 +266,9 @@ ORDER  BY tank_id,
     }
 
 
-    // http://stackoverflow.com/questions/4371059/shorten-long-numbers-to-k-m-b
-    private function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
+// http://stackoverflow.com/questions/4371059/shorten-long-numbers-to-k-m-b
+    private
+    function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
     {
 
         // Setup default $divisors if not provided
@@ -288,7 +298,8 @@ ORDER  BY tank_id,
         return number_format($number / $divisor, $precision) . $shorthand;
     }
 
-    private function getImgurDirectLinks($id)
+    private
+    function getImgurDirectLinks($id)
     {
 
         $imageApi = $this->imgur->getApi("AlbumOrImage");
