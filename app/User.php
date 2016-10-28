@@ -32,4 +32,8 @@ class User extends Authenticatable
         return   $this->hasMany('App\Proofs','approver_id');
     }
 
+    public function is_blocked(){
+
+    }
+
 }
