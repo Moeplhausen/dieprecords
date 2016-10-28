@@ -253,7 +253,7 @@ ORDER  BY tank_id,
             $record->save();
 
             $proof = new Proofs();
-            $proof->approved = true;
+            $proof->approved = false;
             $proof->save();
 
             for ($i = 0; $i < count($request->proof); $i++) {
