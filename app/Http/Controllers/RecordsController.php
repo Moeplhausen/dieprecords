@@ -39,6 +39,16 @@ class RecordsController extends Controller
     public function show()
     {
 
+        $recordsdata=$this->getRecordsData();
+
+        return view('records', ["tanknames" => $recordsdata->tanks, "allrecords" => $recordsdata->records, 'gamemodes' => $recordsdata->gamemodes]);
+    }
+
+
+
+    private function getRecordsData(){
+
+
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('records', 10, function () {
                 return $this->recordsFetcher();
@@ -46,7 +56,10 @@ class RecordsController extends Controller
         } else { //Managers need up to date records
             return $this->recordsFetcher();
         }
+
     }
+
+
 
     /**
      * This function returns the tank with the highest score by tank class and gamemode
@@ -119,7 +132,9 @@ ORDER  BY tank_id,
         //get all gamemodes for the form
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
 
-        return view('records', ["tanknames" => $tanks, "allrecords" => $records, 'gamemodes' => $gamemodes])->render();
+
+        return (object)array('tanks'=>$tanks,'gamemodes'=>$gamemodes,'records'=>$records);
+
 
     }
 
