@@ -124,15 +124,8 @@ ORDER  BY tank_id,
         $gamemodewinners = DB::select("
 SELECT DISTINCT 
                 sortedrecords.id AS record_id,
-                sortedrecords.name AS name, 
                 sortedrecords.score AS score, 
-                sortedrecords.tank_id AS tank_id, 
-                tanks.tankname AS tankname, 
-                sortedrecords.gamemode_id AS gamemode_id, 
-                gamemodes.name    AS gamemode, 
-                users.name AS approvername,
-                proofs.id AS proof_id,
-                proofs.updated_at AS approvedDate
+                gamemodes.name    AS gamemode
 FROM   (SELECT record.* 
         FROM   records record 
                INNER JOIN (SELECT gamemode_id, 
@@ -144,16 +137,9 @@ FROM   (SELECT record.*
                            GROUP  BY
                                      gamemode_id) grouprecord 
                        ON record.gamemode_id = grouprecord.gamemode_id 
-                          
                           AND record.score = grouprecord.score) AS sortedrecords 
        INNER JOIN gamemodes 
                ON sortedrecords.gamemode_id = gamemodes.id 
-       INNER JOIN tanks 
-               ON sortedrecords.tank_id = tanks.id 
-       INNER JOIN proofs 
-               ON sortedrecords.id = proofs.id 
-       INNER JOIN users
-               ON proofs.approver_id = users.id
 ORDER  BY score DESC
           ");
 
