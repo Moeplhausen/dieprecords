@@ -93,7 +93,7 @@ SELECT DISTINCT
                 prooflinks.id AS prooflink_id,
                 prooflinks.proof_link AS link
 FROM   (SELECT record.* 
-        FROM   records record 
+        FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
                INNER JOIN (SELECT gamemode_id, 
                                   tank_id, 
                                   Max(score) AS score 
@@ -127,7 +127,7 @@ SELECT DISTINCT
                 sortedrecords.score AS score, 
                 gamemodes.name    AS gamemode
 FROM   (SELECT record.* 
-        FROM   records record 
+        FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
                INNER JOIN (SELECT gamemode_id, 
                                   Max(score) AS score 
                            FROM   records 
@@ -246,8 +246,8 @@ ORDER  BY score DESC
             'records.gamemode_id' => $gamemodeinfo->id];
         $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
 
-        //Deny if current record is higher if exists
-        if ($currentbestone && $currentbestone > $request->score)
+        //Deny if current record is higher or equal if exists
+        if ($currentbestone && $currentbestone >= $request->score)
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone which is higher than $request->score."]]);
 
 
