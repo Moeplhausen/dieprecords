@@ -161,14 +161,14 @@ ORDER  BY tank_id,
     function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'inputname' => 'required|max:20',
+            'inputname' => 'required|max:25',
             'gamemode_id' => 'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:0,999999999',
             'proof' => [
                 'required',
                 'url',
-                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|i\.redd\.it|i\.imgur\.com)(.*.png|.*.jpg|.*.PNG|.*.JPG)|imgur\.com|m.imgur\.com).*~x'
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat.com|s\d+\.postimg\.org|image\.prntscr\.com)(.*.png|.*.jpg|.*.PNG|.*.JPG|.*.webm|.*.WEBM)|imgur\.com|m.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
@@ -310,10 +310,10 @@ ORDER  BY tank_id,
         $imglinkarray = $imageApi->find($id);
 
         if (0 === strpos($imglinkarray['link'], 'http://i.')) {//directimage
-            array_push($return, $imglinkarray['link']);
+            array_push($return, str_replace("http://", "https://",$imglinkarray['link']));
         } else {
             for ($i = 0; $i < count($imglinkarray['images']); $i++) {
-                array_push($return, $imglinkarray['images'][$i]['link']);
+                array_push($return, str_replace("http://", "https://",$imglinkarray['images'][$i]['link']));
             }
         }
         return $return;
