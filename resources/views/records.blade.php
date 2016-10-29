@@ -83,7 +83,10 @@
                                     {{--Okay, we got the tooltip done.
                                     Now we need to actually display the score and name. We use a link for that and open it when pressed with lightbox --}}
                                 <a href="{{$recordsbytankid[$pos]->links[0]}}"
-                                   data-toggle="lightbox" data-gallery="hidden{{$recordsbytankid[$pos]->proof_id}}">
+                                   data-toggle="lightbox"
+                                   data-gallery="hidden{{$recordsbytankid[$pos]->proof_id}}"
+                                   class="{{$recordsbytankid[$pos]->cssExtra}}"> {{-- if the record is best by gamemode or overall, we want to add extra styles --}}
+
                                      <span class="tabletankscore">{{$recordsbytankid[$pos]->score}}
                                      </span>
                                      <span class="tabletankname mobilehide"> {{-- If we are on small devices,
@@ -91,7 +94,7 @@
                                                                                 The name should use a smaller font anyway --}}
                                          <small>{{$recordsbytankid[$pos]->name}}</small>
                                     </span>
-                                    </a>
+                                </a>
                                 @if(count($recordsbytankid[$pos]->links)>1) {{-- We have more than one proof. We add them invisible to the lightboxgallery --}}
                                 @for($i=1;$i<count($recordsbytankid[$pos]->links);$i++)
                                     <div data-toggle="lightbox"
@@ -121,8 +124,8 @@
 @section('customscripts')
     <script>
 
-        function updateTableContents(){
-             $('[data-toggle="tooltip"]').tooltip();
+        function updateTableContents() {
+            $('[data-toggle="tooltip"]').tooltip();
         }
 
         $(document).ready(function () {

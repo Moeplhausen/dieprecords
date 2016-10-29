@@ -119,14 +119,68 @@ FROM   (SELECT record.*
 ORDER  BY tank_id, 
           gamemode_id,
           prooflink_id");
-     /*   echo '<pre>';
-        print_r($records);
-        echo '</pre>';*/
+
+//Now get the best tanks by gamemode
+        $gamemodewinners = DB::select("
+SELECT DISTINCT 
+                sortedrecords.id AS record_id,
+                sortedrecords.name AS name, 
+                sortedrecords.score AS score, 
+                sortedrecords.tank_id AS tank_id, 
+                tanks.tankname AS tankname, 
+                sortedrecords.gamemode_id AS gamemode_id, 
+                gamemodes.name    AS gamemode, 
+                users.name AS approvername,
+                proofs.id AS proof_id,
+                proofs.updated_at AS approvedDate
+FROM   (SELECT record.* 
+        FROM   records record 
+               INNER JOIN (SELECT gamemode_id, 
+                                  Max(score) AS score 
+                           FROM   records 
+                                  INNER JOIN proofs 
+                                          ON records.id = proofs.id 
+                           WHERE  proofs.approved = '1' 
+                           GROUP  BY
+                                     gamemode_id) grouprecord 
+                       ON record.gamemode_id = grouprecord.gamemode_id 
+                          
+                          AND record.score = grouprecord.score) AS sortedrecords 
+       INNER JOIN gamemodes 
+               ON sortedrecords.gamemode_id = gamemodes.id 
+       INNER JOIN tanks 
+               ON sortedrecords.tank_id = tanks.id 
+       INNER JOIN proofs 
+               ON sortedrecords.id = proofs.id 
+       INNER JOIN users
+               ON proofs.approver_id = users.id
+ORDER  BY score DESC
+          ");
+
+
+        $gamemodewinnersCssClass = array();
+
+        for ($i = 0; $i < count($gamemodewinners); $i++) {
+
+                $gamemodewinnersCssClass[$gamemodewinners[$i]->record_id] = 'gamemodewinner'.' gamemodewinner'.$gamemodewinners[$i]->gamemode;
+
+            if ($i == 0) {
+                $gamemodewinnersCssClass[$gamemodewinners[$i]->record_id] .= ' totalwinnerscore';
+            }
+        }
+
+
+        /*        echo '<pre>';
+                print_r($gamemodewinners);
+                echo '</pre>';*/
+
+        /*   echo '<pre>';
+           print_r($records);
+           echo '</pre>';*/
 
 
         for ($i = 0; $i < count($records); $i++) {
             $record = $records[$i];
-
 
 
             $record->scorefull = $record->score;
@@ -135,9 +189,17 @@ ORDER  BY tank_id,
             // Records with the same id but different prooflink should be next to each.
             // We simply look ahead if there are other records with the same id behind this one and add the links on them.
             while ($i + 1 < count($records) && $record->record_id == $records[$i + 1]->record_id) {
-                array_push($links, $records[$i+1]->link);
-                array_splice($records,$i+1,1);
+                array_push($links, $records[$i + 1]->link);
+                array_splice($records, $i + 1, 1);
             }
+
+            $record->cssExtra = "";
+
+            //Check if record is a gamemodewinner
+            if (isset($gamemodewinnersCssClass[$record->record_id])) {
+                $record->cssExtra = $gamemodewinnersCssClass[$record->record_id];
+            }
+
 
             $record->links = $links;
             //var_dump($record);
@@ -310,10 +372,10 @@ ORDER  BY tank_id,
         $imglinkarray = $imageApi->find($id);
 
         if (0 === strpos($imglinkarray['link'], 'http://i.')) {//directimage
-            array_push($return, str_replace("http://", "https://",$imglinkarray['link']));
+            array_push($return, str_replace("http://", "https://", $imglinkarray['link']));
         } else {
             for ($i = 0; $i < count($imglinkarray['images']); $i++) {
-                array_push($return, str_replace("http://", "https://",$imglinkarray['images'][$i]['link']));
+                array_push($return, str_replace("http://", "https://", $imglinkarray['images'][$i]['link']));
             }
         }
         return $return;

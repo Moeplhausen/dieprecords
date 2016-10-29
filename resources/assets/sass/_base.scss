@@ -101,9 +101,18 @@ button, .tabletankscore {
   margin-right: 5px;
 }
 
-#dynatable-search-scoretable {
-
+.totalwinnerscore{
+  color:darkgoldenrod !important;
 }
+
+.gamemodewinner{
+  &:not(.totalwinnerscore) {
+    color: goldenrod !important;
+  }
+  text-decoration: underline;
+}
+
+
 
 button {
   &.working {
