@@ -49,7 +49,7 @@
                         <p id="urlHelpBlock" class="form-text text-muted">
                             Your proof must be a <strong>direct link</strong> to an image (or link to youtube.com or just an imgur-link). This
                             means <strong>for images the link must end in *.jpg or *.png or *.webm</strong>
-                            <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp, zippy.gfycat, image.prntscr or sX.postimg.
+                            <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp, zippy.gfycat or sX.postimg.
                         </p>
                     </div>
                     <button type="submit" id="recordsubmitbtn" class="btn btn-primary">Submit</button>
