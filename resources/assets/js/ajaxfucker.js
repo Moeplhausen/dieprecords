@@ -26,13 +26,16 @@ $(document).ready(function () {
                 type: 'POST',
                 url: '/decidesubmission',
                 data: {id: proof_id, answ: $(this).hasClass("approve-submission") | 0, score: scorenumber},
-                success: function (data) {
+                success: function (data,textStatus,xhr) {
                     //console.log(data);
-                    element.closest("tr").remove();
-                    $('#alertsContainer').append("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" + data['msg'] + "<strong></div>")
-                    /*                $(".alert-dismissible").fadeTo(2000, 500).slideUp(500, function(){
-                     $(".alert-dismissible").alert('close');
-                     });*/
+                    console.log(xhr);
+                    if (xhr.status=='200') {
+                        element.closest("tr").remove();
+                        $('#alertsContainer').append("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" + data['msg'] + "<strong></div>")
+                    }
+                    else{
+                        $('#alertsContainer').append("<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" + data['msg'] + "<strong></div>")
+                    }
                 }
             });
         })

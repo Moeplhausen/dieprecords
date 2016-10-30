@@ -248,7 +248,7 @@ ORDER  BY score DESC
 
         //Deny if current record is higher or equal if exists
         if ($currentbestone && $currentbestone >= $request->score)
-            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone which is higher than $request->score."]]);
+            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
 
 
         //The case that there are two undecided submissions with the same score,gamemode,tank must be prevented (should never happen anyway)

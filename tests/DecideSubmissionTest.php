@@ -31,7 +31,7 @@ class DecideSubmissionTest extends TestCase
         $this->defaultproof=$data['proof'];
     }
 
-    private function submitDecision($answ, $id, $score)
+    private function submitDecision($answ, $id, $score,$statuscode)
     {
 
         $response = $this->actingAs($this->defaultuser)->call('POST', '/decidesubmission', array(
@@ -40,7 +40,7 @@ class DecideSubmissionTest extends TestCase
             'score' => $score,
             'id' => $id,
         ));
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($statuscode, $response->getStatusCode());
         return $response;
 
     }
@@ -59,7 +59,7 @@ class DecideSubmissionTest extends TestCase
             'id'=>$this->defaultproof->id
         ]);
 
-        $this->submitDecision(true,$this->defaultproof->id,1000);
+        $this->submitDecision(true,$this->defaultproof->id,1000,200);
 
 
         $this->seeInDatabase('proofs', [
@@ -77,7 +77,7 @@ class DecideSubmissionTest extends TestCase
 
     public function testApprovingAnInvalidSubmission()
     {
-        $this->submitDecision(true,$this->defaultproof->id*-1,1000);
+        $this->submitDecision(true,$this->defaultproof->id*-1,1000,202);
         $this->notSeeInDatabase('proofs', [
             'decided'=>true,
         ]);
@@ -88,7 +88,7 @@ class DecideSubmissionTest extends TestCase
 
     public function testDenyingAValidSubmission()
     {
-        $this->submitDecision(false,$this->defaultproof->id,1000);
+        $this->submitDecision(false,$this->defaultproof->id,1000,200);
         $this->seeInDatabase('proofs', [
             'approved'=>false,
             'decided'=>true,
@@ -103,7 +103,7 @@ class DecideSubmissionTest extends TestCase
 
     public function testDenyingAnInvalidSubmission()
     {
-        $this->submitDecision(false,$this->defaultproof->id*-1,1000);
+        $this->submitDecision(false,$this->defaultproof->id*-1,1000,202);
         $this->seeInDatabase('proofs', [
             'approved'=>false,
             'decided'=>false,
