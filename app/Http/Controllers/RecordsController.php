@@ -94,7 +94,7 @@ SELECT DISTINCT
                 prooflinks.proof_link AS link
 FROM   (SELECT record.* 
         FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
-               INNER JOIN (SELECT gamemode_id, 
+               INNER JOIN (SELECT DISTINCT gamemode_id, 
                                   tank_id, 
                                   Max(score) AS score 
                            FROM   records 
@@ -128,7 +128,7 @@ SELECT DISTINCT
                 gamemodes.name    AS gamemode
 FROM   (SELECT record.* 
         FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
-               INNER JOIN (SELECT gamemode_id, 
+               INNER JOIN (SELECT DISTINCT gamemode_id, 
                                   Max(score) AS score 
                            FROM   records 
                                   INNER JOIN proofs 
