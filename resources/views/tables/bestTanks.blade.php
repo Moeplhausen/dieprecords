@@ -7,7 +7,7 @@
 
             <th class="diep-gradient-yellow">Class</th>
 
-            <th class="tankscore" data-dynatable-sorts="scorefull">Score(sum by all gamemodes)</th>
+            <th class="tankscore" data-dynatable-sorts="scorefull">Score (the total score of all gamemodes)</th>
             <th class="nodisplay">scorefull</th>
         </tr>
         </thead>

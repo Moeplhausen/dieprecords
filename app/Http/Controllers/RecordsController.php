@@ -34,8 +34,30 @@ class RecordsController extends Controller
 
     public function showBestTanks()
     {
-        $recordsdata = $this->getRecordsData();
-        return view('tankstatistics', ['besttanks' => $recordsdata->besttanks]);
+        if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
+            return Cache::remember('tankstatistics', 10, function () {
+                return view('tankstatistics', ['besttanks' => $this->getBestTanksData()])->render();
+            });
+        }
+
+        return view('tankstatistics', ['besttanks' => $this->getBestTanksData()]);
+    }
+
+
+    private function getBestTanksData()
+    {
+
+        /*
+        * Get Best Tanks when you sum the gamemodes up
+        */
+        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT bestTanksView.record_id AS record_id,bestTanksView.tankname AS tankname,bestTanksView.tank_id AS tank_id,bestTanksView.score AS score FROM bestTanksView) best GROUP BY tankname  ORDER BY totalScore DESC ");
+        for ($i = 0; $i < count($sumBestTanks); $i++) {
+            $record = $sumBestTanks[$i];
+            $record->row = $i + 1;
+            $record->scorefull = $record->totalScore;
+            $record->score = $this->thousandsCurrencyFormat($record->totalScore);
+        }
+        return $sumBestTanks;
     }
 
 
@@ -161,18 +183,6 @@ ORDER  BY score DESC
         }
 
 
-        /*
- * Get Best Tanks when you sum the gamemodes up
- */
-        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (select distinct bestTanksView.record_id as record_id,bestTanksView.tankname as tankname,bestTanksView.tank_id as tank_id,bestTanksView.score as score from bestTanksView) best GROUP BY tankname  ORDER BY totalScore DESC ");
-        for ($i = 0; $i < count($sumBestTanks); $i++) {
-            $record = $sumBestTanks[$i];
-            $record->row = $i + 1;
-            $record->scorefull = $record->totalScore;
-            $record->score = $this->thousandsCurrencyFormat($record->totalScore);
-        }
-
-
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         $records = collect($records)->groupBy('tank_id');
@@ -181,7 +191,7 @@ ORDER  BY score DESC
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
 
 
-        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records, 'besttanks' => $sumBestTanks);
+        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records);
 
 
     }
