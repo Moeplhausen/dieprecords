@@ -164,7 +164,7 @@ ORDER  BY score DESC
         /*
  * Get Best Tanks when you sum the gamemodes up
  */
-        $sumBestTanks = DB::select("SELECT tankname,sum(score) AS totalScore FROM `bestTanksView` GROUP BY tankname  ORDER BY totalScore DESC ");
+        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (select distinct bestTanksView.record_id as record_id,bestTanksView.tankname as tankname,bestTanksView.tank_id as tank_id,bestTanksView.score as score from bestTanksView) best GROUP BY tankname  ORDER BY totalScore DESC ");
         for ($i = 0; $i < count($sumBestTanks); $i++) {
             $record = $sumBestTanks[$i];
             $record->row = $i + 1;
