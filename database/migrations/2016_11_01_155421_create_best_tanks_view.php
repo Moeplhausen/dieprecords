@@ -13,6 +13,28 @@ class CreateBestTanksView extends Migration
      */
     public function up()
     {
+
+
+        DB::statement("CREATE VIEW approvedrecords as SELECT distinct records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1'");
+
+        DB::statement("CREATE VIEW validrecordsviewbasicmax AS SELECT DISTINCT gamemode_id, 
+                                  tank_id, 
+                                  Max(score) AS score 
+                           FROM   records 
+                                  INNER JOIN proofs 
+                                          ON records.id = proofs.id 
+                           WHERE  proofs.approved = '1' 
+                           GROUP  BY tank_id, 
+                                     gamemode_id");
+
+
+        DB::statement("CREATE VIEW validrecordsview AS select record.* from approvedrecords record 
+               INNER JOIN validrecordsviewbasicmax grouprecord 
+                       ON record.gamemode_id = grouprecord.gamemode_id 
+                          AND record.tank_id = grouprecord.tank_id 
+                          AND record.score = grouprecord.score");
+
+
         DB::statement("CREATE VIEW bestTanksView AS SELECT DISTINCT 
                 sortedrecords.id AS record_id,
                 sortedrecords.name AS name, 
@@ -26,20 +48,7 @@ class CreateBestTanksView extends Migration
                 proofs.updated_at AS approvedDate,
                 prooflinks.id AS prooflink_id,
                 prooflinks.proof_link AS link
-FROM   (SELECT record.* 
-        FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
-               INNER JOIN (SELECT DISTINCT gamemode_id, 
-                                  tank_id, 
-                                  Max(score) AS score 
-                           FROM   records 
-                                  INNER JOIN proofs 
-                                          ON records.id = proofs.id 
-                           WHERE  proofs.approved = '1' 
-                           GROUP  BY tank_id, 
-                                     gamemode_id) grouprecord 
-                       ON record.gamemode_id = grouprecord.gamemode_id 
-                          AND record.tank_id = grouprecord.tank_id 
-                          AND record.score = grouprecord.score) AS sortedrecords 
+FROM   validrecordsview AS sortedrecords 
        INNER JOIN gamemodes 
                ON sortedrecords.gamemode_id = gamemodes.id 
        INNER JOIN tanks 
@@ -63,6 +72,10 @@ ORDER  BY tank_id,
      */
     public function down()
     {
-        DB::statement("DROP VIEW bestTanksView");
+        DB::statement("DROP  VIEW bestTanksView");
+        DB::statement("DROP  VIEW validrecordsview");
+        DB::statement("DROP  VIEW validrecordsviewbasicmax");
+        DB::statement("DROP  VIEW approvedrecords");
+
     }
 }
