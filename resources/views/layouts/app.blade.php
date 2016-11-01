@@ -24,7 +24,12 @@
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
         <div class="collapse navbar-toggleable-xs" id="navbar-header">
             <span class="nav navbar-nav">
-                @yield('leftnavitem')
+                <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red" onclick=window.location.href="/">
+                      Records page
+                </button>
+                <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" onclick=window.location.href="/statistics">
+                      Tank statistics
+                </button>
                 </span>
             <span class="float-xs-right">
                 @if(Auth::guest())

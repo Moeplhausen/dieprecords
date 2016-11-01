@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', 'RecordsController@show');
+Route::get('/', 'RecordsController@showRecords');
 Route::post('/submitrecord','RecordsController@submit');
 
+Route::get('/statistics', 'RecordsController@showBestTanks');
 
 Route::post('/login','AuthController@login');
 

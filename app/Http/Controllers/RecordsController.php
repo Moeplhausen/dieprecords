@@ -32,11 +32,18 @@ class RecordsController extends Controller
     }
 
 
+    public function showBestTanks()
+    {
+        $recordsdata = $this->getRecordsData();
+        return view('tankstatistics', ['besttanks' => $recordsdata->besttanks]);
+    }
+
+
     /**
      * This function returns the default records view.
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show()
+    public function showRecords()
     {
 
         $recordsdata = $this->getRecordsData();
@@ -78,47 +85,7 @@ class RecordsController extends Controller
         Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
         Be aware that for a records with multiple proof-links we get a result each
         */
-        $records = DB::select("
-SELECT DISTINCT 
-                sortedrecords.id AS record_id,
-                sortedrecords.name AS name, 
-                sortedrecords.score AS score, 
-                sortedrecords.tank_id AS tank_id, 
-                tanks.tankname AS tankname, 
-                sortedrecords.gamemode_id AS gamemode_id, 
-                gamemodes.name    AS gamemode, 
-                users.name AS approvername,
-                proofs.id AS proof_id,
-                proofs.updated_at AS approvedDate,
-                prooflinks.id AS prooflink_id,
-                prooflinks.proof_link AS link
-FROM   (SELECT record.* 
-        FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
-               INNER JOIN (SELECT DISTINCT gamemode_id, 
-                                  tank_id, 
-                                  Max(score) AS score 
-                           FROM   records 
-                                  INNER JOIN proofs 
-                                          ON records.id = proofs.id 
-                           WHERE  proofs.approved = '1' 
-                           GROUP  BY tank_id, 
-                                     gamemode_id) grouprecord 
-                       ON record.gamemode_id = grouprecord.gamemode_id 
-                          AND record.tank_id = grouprecord.tank_id 
-                          AND record.score = grouprecord.score) AS sortedrecords 
-       INNER JOIN gamemodes 
-               ON sortedrecords.gamemode_id = gamemodes.id 
-       INNER JOIN tanks 
-               ON sortedrecords.tank_id = tanks.id 
-       INNER JOIN proofs 
-               ON sortedrecords.id = proofs.id 
-       INNER JOIN users
-               ON proofs.approver_id = users.id
-       INNER JOIN prooflinks
-               ON proofs.id=prooflinks.proof_id
-ORDER  BY tank_id, 
-          gamemode_id,
-          prooflink_id");
+        $records = DB::select("SELECT * FROM bestTanksView");
 
 //Now get the best tanks by gamemode
         $gamemodewinners = DB::select("
@@ -127,7 +94,7 @@ SELECT DISTINCT
                 sortedrecords.score AS score, 
                 gamemodes.name    AS gamemode
 FROM   (SELECT record.* 
-        FROM   (select records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1') record 
+        FROM   (SELECT records.* FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1') record 
                INNER JOIN (SELECT DISTINCT gamemode_id, 
                                   Max(score) AS score 
                            FROM   records 
@@ -148,7 +115,7 @@ ORDER  BY score DESC
 
         for ($i = 0; $i < count($gamemodewinners); $i++) {
 
-                $gamemodewinnersCssClass[$gamemodewinners[$i]->record_id] = 'gamemodewinner'.' gamemodewinner'.$gamemodewinners[$i]->gamemode;
+            $gamemodewinnersCssClass[$gamemodewinners[$i]->record_id] = 'gamemodewinner' . ' gamemodewinner' . $gamemodewinners[$i]->gamemode;
 
             if ($i == 0) {
                 $gamemodewinnersCssClass[$gamemodewinners[$i]->record_id] .= ' totalwinnerscore';
@@ -164,7 +131,9 @@ ORDER  BY score DESC
            print_r($records);
            echo '</pre>';*/
 
-
+        /*
+         * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
+         */
         for ($i = 0; $i < count($records); $i++) {
             $record = $records[$i];
 
@@ -191,6 +160,19 @@ ORDER  BY score DESC
             //var_dump($record);
         }
 
+
+        /*
+ * Get Best Tanks when you sum the gamemodes up
+ */
+        $sumBestTanks = DB::select("SELECT tank_id,tankname,sum(score) AS totalScore FROM `bestTanksView` GROUP BY tank_id ORDER BY totalScore DESC");
+        for ($i = 0; $i < count($sumBestTanks); $i++) {
+            $record = $sumBestTanks[$i];
+            $record->row = $i + 1;
+            $record->scorefull = $record->totalScore;
+            $record->score = $this->thousandsCurrencyFormat($record->totalScore);
+        }
+
+
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         $records = collect($records)->groupBy('tank_id');
@@ -199,7 +181,7 @@ ORDER  BY score DESC
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
 
 
-        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records);
+        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records, 'besttanks' => $sumBestTanks);
 
 
     }

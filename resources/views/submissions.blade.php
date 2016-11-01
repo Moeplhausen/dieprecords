@@ -6,9 +6,7 @@
 
 
 @section('leftnavitem')
-    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red" onclick=window.location.href="/">
-        Records page
-    </button>
+
 @endsection
 
 
