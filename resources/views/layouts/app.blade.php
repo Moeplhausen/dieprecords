@@ -74,7 +74,7 @@
 
     $.dynatableSetup({
         dataset: {
-            perPageDefault: 20,
+            perPageDefault: 10,
         }
     });
 

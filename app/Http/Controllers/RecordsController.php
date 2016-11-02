@@ -208,7 +208,7 @@ ORDER  BY score DESC
             'proof' => [
                 'required',
                 'url',
-                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat.com|fat\.gfycat\.com|s\d+\.postimg\.org)(.*.png|.*.jpg|.*.PNG|.*.JPG|.*.webm|.*.WEBM)|imgur\.com|m.imgur\.com).*~x'
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat.com|fat\.gfycat\.com|s\d+\.postimg\.org)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
@@ -285,7 +285,7 @@ ORDER  BY score DESC
 
 
             $record = new Records();
-            $record->name = strip_tags($request->inputname);
+            $record->name = trim(strip_tags($request->inputname));
             $record->score = $request->score;
             $record->tank_id = $request->selectclass;
             $record->gamemode_id = $request->gamemode_id;

@@ -15,7 +15,7 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="inputname">Your name</label>
-                        <input type="text" class="form-control" name="inputname" id="inputname" maxlength="25" required>
+                        <input type="text" class="form-control" name="inputname" id="inputname" placeholder="Master OV" maxlength="25" required>
                     </div>
                     <div class="form-group">
                         <label for="selectgamemode">The gamemode you played</label>
@@ -38,13 +38,13 @@
                     </div>
                     <div class="form-group">
                         <label for="score">Your Score</label>
-                        <input type="number" class="form-control" name="score" id="score" required>
+                        <input type="number" class="form-control" name="score" id="score" placeholder="12345678" required>
                     </div>
                     <div class="form-group">
                         <label for="proof">Proof of your score</label>
-                        <input type="url" class="form-control" name="proof" id="proof" required
-                               pattern="http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org)(.*.png|.*.jpg|.*.PNG|.*.JPG|.*.webm|.*.WEBM)|imgur\.com|m.imgur\.com).*"
-                               title="Link needs to be a https:// link, from youtube if video, or must be from one of the following sites and end with .jpg or .png: discordapp.com, reddit.com and imgur.com"
+                        <input type="url" class="form-control" name="proof" id="proof" required placeholder="http://imgur.com/a/euVO7"
+                               pattern="http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m.imgur\.com).*"
+                               title="Proof URL"
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
                             Your proof must be a <strong>direct link</strong> to an image (or link to youtube.com or just an imgur-link). This
