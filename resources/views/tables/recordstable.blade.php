@@ -2,8 +2,8 @@
 <div class="table-responsive">
     <table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
-        <tr>{{-- The first row shall consist of "Class" and the names of all the gamemodes in the database--}}
-            <th class="diep-gradient-yellow">Class</th>
+        <tr>{{-- The first row shall consist of "Tank" and the names of all the gamemodes in the database--}}
+            <th class="diep-gradient-yellow">Tank</th>
             {{-- Loop through each gamemode and create 2 columns.
                 The first column will consist of score and name (like 12.12M Moepl) and is basically that what the user sees.
                 The second row will always be the raw score (unformatted). That column will be invisible but used for sorting by dynatable

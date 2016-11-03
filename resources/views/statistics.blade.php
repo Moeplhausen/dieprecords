@@ -32,8 +32,8 @@
     </ul>
 </div>
 <div class="tab-content">
-    <div class="tab-pane" id="besttankspane" role="tabpanel">
-        <p class="center fade diep-title">Most Successfull Diep.io WR Tanks</p>
+    <div class="tab-pane fade" id="besttankspane" role="tabpanel">
+        <p class="center diep-title">Most Successfull Diep.io WR Tanks</p>
         {{-- Put the table with best tanks here --}}
         @include('tables.bestTanks',['besttanks'=>$besttanks])
     </div>
@@ -68,6 +68,9 @@
                         return Number(el.innerHTML) || 0;
                     },
                     'scorefull': function (el, record) {
+                        return Number(el.innerHTML) || 0;
+                    },
+                    'numberOfWorldRecords': function (el, record) {
                         return Number(el.innerHTML) || 0;
                     },
                 }

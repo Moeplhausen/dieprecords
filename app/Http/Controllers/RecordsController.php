@@ -61,10 +61,10 @@ class RecordsController extends Controller
         }
 
         $bestSubmitters = DB::select("
-SELECT recordholders.name,COUNT(recordholders.name) AS numberOfRecords,MAX(recordholders.score) AS maxScore 
+SELECT recordholders.name AS name,COUNT(recordholders.name) AS numberOfRecords,MAX(recordholders.score) AS maxScore 
 FROM (SELECT DISTINCT record_id,name,score FROM besttanksview) recordholders
 GROUP BY recordholders.name
-ORDER BY numberOfRecords  DESC");
+ORDER BY numberOfRecords  DESC, name ASC");
 
         for ($i = 0; $i < count($bestSubmitters); $i++) {
             $submitter = $bestSubmitters[$i];

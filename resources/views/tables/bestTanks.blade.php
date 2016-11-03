@@ -4,7 +4,7 @@
         <tr>{{-- The first row shall consist of "Number", "Class" and "Score--}}
             <th class="tankplace">Number</th>
 
-            <th class="diep-gradient-yellow">Class</th>
+            <th class="diep-gradient-yellow">Tank</th>
 
             <th class="tankscore" data-dynatable-sorts="scorefull">Score (the total score of all gamemodes)</th>
             <th class="nodisplay">scorefull</th>

@@ -46,7 +46,7 @@
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
                             Your proof (<strong>death screen & imgur gallery for tanks like  Auto 3, "Trappers" and Triple Shot</strong>, which shows the score in regular intervals) must be a <strong>direct link</strong> to an <strong>uncropped</strong> image (or link to youtube.com or just an imgur-link). This
-                            means <strong>for images the link must end in *.jpg or *.png or *.webm</strong>
+                            means <strong>for images the link must end in .jpg, .png or .webm</strong> (Exception: Imgur-links)
                             <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp, zippy.gfycat or sX.postimg.
                         </p>
                     </div>
