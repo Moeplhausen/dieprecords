@@ -35,29 +35,45 @@ class RecordsController extends Controller
     public function showBestTanks()
     {
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
-            return Cache::remember('tankstatistics', 10, function () {
-                return view('tankstatistics', ['besttanks' => $this->getBestTanksData()])->render();
+            return Cache::remember('statistics', 10, function () {
+                $data=$this->getBestTanksAndUsersData();
+                return view('statistics', ['besttanks' => $data->sumBestTanks,'bestSubmitters'=>$data->bestSubmitters])->render();
             });
         }
+        $data=$this->getBestTanksAndUsersData();
 
-        return view('tankstatistics', ['besttanks' => $this->getBestTanksData()]);
+        return view('statistics', ['besttanks' => $data->sumBestTanks,'bestSubmitters'=>$data->bestSubmitters]);
     }
 
 
-    private function getBestTanksData()
+    private function getBestTanksAndUsersData()
     {
 
         /*
         * Get Best Tanks when you sum the gamemodes up
         */
-        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT bestTanksView.record_id AS record_id,bestTanksView.tankname AS tankname,bestTanksView.tank_id AS tank_id,bestTanksView.score AS score FROM bestTanksView) best GROUP BY tankname  ORDER BY totalScore DESC ");
+        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT besttanksview.record_id AS record_id,besttanksview.tankname AS tankname,besttanksview.tank_id AS tank_id,besttanksview.score AS score FROM besttanksview) best GROUP BY tankname  ORDER BY totalScore DESC ");
         for ($i = 0; $i < count($sumBestTanks); $i++) {
             $record = $sumBestTanks[$i];
             $record->row = $i + 1;
             $record->scorefull = $record->totalScore;
             $record->score = $this->thousandsCurrencyFormat($record->totalScore);
         }
-        return $sumBestTanks;
+
+        $bestSubmitters = DB::select("
+SELECT recordholders.name,COUNT(recordholders.name) AS numberOfRecords 
+FROM (SELECT DISTINCT record_id,name FROM besttanksview) recordholders
+GROUP BY recordholders.name
+ORDER BY numberofrecords DESC");
+
+        for ($i = 0; $i < count($bestSubmitters); $i++) {
+            $submitter = $bestSubmitters[$i];
+            $submitter->row = $i + 1;
+        }
+
+
+
+        return (object)array('sumBestTanks' => $sumBestTanks, 'bestSubmitters' => $bestSubmitters);
     }
 
 
@@ -107,7 +123,7 @@ class RecordsController extends Controller
         Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
         Be aware that for a records with multiple proof-links we get a result each
         */
-        $records = DB::select("SELECT * FROM bestTanksView");
+        $records = DB::select("SELECT * FROM besttanksview");
 
 //Now get the best tanks by gamemode
         $gamemodewinners = DB::select("

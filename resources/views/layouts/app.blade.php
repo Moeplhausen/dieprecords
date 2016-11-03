@@ -28,7 +28,7 @@
                       Records page
                 </button>
                 <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" onclick=window.location.href="/statistics">
-                      Tank statistics
+                      Statistics
                 </button>
                 </span>
             <span class="float-xs-right">

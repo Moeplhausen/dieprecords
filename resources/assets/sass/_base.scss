@@ -11,7 +11,7 @@ body {
 /* Portrait phones and smaller */
 @media screen and (max-width: 768px) {
   .mobilehide {
-    display:none;
+    display: none;
   }
 }
 
@@ -77,7 +77,7 @@ button, .tabletankscore {
   border: 3px solid black !important;
 }
 
-.thFFA, .diep-gradient-blue, .btn, .dynatable-active-page, .tankplace {
+.thFFA, .diep-gradient-blue, .btn, .dynatable-active-page, .tankplace, .submitterplace {
   @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%);
 }
 
@@ -93,7 +93,7 @@ button, .tabletankscore {
   @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
 }
 
-.thMaze, .diep-gradient-grey, .tankscore {
+.thMaze, .diep-gradient-grey, .tankscore, .numberofrecords {
   @include gradient-vertical(#adadad, #8b8b8b, 50%, 50%);
 }
 
@@ -101,18 +101,16 @@ button, .tabletankscore {
   margin-right: 5px;
 }
 
-.totalwinnerscore{
-  color:darkgoldenrod !important;
+.totalwinnerscore {
+  color: darkgoldenrod !important;
 }
 
-.gamemodewinner{
+.gamemodewinner {
   &:not(.totalwinnerscore) {
     color: goldenrod !important;
   }
   text-decoration: underline;
 }
-
-
 
 button {
   &.working {
@@ -127,5 +125,29 @@ button {
   }
   to {
     @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
+  }
+}
+
+#statisticstabnav{
+
+  .nav-tabs,.nav-link.active{
+    border:0px;
+    background-color: transparent !important;
+  }
+
+  a{
+    color:white;
+    @extend .diep-shadow;
+  }
+
+  margin:1.5em;
+  .nav-item{
+    @extend .diep-border;
+    @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%);
+
+    .active{
+      @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
+    }
+
   }
 }
