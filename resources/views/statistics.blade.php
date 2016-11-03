@@ -64,10 +64,10 @@
             });
             $('#bestsubmitterstable').dynatable({
                 readers: {
-                    'numberOfWorldRecords': function (el, record) {
+                    'number': function (el, record) {
                         return Number(el.innerHTML) || 0;
                     },
-                    'number': function (el, record) {
+                    'scorefull': function (el, record) {
                         return Number(el.innerHTML) || 0;
                     },
                 }

@@ -6,7 +6,10 @@
 
             <th class="diep-gradient-yellow">Name</th>
 
-            <th class="numberofrecords">Number Of World Records</th>
+            <th class="numberofrecords"  data-dynatable-sorts="number">Number Of World Records</th>
+
+            <th class="max-score-records" data-dynatable-sorts="scorefull">Highest Score for current records</th>
+            <th class="nodisplay">scorefull</th>
         </tr>
         </thead>
         <tbody>
@@ -23,6 +26,12 @@
                 </td>
                 <td>
                     {{$submitter->numberOfRecords}}
+                </td>
+                <td>
+                    {{$submitter->score}}
+                </td>
+                <td class="nodisplay">
+                    {{$submitter->scorefull}}
                 </td>
 
             </tr>

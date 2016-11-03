@@ -68,7 +68,7 @@ button, .tabletankscore {
 }
 
 .diep-title {
-  color: whitesmoke;
+  color: white;
   font-size: 3em;
   @extend .diep-shadow
 }
@@ -85,7 +85,7 @@ button, .tabletankscore {
   @include gradient-vertical(#ffeb8e, #cdbd72, 50%, 50%);
 }
 
-.th2-TDM, .diep-gradient-green {
+.th2-TDM, .diep-gradient-green,.max-score-records {
   @include gradient-vertical(#b4ff8e, #91cd72, 50%, 50%);
 }
 
@@ -144,10 +144,10 @@ button {
   margin:1.5em;
   .nav-item{
     @extend .diep-border;
-    @include gradient-vertical(#71ccc8, #5ba4a1, 50%, 50%);
+    @extend .diep-gradient-blue;
 
     .active{
-      @include gradient-vertical(#ff8e8e, #cd7272, 50%, 50%);
+      @extend .diep-gradient-red;
     }
 
   }
