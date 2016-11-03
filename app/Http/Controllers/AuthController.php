@@ -25,10 +25,9 @@ class AuthController extends Controller
                 ->withErrors($validator);
         }
 
-        $user = User::where('email', '=', $request->inputname)->get();
-        if (!$user->isEmpty()&&$user[0]->enabled)
-            //Attempt to login. If login fails, we simply redirect back to startpage. Too lazy to show something like 'wrong passowrd'
-            Auth::attempt(['email'=>$request->inputname,'password'=>$request->password]);
+                 //Attempt to login. If login fails, we simply redirect back to startpage. Too lazy to show something like 'wrong passowrd'
+            if(!Auth::attempt(['email'=>$request->inputname,'password'=>$request->password,'enabled'=>1]))
+                return redirect('/')->with('status', [(object)['status' => 'alert-danger', 'message' => "Invalid user/pw combination."]]);
 
 
 
