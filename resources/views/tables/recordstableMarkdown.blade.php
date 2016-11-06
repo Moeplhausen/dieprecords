@@ -23,10 +23,12 @@ ________________________________________________________________________________
 " *We'd like to let everyone know that we will start permanently banning anyone running a modified game client, no matter what it is for. It is trivial to detect changes to the game, and we will do our best to ensure no one has an unfair advantage.* " - [Developer changelog, June 11, 2016](https://www.reddit.com/r/Diepio/comments/4ljlxa/can_we_get_a_changelog_archive_thread_for/)
 &nbsp;
 
-Class|@foreach ($gamemodes as $gamemode)@if($loop->last){{$gamemode->name}}@else{{($gamemode->name)}}|@endif{{-- --}}@endforeach</br>
-    :---|@foreach ($gamemodes as $gamemode)@if($loop->last):---@else :---|@endif{{-- --}}@endforeach<br>
+Class|@foreach ($gamemodes as $gamemode)@if($loop->last){{$gamemode->name}}@else{{($gamemode->name)}}|@endif{{-- --}}@endforeach
+
+    :---|@foreach ($gamemodes as $gamemode)@if($loop->last):---@else :---|@endif{{-- --}}@endforeach
+
 @foreach ($allrecords as $recordsbytankid)
-    {{$recordsbytankid[0]->tankname}}|<?php $pos = 0 ?> @foreach($gamemodes as $gamemode) @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)[{{str_replace(array('|','*','^','_','#','[',']','(',')'),array('\|','\*','\^','\_','\#','\[','\]','\(','\)'),$recordsbytankid[$pos]->name)}} _{{$recordsbytankid[$pos]->score}}_]({{$recordsbytankid[$pos]->links[0]}})@if(count($recordsbytankid[$pos]->links)>1){{-- We have more than one proof.--}}@for($i=1;$i<count($recordsbytankid[$pos]->links);$i++)^[{{$i+1}}]({{$recordsbytankid[$pos]->links[$i]}})  @endfor @endif|<?php  $pos++  ?> {{-- Okay, we had a record for the gamemode, time to increase the counter --}} @else @if($loop->last) @else |{{-- No record for the gamemode found. We just create an empty column --}} @endif @endif @endforeach<br>
+    {{$recordsbytankid[0]->tankname}}|<?php $pos = 0 ?> @foreach($gamemodes as $gamemode) @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)[{{str_replace(array('|','*','^','_','#','[',']','(',')'),array('\|','\*','\^','\_','\#','\[','\]','\(','\)'),$recordsbytankid[$pos]->name)}} _{{$recordsbytankid[$pos]->score}}_]({{$recordsbytankid[$pos]->links[0]}})@if(count($recordsbytankid[$pos]->links)>1){{-- We have more than one proof.--}}@for($i=1;$i<count($recordsbytankid[$pos]->links);$i++)^[{{$i+1}}]({{$recordsbytankid[$pos]->links[$i]}})  @endfor @endif|<?php  $pos++  ?> {{-- Okay, we had a record for the gamemode, time to increase the counter --}} @else @if($loop->last) @else |{{-- No record for the gamemode found. We just create an empty column --}} @endif @endif @endforeach 
 @endforeach
 
 
