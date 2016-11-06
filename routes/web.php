@@ -25,6 +25,4 @@ Route::group(['middleware'=>['redirectGuests','auth.basic']],function (){
     Route::post('/logout','AuthController@logout');
 });
 
-Route::get('/api/gamemodes', 'ApiController@gamemodes');
 
-Route::get('/api/tanks', 'ApiController@tanks');

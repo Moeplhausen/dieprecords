@@ -16,3 +16,9 @@ use Illuminate\Http\Request;
 /*Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');*/
+Route::get('/gamemodes', 'ApiController@gamemodes');
+
+Route::get('/tanks', 'ApiController@tanks');
+
+Route::get('/records', 'ApiController@records');
+
