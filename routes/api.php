@@ -22,3 +22,4 @@ Route::get('/tanks', 'ApiController@tanks');
 
 Route::get('/records', 'ApiController@records');
 
+Route::get('/records/{method}', 'ApiController@records');

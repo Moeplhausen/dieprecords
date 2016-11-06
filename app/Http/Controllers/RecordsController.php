@@ -119,13 +119,33 @@ ORDER BY numberOfRecords  DESC, name ASC");
         $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
 
 
-        /*General idea: Get all scores and join them with proofs to get only approved ones.
-        Then get the max score by grouping tank_id and gamemode_id.
-        Afterwards we join the result with scores again to get the other collumns of the record (like the id of the record).
-        Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
-        Be aware that for a records with multiple proof-links we get a result each
-        */
-        $records = DB::select("SELECT * FROM besttanksview");
+
+
+
+        /*        echo '<pre>';
+                print_r($gamemodewinners);
+                echo '</pre>';*/
+
+        /*   echo '<pre>';
+           print_r($records);
+           echo '</pre>';*/
+
+
+
+
+
+        //get all gamemodes for the form
+        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
+
+
+        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $this->getBestRecords());
+
+
+    }
+
+
+    public static function getBestRecords(){
+
 
 //Now get the best tanks by gamemode
         $gamemodewinners = DB::select("
@@ -163,23 +183,22 @@ ORDER  BY score DESC
         }
 
 
-        /*        echo '<pre>';
-                print_r($gamemodewinners);
-                echo '</pre>';*/
-
-        /*   echo '<pre>';
-           print_r($records);
-           echo '</pre>';*/
-
+        /*General idea: Get all scores and join them with proofs to get only approved ones.
+Then get the max score by grouping tank_id and gamemode_id.
+Afterwards we join the result with scores again to get the other collumns of the record (like the id of the record).
+Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
+Be aware that for a records with multiple proof-links we get a result each
+*/
+        $records = DB::select("SELECT * FROM besttanksview");
         /*
-         * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
-         */
+ * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
+ */
         for ($i = 0; $i < count($records); $i++) {
             $record = $records[$i];
 
 
             $record->scorefull = $record->score;
-            $record->score = $this->thousandsCurrencyFormat($record->score);
+            $record->score = RecordsController::thousandsCurrencyFormat($record->score);
             $links = array($record->link);
             // Records with the same id but different prooflink should be next to each.
             // We simply look ahead if there are other records with the same id behind this one and add the links on them.
@@ -200,23 +219,15 @@ ORDER  BY score DESC
             //var_dump($record);
         }
 
-
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         $records = collect($records)->groupBy('tank_id');
-
-        //get all gamemodes for the form
-        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-
-
-        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $records);
-
-
+        return $records;
     }
 
 
-    public
-    function submit(Request $request)
+
+    public function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -327,7 +338,7 @@ ORDER  BY score DESC
 
 
 // http://stackoverflow.com/questions/4371059/shorten-long-numbers-to-k-m-b
-    private
+    private static
     function thousandsCurrencyFormat($number, $precision = 2, $divisors = null)
     {
 

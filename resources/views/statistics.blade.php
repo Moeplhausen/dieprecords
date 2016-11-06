@@ -33,12 +33,12 @@
 </div>
 <div class="tab-content">
     <div class="tab-pane fade" id="besttankspane" role="tabpanel">
-        <p class="center diep-title">Most Successfull Diep.io WR Tanks</p>
+        <p class="center diep-title">Most Successful Diep.io WR Tanks</p>
         {{-- Put the table with best tanks here --}}
         @include('tables.bestTanks',['besttanks'=>$besttanks])
     </div>
     <div class="tab-pane fade in active" id="bestsubmitterspane" role="tabpanel">
-        <p class="center diep-title">Most Successfull Diep.io Record holders</p>
+        <p class="center diep-title">Most Successful Diep.io Record holders</p>
         {{-- Put the table with best submitters here --}}
         @include('tables.bestSubmitters',['bestSubmitters'=>$bestSubmitters])
     </div>

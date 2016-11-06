@@ -9,54 +9,26 @@ class ApiController extends Controller
 {
 
 
-    public function gamemodes(){
+    public function gamemodes()
+    {
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-        echo $gamemodes;
+        return $gamemodes;
     }
 
-    public function tanks(){
+    public function tanks()
+    {
         $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
-        echo $tanks;
+        return $tanks;
     }
 
-    public function records(){
-        $records = DB::select("SELECT * FROM besttanksview");
-        /*
- * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
- */
-        for ($i = 0; $i < count($records); $i++) {
-            $record = $records[$i];
-
-
-            $record->scorefull = $record->score;
-            $links = array($record->link);
-            unset($record->link);
-            // Records with the same id but different prooflink should be next to each.
-            // We simply look ahead if there are other records with the same id behind this one and add the links on them.
-            while ($i + 1 < count($records) && $record->record_id == $records[$i + 1]->record_id) {
-                array_push($links, $records[$i + 1]->link);
-                array_splice($records, $i + 1, 1);
-            }
-
-            $record->cssExtra = "";
-
-            //Check if record is a gamemodewinner
-            if (isset($gamemodewinnersCssClass[$record->record_id])) {
-                $record->cssExtra = $gamemodewinnersCssClass[$record->record_id];
-            }
-
-
-            $record->links = $links;
-            //var_dump($record);
+    public function records(Request $request, $method = "json")
+    {
+        if ($method == "json")
+            return \GuzzleHttp\json_encode(RecordsController::getBestRecords());
+        elseif ($method == "markdown") {
+            $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
+            return view('tables.recordstableMarkdown', ["allrecords" => RecordsController::getBestRecords(),"gamemodes"=>$gamemodes]);
         }
-
-
-        //echo '<pre>'; print_r($records); echo '</pre>';
-        //now group this array by tank_id to make it simply to put it in a table.
-        $records = collect($records)->groupBy('tank_id');
-
-
-        echo \GuzzleHttp\json_encode($records);
     }
 
     /**
@@ -82,7 +54,7 @@ class ApiController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -93,7 +65,7 @@ class ApiController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -104,7 +76,7 @@ class ApiController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -115,8 +87,8 @@ class ApiController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -127,7 +99,7 @@ class ApiController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
