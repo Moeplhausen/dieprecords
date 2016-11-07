@@ -285,6 +285,10 @@ Be aware that for a records with multiple proof-links we get a result each
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
         }
 
+        //save original submitted proof url
+
+        $orgProof=$request->proof;
+
 
         //Test if we have an imgur link that is not linking directly to an image
         if (preg_match("~^(?:https?:\/\/)(?:www\.)?(?:imgur\.com|m\.imgur\.com)(?:.*)~x", $request->proof)) {
@@ -310,7 +314,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
 
         //Everything seems fine, let us add them
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request,$orgProof) {
 
 
             $record = new Records();
@@ -322,6 +326,7 @@ Be aware that for a records with multiple proof-links we get a result each
             $record->save();
 
             $proof = new Proofs();
+            $proof->submittedlink=$orgProof;
             $proof->approved = false;
             $proof->save();
 

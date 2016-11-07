@@ -72,7 +72,7 @@ ORDER  BY tank_id,
      */
     public function down()
     {
-        DB::statement("DROP  VIEW bestTanksView");
+        DB::statement("DROP  VIEW IF EXISTS bestTanksView");
         DB::statement("DROP  VIEW validrecordsview");
         DB::statement("DROP  VIEW validrecordsviewbasicmax");
         DB::statement("DROP  VIEW approvedrecords");

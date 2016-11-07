@@ -42,6 +42,7 @@ $factory->define(\App\Tanks::class,function(Faker\Generator $faker){
 $factory->define(\App\Proofs::class,function(Faker\Generator $faker)use($factory){
     return [
         'id'=>$faker->unique()->numberBetween(0,100000),
+        'submittedlink'=>$faker->imageUrl(),
         'approver_id'=>$faker->numberBetween(1,100000),
         'approved'=>$faker->boolean(),
         'decided'=>$faker->boolean(),

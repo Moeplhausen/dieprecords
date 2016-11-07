@@ -53,6 +53,6 @@ ORDER  BY tank_id,
      */
     public function down()
     {
-        DB::statement("DROP  VIEW besttanksview");
+        DB::statement("DROP  VIEW IF EXISTS besttanksview");
     }
 }
