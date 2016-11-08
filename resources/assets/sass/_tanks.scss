@@ -4,59 +4,60 @@
 .auto-smasher, .auto-trapper, .basic-tank, .battleship, .booster,
 .destroyer, .fighter, .flank-guard, .gunner-trapper, .gunner,
 .hunter, .hybrid, .landmine, .machine-gun, .manager,
-.mega-trapper, .necromancer, .octotank, .overlord, .overseer,
-.overtrapper, .pentashot, .predator-weird, .predator, .quad-tank,
-.ranger, .smasher, .sniper, .spike, .sprayer,
-.spreadshot, .stalker, .streamliner, .trapper, .tri-angle,
-.tri-trapper, .triple-shot, .triple-twin, .triplet, .twin-flank,
-.twin, .tile65, .tile68
+.master, .mega-trapper, .necromancer, .octotank, .overlord,
+.overseer, .overtrapper, .pentashot, .predator-weird, .predator,
+.quad-tank, .ranger, .smasher, .sniper, .spike,
+.sprayer, .spreadshot, .stalker, .streamliner, .trapper,
+.tri-angle, .tri-trapper, .triple-shot, .triple-twin, .triplet,
+.twin-flank, .twin, .tile65, .tile68
 { display: inline-block; background: url("images/tanks.png") no-repeat; overflow: hidden; text-indent: -9999px; text-align: left; }
 
-.annihilator { background-position: -1px -0px; width: 30px; height: 30px; }
-.assassin { background-position: -32px -0px; width: 30px; height: 30px; }
-.auto-3 { background-position: -63px -0px; width: 30px; height: 30px; }
-.auto-5 { background-position: -94px -0px; width: 30px; height: 30px; }
-.auto-gunner { background-position: -125px -0px; width: 30px; height: 30px; }
-.auto-smasher { background-position: -156px -0px; width: 30px; height: 30px; }
-.auto-trapper { background-position: -1px -31px; width: 30px; height: 30px; }
-.basic-tank { background-position: -32px -31px; width: 30px; height: 30px; }
-.battleship { background-position: -63px -31px; width: 30px; height: 30px; }
-.booster { background-position: -94px -31px; width: 30px; height: 30px; }
-.destroyer { background-position: -125px -31px; width: 30px; height: 30px; }
-.fighter { background-position: -156px -31px; width: 30px; height: 30px; }
-.flank-guard { background-position: -1px -62px; width: 30px; height: 30px; }
-.gunner-trapper { background-position: -32px -62px; width: 30px; height: 30px; }
-.gunner { background-position: -63px -62px; width: 30px; height: 30px; }
-.hunter { background-position: -94px -62px; width: 30px; height: 30px; }
-.hybrid { background-position: -125px -62px; width: 30px; height: 30px; }
-.landmine { background-position: -156px -62px; width: 30px; height: 30px; }
-.machine-gun { background-position: -1px -93px; width: 30px; height: 30px; }
-.manager { background-position: -32px -93px; width: 30px; height: 30px; }
-.mega-trapper { background-position: -63px -93px; width: 30px; height: 30px; }
-.necromancer { background-position: -94px -93px; width: 30px; height: 30px; }
-.octotank { background-position: -125px -93px; width: 30px; height: 30px; }
-.overlord { background-position: -156px -93px; width: 30px; height: 30px; }
-.overseer { background-position: -1px -124px; width: 30px; height: 30px; }
-.overtrapper { background-position: -32px -124px; width: 30px; height: 30px; }
-.pentashot { background-position: -63px -124px; width: 30px; height: 30px; }
-.predator-weird { background-position: -94px -124px; width: 30px; height: 30px; }
-.predator { background-position: -125px -124px; width: 30px; height: 30px; }
-.quad-tank { background-position: -156px -124px; width: 30px; height: 30px; }
-.ranger { background-position: -1px -155px; width: 30px; height: 30px; }
-.smasher { background-position: -32px -155px; width: 30px; height: 30px; }
-.sniper { background-position: -63px -155px; width: 30px; height: 30px; }
-.spike { background-position: -94px -155px; width: 30px; height: 30px; }
-.sprayer { background-position: -125px -155px; width: 30px; height: 30px; }
-.spreadshot { background-position: -156px -155px; width: 30px; height: 30px; }
-.stalker { background-position: -1px -186px; width: 30px; height: 30px; }
-.streamliner { background-position: -32px -186px; width: 30px; height: 30px; }
-.trapper { background-position: -63px -186px; width: 30px; height: 30px; }
-.tri-angle { background-position: -94px -186px; width: 30px; height: 30px; }
-.tri-trapper { background-position: -125px -186px; width: 30px; height: 30px; }
-.triple-shot { background-position: -156px -186px; width: 30px; height: 30px; }
-.triple-twin { background-position: -1px -217px; width: 30px; height: 30px; }
-.triplet { background-position: -32px -217px; width: 30px; height: 30px; }
-.twin-flank { background-position: -63px -217px; width: 30px; height: 30px; }
-.twin { background-position: -94px -217px; width: 30px; height: 30px; }
-.tile65 { background-position: -125px -217px; width: 30px; height: 30px; }
-.tile68 { background-position: -156px -217px; width: 30px; height: 30px; }
+.annihilator { background-position: -0px -0px; width: 30px; height: 30px; }
+.assassin { background-position: -30px -0px; width: 30px; height: 30px; }
+.auto-3 { background-position: -60px -0px; width: 30px; height: 30px; }
+.auto-5 { background-position: -90px -0px; width: 30px; height: 30px; }
+.auto-gunner { background-position: -120px -0px; width: 30px; height: 30px; }
+.auto-smasher { background-position: -150px -0px; width: 30px; height: 30px; }
+.auto-trapper { background-position: -180px -0px; width: 30px; height: 30px; }
+.basic-tank { background-position: -0px -30px; width: 30px; height: 30px; }
+.battleship { background-position: -30px -30px; width: 30px; height: 30px; }
+.booster { background-position: -60px -30px; width: 30px; height: 30px; }
+.destroyer { background-position: -90px -30px; width: 30px; height: 30px; }
+.fighter { background-position: -120px -30px; width: 30px; height: 30px; }
+.flank-guard { background-position: -150px -30px; width: 30px; height: 30px; }
+.gunner-trapper { background-position: -180px -30px; width: 30px; height: 30px; }
+.gunner { background-position: -0px -60px; width: 30px; height: 30px; }
+.hunter { background-position: -30px -60px; width: 30px; height: 30px; }
+.hybrid { background-position: -60px -60px; width: 30px; height: 30px; }
+.landmine { background-position: -90px -60px; width: 30px; height: 30px; }
+.machine-gun { background-position: -120px -60px; width: 30px; height: 30px; }
+.manager { background-position: -150px -60px; width: 30px; height: 30px; }
+.master { background-position: -180px -60px; width: 30px; height: 30px; }
+.mega-trapper { background-position: -0px -90px; width: 30px; height: 30px; }
+.necromancer { background-position: -30px -90px; width: 30px; height: 30px; }
+.octotank { background-position: -60px -90px; width: 30px; height: 30px; }
+.overlord { background-position: -90px -90px; width: 30px; height: 30px; }
+.overseer { background-position: -120px -90px; width: 30px; height: 30px; }
+.overtrapper { background-position: -150px -90px; width: 30px; height: 30px; }
+.pentashot { background-position: -180px -90px; width: 30px; height: 30px; }
+.predator-weird { background-position: -0px -120px; width: 30px; height: 30px; }
+.predator { background-position: -30px -120px; width: 30px; height: 30px; }
+.quad-tank { background-position: -60px -120px; width: 30px; height: 30px; }
+.ranger { background-position: -90px -120px; width: 30px; height: 30px; }
+.smasher { background-position: -120px -120px; width: 30px; height: 30px; }
+.sniper { background-position: -150px -120px; width: 30px; height: 30px; }
+.spike { background-position: -180px -120px; width: 30px; height: 30px; }
+.sprayer { background-position: -0px -150px; width: 30px; height: 30px; }
+.spreadshot { background-position: -30px -150px; width: 30px; height: 30px; }
+.stalker { background-position: -60px -150px; width: 30px; height: 30px; }
+.streamliner { background-position: -90px -150px; width: 30px; height: 30px; }
+.trapper { background-position: -120px -150px; width: 30px; height: 30px; }
+.tri-angle { background-position: -150px -150px; width: 30px; height: 30px; }
+.tri-trapper { background-position: -180px -150px; width: 30px; height: 30px; }
+.triple-shot { background-position: -0px -180px; width: 30px; height: 30px; }
+.triple-twin { background-position: -30px -180px; width: 30px; height: 30px; }
+.triplet { background-position: -60px -180px; width: 30px; height: 30px; }
+.twin-flank { background-position: -90px -180px; width: 30px; height: 30px; }
+.twin { background-position: -120px -180px; width: 30px; height: 30px; }
+.tile65 { background-position: -150px -180px; width: 30px; height: 30px; }
+.tile68 { background-position: -180px -180px; width: 30px; height: 30px; }

@@ -75,6 +75,11 @@
     </table>
 </div>
 
+<div class="exporter">
+    <button type="button" class="btn btn-xs btn-diep diep-gradient-red" onclick=window.location.href="/api/records/markdown">Reddit Markdown</button>
+</div>
+
+
 @endsection
 @section('customscripts')
     <script>$(document).ready(function () {

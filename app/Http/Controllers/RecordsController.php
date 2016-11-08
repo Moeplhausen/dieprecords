@@ -233,7 +233,7 @@ Be aware that for a records with multiple proof-links we get a result each
             'inputname' => 'required|max:25',
             'gamemode_id' => 'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
-            'score' => 'required|integer|between:0,999999999',
+            'score' => 'required|integer|between:40000,999999999',
             'proof' => [
                 'required',
                 'url',

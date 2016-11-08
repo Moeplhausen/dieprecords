@@ -38,7 +38,7 @@
                     </div>
                     <div class="form-group">
                         <label for="score">Your Score</label>
-                        <input type="number" class="form-control" name="score" id="score" placeholder="12345678" required>
+                        <input type="number" class="form-control" name="score" id="score" placeholder="12345678" min="40000" max="99999999" required>
                     </div>
                     <div class="form-group">
                         <label for="proof">Proof of your score</label>
