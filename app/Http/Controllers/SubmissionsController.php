@@ -25,6 +25,7 @@ class SubmissionsController extends Controller
         //Get all records that aren't approved and haven't been decided by a manager yet.
         $submissions = DB::select("
 SELECT proofs.id AS id, 
+       proofs.submittedlink as submittedlink,
        records.name AS name, 
        records.score AS score, 
        tanks.id       AS tank_id, 

@@ -47,10 +47,12 @@
                            required>{{-- Display the score here. To allow managers to easily change the score because the submitter typed it wrong/incomplete, we make it in input which will be submitted when approved/denied --}}
                 </td>
                 <td class="nodisplay">{{$submission[0]->score}}</td> {{-- The column to sort scores --}}
-                <td><a href="{{$submission[0]->link}}"
+                <td><a href="{{$submission[0]->submittedlink}}"
                        {{-- if the proof is clicked, we open a modal with lightbox in it --}}
                        data-toggle="lightbox"
+                       data-remote="{{$submission[0]->link}}"
                        data-gallery="hidden{{$submission[0]->id}}"
+                       data-title="<a href='{{$submission[0]->submittedlink}}'>Submitted link by User</a>"
                        data-footer="@include('snippets.lightboxFooter',['submission'=>$submission[0]])" {{-- in the footer of lightbox should be anoter input that is synced to the score field. This should allow managers to easily update the score while seeing the actual proof on the same window(modal) --}}
                     >lightbox</a>
                     @if(count($submission)>1) {{-- We have more than one proof. We add them invisible to the lightboxgallery --}}

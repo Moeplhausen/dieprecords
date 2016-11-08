@@ -12,7 +12,7 @@ class RecordsTableSeeder extends Seeder
 
 
         DB::table('records')->insert(['name' => $name, 'score' => $score, 'tank_id' => $tankid, 'gamemode_id' => $gamemode_id, 'ip_address' => '127.0.0.1']);
-        DB::table('proofs')->insert(['approver_id' => 1, 'approved' => true,'submittedlink' => $proofurls[0] ]); 
+        DB::table('proofs')->insert(['approver_id' => 1, 'approved' => true,'submittedlink' => $proofurls[0] ]);
 
         for ($i=0;$i<count($proofurls);$i++)
              DB::table('prooflinks')->insert(['proof_id' => $counter, 'proof_link' => $proofurls[$i]]);
