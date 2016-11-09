@@ -26,9 +26,9 @@ class RecordsTableSeeder extends Seeder
      */
     public function run()
     {
-    $this->submitRecord("Sortof",100,array("https://i.redd.it/hezmn5yo4ylx.png"),1,1);
-        $this->submitRecord("derp",100,array("https://i.imgur.com/zmEu90q.png","https://i.imgur.com/Qa48OQY.png","https://i.imgur.com/LMkNEWj.png"),3,1);
-        $this->submitRecord("test",100,array("http://imgur.com/EwmGtqV"),4,1);
+    $this->submitRecord("Sortof",100,array("https://i.redd.it/hezmn5yo4ylx.png"),3,1);
+        $this->submitRecord("derp",100,array("https://i.imgur.com/zmEu90q.png","https://i.imgur.com/Qa48OQY.png","https://i.imgur.com/LMkNEWj.png"),3,2);
+        $this->submitRecord("test",100,array("http://imgur.com/EwmGtqV"),3,3);
 
         http://imgur.com/EwmGtqV
     }

@@ -24,10 +24,12 @@ class ApiController extends Controller
     public function records(Request $request, $method = "json")
     {
         if ($method == "json")
-            return \GuzzleHttp\json_encode(RecordsController::getBestRecords());
+            return \GuzzleHttp\json_encode(['desktop'=>RecordsController::getBestRecords(),'mobile'=>RecordsController::getBestRecords(false)]);
         elseif ($method == "markdown") {
-            $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-            return view('tables.recordstableMarkdown', ["allrecords" => RecordsController::getBestRecords(),"gamemodes"=>$gamemodes]);
+            $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>false])->get();
+            $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>true])->get();
+
+            return view('tables.recordstableMarkdown', ["allrecordsDesktop" => RecordsController::getBestRecords(true),"allrecordsMobile" => RecordsController::getBestRecords(false),"gamemodesDesktop"=>$gamemodesDesktop,"gamemodesMobile"=>$gamemodesMobile]);
         }
     }
 

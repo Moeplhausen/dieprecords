@@ -37,12 +37,12 @@ class RecordsController extends Controller
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('statistics', 10, function () {
                 $data=$this->getBestTanksAndUsersData();
-                return view('statistics', ['besttanks' => $data->sumBestTanks,'bestSubmitters'=>$data->bestSubmitters])->render();
+                return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmitters'=>$data->bestSubmitters])->render();
             });
         }
         $data=$this->getBestTanksAndUsersData();
 
-        return view('statistics', ['besttanks' => $data->sumBestTanks,'bestSubmitters'=>$data->bestSubmitters]);
+        return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmitters'=>$data->bestSubmitters]);
     }
 
 
@@ -52,9 +52,9 @@ class RecordsController extends Controller
         /*
         * Get Best Tanks when you sum the gamemodes up
         */
-        $sumBestTanks = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT besttanksview.record_id AS record_id,besttanksview.tankname AS tankname,besttanksview.tank_id AS tank_id,besttanksview.score AS score FROM besttanksview) best GROUP BY tankname  ORDER BY totalScore DESC ");
-        for ($i = 0; $i < count($sumBestTanks); $i++) {
-            $record = $sumBestTanks[$i];
+        $sumBestTanksDesktop = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT besttanksview.record_id AS record_id,besttanksview.tankname AS tankname,besttanksview.tank_id AS tank_id,besttanksview.score AS score FROM besttanksview WHERE besttanksview.mobile='0') best GROUP BY tankname  ORDER BY totalScore DESC ");
+        for ($i = 0; $i < count($sumBestTanksDesktop); $i++) {
+            $record = $sumBestTanksDesktop[$i];
             $record->row = $i + 1;
             $record->scorefull = $record->totalScore;
             $record->score = $this->thousandsCurrencyFormat($record->totalScore);
@@ -75,7 +75,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
 
-        return (object)array('sumBestTanks' => $sumBestTanks, 'bestSubmitters' => $bestSubmitters);
+        return (object)array('sumBestTanksDesktop' => $sumBestTanksDesktop, 'bestSubmitters' => $bestSubmitters);
     }
 
 
@@ -88,7 +88,8 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
         $recordsdata = $this->getRecordsData();
 
-        return view('records', ["tanknames" => $recordsdata->tanks, "allrecords" => $recordsdata->records, 'gamemodes' => $recordsdata->gamemodes]);
+
+        return view('records', ["tanknames" => $recordsdata->tanks, "allrecordsDesktop" => $recordsdata->recordsDesktop, "allrecordsMobile" => $recordsdata->recordsMobile, 'gamemodesDesktop' => $recordsdata->gamemodesDesktop, 'gamemodesMobile' => $recordsdata->gamemodesMobile]);
     }
 
 
@@ -116,7 +117,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
         //we need all tank names and ids to show them in the form where to submit a new score
-        $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled'=>1])->get();
 
 
 
@@ -135,16 +136,21 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
         //get all gamemodes for the form
-        $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
+        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>0])->get();
+        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>1])->get();
 
 
-        return (object)array('tanks' => $tanks, 'gamemodes' => $gamemodes, 'records' => $this->getBestRecords());
+
+        return (object)array('tanks' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'recordsDesktop' => $this->getBestRecords(true), 'recordsMobile' => $this->getBestRecords(false));
 
 
     }
 
 
-    public static function getBestRecords(){
+    public static function getBestRecords($desktop=true){
+
+
+        $gamemodeMobileSQLClase=' WHERE gamemodes.mobile='.($desktop?'0':1).' ';
 
 
 //Now get the best tanks by gamemode
@@ -166,7 +172,7 @@ FROM   (SELECT record.*
                        ON record.gamemode_id = grouprecord.gamemode_id 
                           AND record.score = grouprecord.score) AS sortedrecords 
        INNER JOIN gamemodes 
-               ON sortedrecords.gamemode_id = gamemodes.id 
+               ON sortedrecords.gamemode_id = gamemodes.id $gamemodeMobileSQLClase
 ORDER  BY score DESC
           ");
 
@@ -189,7 +195,7 @@ Afterwards we join the result with scores again to get the other collumns of the
 Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
 Be aware that for a records with multiple proof-links we get a result each
 */
-        $records = DB::select("SELECT * FROM besttanksview");
+        $records = DB::select('SELECT * FROM besttanksview WHERE mobile='.($desktop?'0':1).' order by tankname,gamemode_id, prooflink_id');
         /*
  * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
  */

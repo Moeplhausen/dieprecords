@@ -12,10 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 
-
 class SubmissionsController extends Controller
 {
-
 
 
     public function show()
@@ -23,7 +21,7 @@ class SubmissionsController extends Controller
 
 
         //Get all records that aren't approved and haven't been decided by a manager yet.
-        $submissions = DB::select("
+        $submissionsDesktop = DB::select("
 SELECT proofs.id AS id, 
        proofs.submittedlink as submittedlink,
        records.name AS name, 
@@ -42,11 +40,35 @@ FROM   records
        INNER JOIN prooflinks
                ON proofs.id=prooflinks.proof_id
 WHERE  proofs.approved = '0' 
-       AND proofs.decided = '0' ");
-        $submissions=collect($submissions)->groupBy('id');
+       AND proofs.decided = '0'
+        AND gamemodes.mobile='0'");
+        $submissionsMobile = DB::select("
+SELECT proofs.id AS id, 
+       proofs.submittedlink as submittedlink,
+       records.name AS name, 
+       records.score AS score, 
+       tanks.id       AS tank_id, 
+       tanks.tankname AS tankname, 
+       gamemodes.NAME AS gamemode, 
+       prooflinks.proof_link AS link
+FROM   records 
+       INNER JOIN tanks 
+               ON tanks.id = tank_id 
+       INNER JOIN proofs 
+               ON records.id = proofs.id 
+       INNER JOIN gamemodes 
+               ON gamemodes.id = records.gamemode_id 
+       INNER JOIN prooflinks
+               ON proofs.id=prooflinks.proof_id
+WHERE  proofs.approved = '0' 
+       AND proofs.decided = '0'
+        AND gamemodes.mobile='1'");
+        $submissionsDesktop = collect($submissionsDesktop)->groupBy('id');
+        $submissionsMobile = collect($submissionsMobile)->groupBy('id');
+
         //echo '<pre>'; print_r($submissions); echo '</pre>';
 
-        return view('submissions', ['submissions' => $submissions]);
+        return view('submissions', ['submissionsDesktop' => $submissionsDesktop, 'submissionsMobile' => $submissionsMobile]);
     }
 
     /**
@@ -68,7 +90,8 @@ WHERE  proofs.approved = '0'
         $validator = Validator::make($request->all(), [
             'answ' => 'required|boolean',
             'id' => 'required|integer',
-            'score'=>'required|integer|between:0,999999999'
+            'score' => 'required|integer|between:0,999999999',
+            'name' => 'required|max:25',
         ]);
 
         //complain to user if they sent crap
@@ -84,30 +107,28 @@ WHERE  proofs.approved = '0'
         }
 
 
-        $record=Records::find($proof->id);
+        $record = Records::find($proof->id);
 
 
-        $oldrecord=Records::join('proofs','proofs.id','=','records.id')->where([['proofs.approved',1],['records.score',$request->input('score')],['records.tank_id',$record->tank_id],['records.gamemode_id',$record->gamemode_id],['records.id','<>',$record->id]])->first();
-        if ($oldrecord && $request->input('answ')){
+        $oldrecord = Records::join('proofs', 'proofs.id', '=', 'records.id')->where([['proofs.approved', 1], ['records.score', $request->input('score')], ['records.tank_id', $record->tank_id], ['records.gamemode_id', $record->gamemode_id], ['records.id', '<>', $record->id]])->first();
+        if ($oldrecord && $request->input('answ')) {
             return response()->json(array('msg' => 'There already is an record with the same score. I cannot approve this!', 'err' => $validator->messages()->toJson(), 'input' => $input), 202);
         }
 
         //The proof has been decided and will be saved.
-        DB::transaction(function () use ($proof, $request,$record) {
-
-            $record->score=$request->input('score');
+        DB::transaction(function () use ($proof, $request, $record) {
+            $record->score = $request->input('score');
+            $record->name = trim(strip_tags($request->input('name')));
             $record->save();
             $proof->approved = $request->input('answ');
             $proof->decided = true;
-            $proof->approver_id=Auth::user()->id;
+            $proof->approver_id = Auth::user()->id;
             $proof->save();
-
-
         });
 
 
         $msg = 'Successfully changed record. It was approved: ' . ($proof->approved == '1' ? 'true' : 'false');
-        return response()->json(array('msg' => $msg, 'input' => $input,'score'=>$record->score), 200);
+        return response()->json(array('msg' => $msg, 'input' => $input, 'score' => $record->score), 200);
 
 
     }

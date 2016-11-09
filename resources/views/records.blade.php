@@ -16,13 +16,10 @@
 
 
 {{--  To make this file a bit more readable. The actual modal to submit records is in another file --}}
-@include('modals.recordSubmitModal',['gamemodes'=>$gamemodes,'tanknames'=>$tanknames])
-
-
+@include('modals.recordSubmitModal',['gamemodesDesktop'=>$gamemodesDesktop,'gamemodesMobile'=>$gamemodesMobile,'tanknames'=>$tanknames])
 
 
 <p class="center diep-title">Diep.io World Records</p>
-
 
 @if (session('status'))
     @foreach(session('status') as $status)
@@ -33,13 +30,19 @@
 @endif
 
 
-<p><button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
-        data-target="#sbmrecord">Submit your record
-</button></p>
+<p>
+    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
+            data-target="#sbmrecord">Submit your record
+    </button>
+</p>
 
+<p class="center diep-title-small">Desktop</p>
+{{-- Put the table with the Desktop records by gamemode here --}}
+@include('tables.recordstable',['tablename'=>'scoretableDesktop','allrecords'=>$allrecordsDesktop,'gamemodes'=>$gamemodesDesktop])
 
-{{-- Put the table with the records by gamemode here --}}
-@include('tables.recordstable',['allrecords'=>$allrecords,'gamemodes'=>$gamemodes])
+<p class="center diep-title-small">Mobile</p>
+{{-- Put the table with the Desktop records by gamemode here --}}
+@include('tables.recordstable',['tablename'=>'scoretableMobile','allrecords'=>$allrecordsMobile,'gamemodes'=>$gamemodesMobile])
 
 
 @endsection
@@ -52,10 +55,15 @@
         }
 
         $(document).ready(function () {
+
             {{--Initialize dynatable and make sure the columns we declared to use for sorting, interpret the scores as numbers and not as text --}}
-                $('#scoretable').dynatable({
+                        @foreach(array(
+                [$gamemodesDesktop,'#scoretableDesktop'],
+                [$gamemodesMobile,'#scoretableMobile']
+                ) as $gamemodes)
+                    $('{{$gamemodes[1]}}').dynatable({
                 readers: {
-                    @foreach ($gamemodes as $gamemode)
+                    @foreach ($gamemodes[0] as $gamemode)
                     'sort{{str_replace("-","",strtolower($gamemode->name))}}': function (el, record) {
                         return Number(el.innerHTML) || 0;
                     },
@@ -65,6 +73,7 @@
                 updateTableContents(){{-- we must run this again whenever the search function was used because it messes things up --}}
             });
             updateTableContents()
+            @endforeach
 
             $('#recordsubmit').submit(function (event) {
                 $('#recordsubmitbtn').addClass('working');

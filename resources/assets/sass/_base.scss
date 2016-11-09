@@ -1,7 +1,7 @@
 @import "special-mixins";
 
 body {
-  background-image: linear-gradient( rgba(0, 0, 0, 0.115), rgba(0, 0, 0, 0.115) ),url("images/background.png");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.115), rgba(0, 0, 0, 0.115)), url("images/background.png");
 }
 
 .nodisplay {
@@ -70,7 +70,12 @@ button, .tabletankscore, .tablebasicscore {
 .diep-title {
   color: white;
   font-size: 3em;
-  @extend .diep-shadow
+  @extend .diep-shadow;
+}
+
+.diep-title-small {
+  @extend .diep-title;
+  font-size: 2em;
 }
 
 .table td, .table th, .table-bordered td, .table-bordered th, .table thead th {
@@ -85,7 +90,7 @@ button, .tabletankscore, .tablebasicscore {
   @include gradient-vertical(#ffeb8e, #cdbd72, 50%, 50%);
 }
 
-.th2-TDM, .diep-gradient-green,.max-score-records {
+.th2-TDM, .diep-gradient-green, .max-score-records {
   @include gradient-vertical(#b4ff8e, #91cd72, 50%, 50%);
 }
 
@@ -128,25 +133,25 @@ button {
   }
 }
 
-#statisticstabnav{
+#statisticstabnav {
 
-  .nav-tabs,.nav-link.active{
-    border:0px;
+  .nav-tabs, .nav-link.active {
+    border: 0px;
     background-color: transparent !important;
   }
 
-  a{
-    color:white;
+  a {
+    color: white;
     @extend .diep-shadow;
     font-weight: bold;
   }
 
-  margin:1.5em;
-  .nav-item{
+  margin: 1.5em;
+  .nav-item {
     @extend .diep-border;
     @extend .diep-gradient-blue;
 
-    .active{
+    .active {
       @extend .diep-gradient-red;
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMasterToTanksTable extends Migration
+class AddEnabledToTanksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddMasterToTanksTable extends Migration
      */
     public function up()
     {
-        DB::table('tanks')->insert([
-                'tankname' => 'Master',
-            ]
-        );
+        Schema::table('tanks', function (Blueprint $table) {
+            $table->boolean('enabled')->default(true)->after('tankname');
+        });
+
 
         DB::statement("DROP  VIEW IF EXISTS besttanksview");
 
@@ -26,8 +26,10 @@ class AddMasterToTanksTable extends Migration
                 sortedrecords.score AS score, 
                 sortedrecords.tank_id AS tank_id, 
                 tanks.tankname AS tankname, 
+                tanks.enabled AS tank_enabled,
                 sortedrecords.gamemode_id AS gamemode_id, 
                 gamemodes.name    AS gamemode, 
+                gamemodes.mobile AS mobile,
                 users.name AS approvername,
                 proofs.id AS proof_id,
                 proofs.submittedlink as submittedlink,
@@ -50,7 +52,6 @@ ORDER  BY tanks.tankname,
           prooflink_id");
 
 
-
     }
 
     /**
@@ -60,8 +61,10 @@ ORDER  BY tanks.tankname,
      */
     public function down()
     {
+        Schema::table('tanks', function (Blueprint $table) {
+            $table->dropColumn('enabled');
+        });
         DB::statement("DROP  VIEW IF EXISTS besttanksview");
-        DB::table('tanks')->where('tankname','=','Master')->delete();
 
     }
 }

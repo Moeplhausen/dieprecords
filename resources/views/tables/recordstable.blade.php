@@ -1,6 +1,6 @@
 {{-- Create a table for all the scores. The table should be the form of n x m. Where n=1(header)+NumberOfTanks and m=1(ClassName)+NumberOfGamemodes*2 --}}
 <div class="table-responsive">
-    <table id="scoretable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table id="{{$tablename}}" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
         <tr>{{-- The first row shall consist of "Tank" and the names of all the gamemodes in the database--}}
             <th class="diep-gradient-yellow">Tank</th>
