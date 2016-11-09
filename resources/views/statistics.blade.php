@@ -38,9 +38,9 @@
         @include('tables.bestTanks',['besttanks'=>$bestTanksDestkop])
     </div>
     <div class="tab-pane fade in active" id="bestsubmitterspane" role="tabpanel">
-        <p class="center diep-title">Most Successful Diep.io Record holders</p>
+        <p class="center diep-title">Most Successful Diep.io Record holders on desktop</p>
         {{-- Put the table with best submitters here --}}
-        @include('tables.bestSubmitters',['bestSubmitters'=>$bestSubmitters])
+        @include('tables.bestSubmitters',['bestSubmitters'=>$bestSubmittersDesktop])
     </div>
 </div>
 

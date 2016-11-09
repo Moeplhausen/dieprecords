@@ -37,12 +37,12 @@ class RecordsController extends Controller
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('statistics', 10, function () {
                 $data=$this->getBestTanksAndUsersData();
-                return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmitters'=>$data->bestSubmitters])->render();
+                return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmittersDesktop'=>$data->bestSubmittersDesktop])->render();
             });
         }
         $data=$this->getBestTanksAndUsersData();
 
-        return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmitters'=>$data->bestSubmitters]);
+        return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmittersDesktop'=>$data->bestSubmittersDesktop]);
     }
 
 
@@ -60,14 +60,14 @@ class RecordsController extends Controller
             $record->score = $this->thousandsCurrencyFormat($record->totalScore);
         }
 
-        $bestSubmitters = DB::select("
+        $bestSubmittersDesktop = DB::select("
 SELECT recordholders.name AS name,COUNT(recordholders.name) AS numberOfRecords,MAX(recordholders.score) AS maxScore 
-FROM (SELECT DISTINCT record_id,name,score FROM besttanksview) recordholders
+FROM (SELECT DISTINCT record_id,name,score FROM besttanksview WHERE besttanksview.mobile='0') recordholders
 GROUP BY recordholders.name
 ORDER BY numberOfRecords  DESC, name ASC");
 
-        for ($i = 0; $i < count($bestSubmitters); $i++) {
-            $submitter = $bestSubmitters[$i];
+        for ($i = 0; $i < count($bestSubmittersDesktop); $i++) {
+            $submitter = $bestSubmittersDesktop[$i];
             $submitter->row = $i + 1;
             $submitter->scorefull = $submitter->maxScore;
             $submitter->score = $this->thousandsCurrencyFormat($submitter->maxScore);
@@ -75,7 +75,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
 
-        return (object)array('sumBestTanksDesktop' => $sumBestTanksDesktop, 'bestSubmitters' => $bestSubmitters);
+        return (object)array('sumBestTanksDesktop' => $sumBestTanksDesktop, 'bestSubmittersDesktop' => $bestSubmittersDesktop);
     }
 
 
