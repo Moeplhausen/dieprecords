@@ -243,7 +243,7 @@ Be aware that for a records with multiple proof-links we get a result each
             'proof' => [
                 'required',
                 'url',
-                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat.com|fat\.gfycat\.com|s\d+\.postimg\.org)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org|i\.gyazo\.com)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
