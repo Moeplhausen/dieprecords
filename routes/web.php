@@ -18,6 +18,7 @@ Route::get('/statistics', 'RecordsController@showBestTanks');
 
 Route::post('/login','AuthController@login');
 
+Route::get('/records/users/{name}','RecordsController@showRecordsByName');
 
 Route::group(['middleware'=>['redirectGuests','auth.basic']],function (){
     Route::get('/submissions', 'SubmissionsController@show');

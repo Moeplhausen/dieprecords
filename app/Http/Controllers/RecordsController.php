@@ -398,4 +398,10 @@ Be aware that for a records with multiple proof-links we get a result each
         }
         return $return;
     }
+
+    public function showRecordsByName($name){
+              return view('recordsbyname',['name'=>$name,'userworldrecords'=>array(),'formeruserworldrecords'=>array()]);
+    }
+
+
 }

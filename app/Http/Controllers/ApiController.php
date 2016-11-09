@@ -29,7 +29,7 @@ class ApiController extends Controller
             $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>false])->get();
             $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>true])->get();
 
-            return view('tables.recordstableMarkdown', ["allrecordsDesktop" => RecordsController::getBestRecords(true),"allrecordsMobile" => RecordsController::getBestRecords(false),"gamemodesDesktop"=>$gamemodesDesktop,"gamemodesMobile"=>$gamemodesMobile]);
+            return view('markdown.recordstableMarkdown', ["allrecordsDesktop" => RecordsController::getBestRecords(true),"allrecordsMobile" => RecordsController::getBestRecords(false),"gamemodesDesktop"=>$gamemodesDesktop,"gamemodesMobile"=>$gamemodesMobile]);
         }
     }
 
