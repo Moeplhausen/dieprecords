@@ -266,18 +266,6 @@ Be aware that for a records with multiple proof-links we get a result each
         $gamemodeinfo = $gamemode[0];
 
 
-        //get current record for this tank and gamemode
-        $matchThese = [
-            'proofs.approved' => '1',
-            'records.tank_id' => $tankinfo->id,
-            'records.gamemode_id' => $gamemodeinfo->id];
-        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
-
-        //Deny if current record is higher or equal if exists
-        if ($currentbestone && $currentbestone >= $request->score)
-            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
-
-
         //The case that there are two undecided submissions with the same score,gamemode,tank must be prevented (should never happen anyway)
         //get current record for this tank and gamemode
         $matchThese = [
@@ -290,6 +278,22 @@ Be aware that for a records with multiple proof-links we get a result each
             $name = $samescore[0]->name;
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
         }
+
+
+
+        //get current record for this tank and gamemode
+        $matchThese = [
+            'proofs.approved' => '1',
+            'records.tank_id' => $tankinfo->id,
+            'records.gamemode_id' => $gamemodeinfo->id];
+        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
+
+        //Deny if current record is higher or equal if exists
+        if ($currentbestone && $currentbestone >= $request->score)
+            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
+
+
+
 
         //save original submitted proof url
 

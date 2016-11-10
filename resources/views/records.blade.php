@@ -68,6 +68,9 @@
                         return Number(el.innerHTML) || 0;
                     },
                     @endforeach
+                },
+                dataset: {
+                    perPageDefault: 100,
                 }
             }).bind('dynatable:afterUpdate', function (e, dynatable) {
                 updateTableContents(){{-- we must run this again whenever the search function was used because it messes things up --}}

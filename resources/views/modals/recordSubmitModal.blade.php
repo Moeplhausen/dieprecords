@@ -61,7 +61,7 @@
                             imgur-link). This
                             means <strong>for images the link must end in .jpg, .png or .webm</strong> (Exception:
                             Imgur-links)
-                            <br>Only the following hosts are allowed: youtube, reddit, imgur, discordapp, zippy.gfycat
+                            <br>Only the following hosts are allowed: youtube, i.redd.it, imgur, discordapp, zippy.gfycat, i.gyazo.com
                             or sX.postimg.
                         </p>
                     </div>
