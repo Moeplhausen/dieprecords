@@ -55,7 +55,8 @@ button, .tabletankscore, .tablebasicscore {
 .btn-diep, .dynatable-search, .btn {
   @extend .diep-shadow;
   @extend .diep-border;
-  color: white;
+  color: white !important;
+  font-weight: bold;
 }
 
 .dynatable-search {

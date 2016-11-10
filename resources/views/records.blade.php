@@ -7,13 +7,6 @@
     @include('errors.common')
 
 
-@section('leftnavitem')
-    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red" data-toggle="modal"
-            data-target="#sbmrecord">Submit your record
-    </button>
-@endsection
-
-
 
 {{--  To make this file a bit more readable. The actual modal to submit records is in another file --}}
 @include('modals.recordSubmitModal',['gamemodesDesktop'=>$gamemodesDesktop,'gamemodesMobile'=>$gamemodesMobile,'tanknames'=>$tanknames])
@@ -31,9 +24,9 @@
 
 
 <p>
-    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
+    <a class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
             data-target="#sbmrecord">Submit your record
-    </button>
+    </a>
 </p>
 
 <p class="center diep-title-small">Desktop</p>

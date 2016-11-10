@@ -29,27 +29,27 @@
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
         <div class="collapse navbar-toggleable-xs" id="navbar-header">
             <span class="nav navbar-nav">
-                <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red" onclick=window.location.href="/">
+                <a  class="btn btn-primary btn-lg btn-diep diep-gradient-red" href="/">
                       Records page
-                </button>
-                <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" onclick=window.location.href="/statistics">
+                </a>
+                <a class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" href="/statistics">
                       Statistics
-                </button>
+                </a>
                 </span>
             <span class="float-xs-right">
                 @if(Auth::guest())
-                    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-blue" data-toggle="modal"
+                    <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue" data-toggle="modal"
                             data-target="#managerlogin">Manager login
-                    </button>
+                    </a>
                 @else
-                    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
-                            onclick=window.location.href="/submissions">
+                    <a  class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
+                            href="/submissions">
                         Submitted Records
-                    </button>
-                    <button type="button" class="btn btn-primary btn-lg btn-diep diep-gradient-red"
+                    </a>
+                    <a class="btn btn-primary btn-lg btn-diep diep-gradient-red"
                             onclick="$('#logout-form').submit()">
                         Logout
-                    </button>
+                    </a>
                     <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                         {{ csrf_field() }}
                     </form>

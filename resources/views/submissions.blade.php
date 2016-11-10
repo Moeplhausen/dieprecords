@@ -20,7 +20,7 @@
 @include('tables.submissionTable',['table_id'=>'submission-table-mobile','submissions'=>$submissionsMobile])
 
 <div class="exporter">
-    <button type="button" class="btn btn-xs btn-diep diep-gradient-red" onclick=window.location.href="/api/records/markdown">Reddit Markdown</button>
+    <a class="btn btn-xs btn-diep diep-gradient-red" href="/api/records/markdown">Reddit Markdown</a>
 </div>
 
 
