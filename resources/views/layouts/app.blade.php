@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="_token" content="{{ csrf_token() }}">
+    <meta name="description" content="Unofficial World Records site for the game diep.io Submit your records here!">
 
     <title>@yield('title')</title>
 
