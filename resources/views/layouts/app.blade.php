@@ -6,7 +6,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="_token" content="{{ csrf_token() }}">
     <meta name="description" content="Unofficial World Records site for the game diep.io Submit your records here!">
-
+    <meta name="keywords" content="diep.io, records, world records, WR">
+    <meta name="rating" content="safe for kids">
+    <meta name="no-email-collection" content="http://www.metatags.nl/nospamharvesting">
+    <meta name="reply-to" content="webmaster@moepl.eu">
     <title>@yield('title')</title>
 
     <link rel="icon" type="image/png" href="{{elixir('images/favicon.png')}}" sizes="32x32">
