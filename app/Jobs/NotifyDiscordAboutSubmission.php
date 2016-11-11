@@ -80,7 +80,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
             if ($this->newsubmitted) {
 
                 $postcontent = ['content' =>
-                    "$recordsnumber **$submittername** submitted a new record *(id: $id)*!
+                    "**$submittername** submitted a new record *(id: $id)*!
                     Gamemode: $gamemode
                     Tank: $tank
                     Score: $score
