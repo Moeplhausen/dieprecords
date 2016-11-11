@@ -84,7 +84,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
                     Gamemode: $gamemode
                     Tank: $tank
                     Score: $score
-                    [Link:]($link)"];
+                    $link"];
             } else {
                 $action = $approved ? '__**approved**__' : '__**rejected**__';
                 $postcontent = ['content' =>
