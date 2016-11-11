@@ -24,9 +24,9 @@
 
 
 <p>
-    <a class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
+    <div class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
             data-target="#sbmrecord">Submit your record
-    </a>
+    </div>
 </p>
 
 <p class="center diep-title-small">Desktop</p>

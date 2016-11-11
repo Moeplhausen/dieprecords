@@ -36,13 +36,13 @@ class RecordsController extends Controller
     {
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('statistics', 10, function () {
-                $data=$this->getBestTanksAndUsersData();
-                return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmittersDesktop'=>$data->bestSubmittersDesktop])->render();
+                $data = $this->getBestTanksAndUsersData();
+                return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop, 'bestSubmittersDesktop' => $data->bestSubmittersDesktop])->render();
             });
         }
-        $data=$this->getBestTanksAndUsersData();
+        $data = $this->getBestTanksAndUsersData();
 
-        return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop,'bestSubmittersDesktop'=>$data->bestSubmittersDesktop]);
+        return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop, 'bestSubmittersDesktop' => $data->bestSubmittersDesktop]);
     }
 
 
@@ -72,7 +72,6 @@ ORDER BY numberOfRecords  DESC, name ASC");
             $submitter->scorefull = $submitter->maxScore;
             $submitter->score = $this->thousandsCurrencyFormat($submitter->maxScore);
         }
-
 
 
         return (object)array('sumBestTanksDesktop' => $sumBestTanksDesktop, 'bestSubmittersDesktop' => $bestSubmittersDesktop);
@@ -117,10 +116,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
         //we need all tank names and ids to show them in the form where to submit a new score
-        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled'=>1])->get();
-
-
-
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
 
 
         /*        echo '<pre>';
@@ -132,13 +128,9 @@ ORDER BY numberOfRecords  DESC, name ASC");
            echo '</pre>';*/
 
 
-
-
-
         //get all gamemodes for the form
-        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>0])->get();
-        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>1])->get();
-
+        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 0])->get();
+        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
 
 
         return (object)array('tanks' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'recordsDesktop' => $this->getBestRecords(true), 'recordsMobile' => $this->getBestRecords(false));
@@ -147,10 +139,11 @@ ORDER BY numberOfRecords  DESC, name ASC");
     }
 
 
-    public static function getBestRecords($desktop=true){
+    public static function getBestRecords($desktop = true)
+    {
 
 
-        $gamemodeMobileSQLClase=' WHERE gamemodes.mobile='.($desktop?'0':1).' ';
+        $gamemodeMobileSQLClase = ' WHERE gamemodes.mobile=' . ($desktop ? '0' : 1) . ' ';
 
 
 //Now get the best tanks by gamemode
@@ -195,7 +188,7 @@ Afterwards we join the result with scores again to get the other collumns of the
 Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
 Be aware that for a records with multiple proof-links we get a result each
 */
-        $records = DB::select('SELECT * FROM besttanksview WHERE mobile='.($desktop?'0':1).' order by tankname,gamemode_id, prooflink_id');
+        $records = DB::select('SELECT * FROM besttanksview WHERE mobile=' . ($desktop ? '0' : 1) . ' ORDER BY tankname,gamemode_id, prooflink_id');
         /*
  * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
  */
@@ -230,7 +223,6 @@ Be aware that for a records with multiple proof-links we get a result each
         $records = collect($records)->groupBy('tank_id');
         return $records;
     }
-
 
 
     public function submit(Request $request)
@@ -280,7 +272,6 @@ Be aware that for a records with multiple proof-links we get a result each
         }
 
 
-
         //get current record for this tank and gamemode
         $matchThese = [
             'proofs.approved' => '1',
@@ -293,11 +284,9 @@ Be aware that for a records with multiple proof-links we get a result each
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
 
 
-
-
         //save original submitted proof url
 
-        $orgProof=$request->proof;
+        $orgProof = $request->proof;
 
 
         //Test if we have an imgur link that is not linking directly to an image
@@ -324,7 +313,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
 
         //Everything seems fine, let us add them
-        DB::transaction(function () use ($request,$orgProof) {
+        DB::transaction(function () use ($request, $orgProof) {
 
 
             $record = new Records();
@@ -336,7 +325,7 @@ Be aware that for a records with multiple proof-links we get a result each
             $record->save();
 
             $proof = new Proofs();
-            $proof->submittedlink=$orgProof;
+            $proof->submittedlink = $orgProof;
             $proof->approved = false;
             $proof->save();
 
@@ -346,6 +335,10 @@ Be aware that for a records with multiple proof-links we get a result each
                 $prooflink->proof_link = $request->proof[$i];
                 $prooflink->save();
             }
+
+            if (!App::isLocal() && !App::runningUnitTests())
+                $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
+
         });
 
         return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
@@ -403,8 +396,9 @@ Be aware that for a records with multiple proof-links we get a result each
         return $return;
     }
 
-    public function showRecordsByName($name){
-              return view('recordsbyname',['name'=>$name,'userworldrecords'=>array(),'formeruserworldrecords'=>array()]);
+    public function showRecordsByName($name)
+    {
+        return view('recordsbyname', ['name' => $name, 'userworldrecords' => array(), 'formeruserworldrecords' => array()]);
     }
 
 

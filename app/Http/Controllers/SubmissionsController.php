@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifyDiscordAboutSubmission;
 use App\Proofs;
 use App\Records;
 use Illuminate\Http\Request;
@@ -124,6 +125,9 @@ WHERE  proofs.approved = '0'
             $proof->decided = true;
             $proof->approver_id = Auth::user()->id;
             $proof->save();
+            if (!App::isLocal() && !App::runningUnitTests())
+                $this->dispatch(new NotifyDiscordAboutSubmission($record, false));
+
         });
 
 
