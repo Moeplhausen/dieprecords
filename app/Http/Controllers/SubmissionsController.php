@@ -8,6 +8,7 @@ use App\Records;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
