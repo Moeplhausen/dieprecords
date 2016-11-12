@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/', 'RecordsController@showRecords');
-Route::post('/submitrecord','RecordsController@submit');
+Route::get('/', 'RecordsController@showRecords')->name('records');
+Route::post('/submitrecord','RecordsController@submit')->name('submitrecord');
 
-Route::get('/statistics', 'RecordsController@showBestTanks');
+Route::get('/statistics', 'RecordsController@showBestTanks')->name('statistics');
 
-Route::post('/login','AuthController@login');
+Route::post('/login','AuthController@login')->name('login');
 
 Route::get('/records/users/{name}','RecordsController@showRecordsByName');
 

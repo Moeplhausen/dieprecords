@@ -24,14 +24,26 @@ class ApiController extends Controller
     public function records(Request $request, $method = "json")
     {
         if ($method == "json")
-            return \GuzzleHttp\json_encode(['desktop'=>RecordsController::getBestRecords(),'mobile'=>RecordsController::getBestRecords(false)]);
+            return \GuzzleHttp\json_encode([
+                'desktop'=>RecordsController::getBestRecords(true),
+                'mobile'=>RecordsController::getBestRecords(false)]);
         elseif ($method == "markdown") {
             $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>false])->get();
             $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>true])->get();
 
-            return view('markdown.recordstableMarkdown', ["allrecordsDesktop" => RecordsController::getBestRecords(true),"allrecordsMobile" => RecordsController::getBestRecords(false),"gamemodesDesktop"=>$gamemodesDesktop,"gamemodesMobile"=>$gamemodesMobile]);
+            return view('markdown.recordstableMarkdown', [
+                "allrecordsDesktop" => RecordsController::getBestRecords(true),
+                "allrecordsMobile" => RecordsController::getBestRecords(false),
+                "gamemodesDesktop"=>$gamemodesDesktop,
+                "gamemodesMobile"=>$gamemodesMobile]);
         }
     }
+
+    public function submit(Request $request){
+
+        return app('App\Http\Controllers\RecordsController')->submit($request, true);
+    }
+
 
     /**
      * Display a listing of the resource.

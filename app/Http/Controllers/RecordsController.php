@@ -225,7 +225,7 @@ Be aware that for a records with multiple proof-links we get a result each
     }
 
 
-    public function submit(Request $request)
+    public function submit(Request $request, $apiRequest = false)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -239,9 +239,12 @@ Be aware that for a records with multiple proof-links we get a result each
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
+            if ($apiRequest)
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => $validator->getErrors()));
+            else
+                return redirect('/')
+                    ->withInput()
+                    ->withErrors($validator);
         }
         $request->proof = str_replace("http://", "https://", $request->proof);
 
@@ -252,7 +255,10 @@ Be aware that for a records with multiple proof-links we get a result each
         $gamemode = Gamemodes::where('id', '=', $request->gamemode_id)->get();
 
         if ($gamemode->isEmpty() || $tank->isEmpty())
-            return redirect('/');
+            if ($apiRequest)
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => 'No gamemode/tank'));
+            else
+                return redirect('/');
 
         $tankinfo = $tank[0];
         $gamemodeinfo = $gamemode[0];
@@ -268,6 +274,9 @@ Be aware that for a records with multiple proof-links we get a result each
         $samescore = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->get();
         if (!$samescore->isEmpty()) {
             $name = $samescore[0]->name;
+            if ($apiRequest)
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but there already is an undecided submission from $name for the same score"));
+            else
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
         }
 
@@ -281,6 +290,9 @@ Be aware that for a records with multiple proof-links we get a result each
 
         //Deny if current record is higher or equal if exists
         if ($currentbestone && $currentbestone >= $request->score)
+            if ($apiRequest)
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"));
+            else
             return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
 
 
@@ -298,11 +310,17 @@ Be aware that for a records with multiple proof-links we get a result each
                     for ($i = 0; $i < count($output); $i++) {
                         $request->proof = $this->getImgurDirectLinks($output[$i]);
                         if (count($request->proof) == 0)
+                            if ($apiRequest)
+                                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links!"));
+                            else
                             return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
                     }
                 }
             } catch (Exception $e) {
                 //echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
+                if ($apiRequest)
+                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links! Try a direct image link"));
+                else
                 return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
             } finally {
 
@@ -340,7 +358,9 @@ Be aware that for a records with multiple proof-links we get a result each
                 $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
 
         });
-
+        if ($apiRequest)
+            return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
+        else
         return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
     }
 
