@@ -225,7 +225,7 @@ Be aware that for a records with multiple proof-links we get a result each
     }
 
 
-    public function submit(Request $request, $apiRequest = false)
+    public function submit(Request $request, $apiRequest = false,$shouldwritetodatabase=true)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -277,7 +277,7 @@ Be aware that for a records with multiple proof-links we get a result each
             if ($apiRequest)
                 return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but there already is an undecided submission from $name for the same score"));
             else
-            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
+                return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
         }
 
 
@@ -293,7 +293,7 @@ Be aware that for a records with multiple proof-links we get a result each
             if ($apiRequest)
                 return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"));
             else
-            return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
+                return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
 
 
         //save original submitted proof url
@@ -313,7 +313,7 @@ Be aware that for a records with multiple proof-links we get a result each
                             if ($apiRequest)
                                 return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links!"));
                             else
-                            return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
+                                return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
                     }
                 }
             } catch (Exception $e) {
@@ -321,7 +321,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 if ($apiRequest)
                     return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links! Try a direct image link"));
                 else
-                return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
+                    return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
             } finally {
 
             }
@@ -331,37 +331,39 @@ Be aware that for a records with multiple proof-links we get a result each
 
 
         //Everything seems fine, let us add them
-        DB::transaction(function () use ($request, $orgProof) {
+        if ($shouldwritetodatabase) {
+            DB::transaction(function () use ($request, $orgProof) {
 
 
-            $record = new Records();
-            $record->name = trim(strip_tags($request->inputname));
-            $record->score = $request->score;
-            $record->tank_id = $request->selectclass;
-            $record->gamemode_id = $request->gamemode_id;
-            $record->ip_address = $request->ip();
-            $record->save();
+                $record = new Records();
+                $record->name = trim(strip_tags($request->inputname));
+                $record->score = $request->score;
+                $record->tank_id = $request->selectclass;
+                $record->gamemode_id = $request->gamemode_id;
+                $record->ip_address = $request->ip();
+                $record->save();
 
-            $proof = new Proofs();
-            $proof->submittedlink = $orgProof;
-            $proof->approved = false;
-            $proof->save();
+                $proof = new Proofs();
+                $proof->submittedlink = $orgProof;
+                $proof->approved = false;
+                $proof->save();
 
-            for ($i = 0; $i < count($request->proof); $i++) {
-                $prooflink = new App\Proofslink();
-                $prooflink->proof_id = $proof->id;
-                $prooflink->proof_link = $request->proof[$i];
-                $prooflink->save();
-            }
+                for ($i = 0; $i < count($request->proof); $i++) {
+                    $prooflink = new App\Proofslink();
+                    $prooflink->proof_id = $proof->id;
+                    $prooflink->proof_link = $request->proof[$i];
+                    $prooflink->save();
+                }
 
-            if (!App::isLocal() && !App::runningUnitTests())
-                $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
+                if (!App::isLocal() && !App::runningUnitTests())
+                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
 
-        });
-        if ($apiRequest)
-            return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
-        else
-        return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
+            });
+            if ($apiRequest)
+                return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
+            else
+                return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
+        }
     }
 
 

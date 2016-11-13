@@ -41,7 +41,12 @@ class ApiController extends Controller
 
     public function submit(Request $request){
 
-        return app('App\Http\Controllers\RecordsController')->submit($request, true);
+        return app('App\Http\Controllers\RecordsController')->submit($request, true,true);
+    }
+
+    public function submittest(Request $request){
+
+        return app('App\Http\Controllers\RecordsController')->submit($request, true,false);
     }
 
 
