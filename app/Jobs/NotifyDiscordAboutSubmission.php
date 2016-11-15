@@ -23,7 +23,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
     protected $webhook_id;
     protected $webhook_token;
 
-    private $numberOfMaxRecordsPerHourDiscordSpam = 3;
+    private $numberOfMaxRecordsPerHourDiscordSpam = 6;
 
 
     /**
