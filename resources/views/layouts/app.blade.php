@@ -13,7 +13,7 @@
     <title>@yield('title')</title>
 
     <link rel="icon" type="image/png" href="{{elixir('images/favicon.png')}}" sizes="32x32">
-    
+
     {{-- Styles --}}
     <link rel="stylesheet" href="{{  elixir('css/app.css')}}">
 
@@ -27,30 +27,36 @@
     <nav class="navbar navbar-light">
         <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header"
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
-        <div class="collapse navbar-toggleable-xs" id="navbar-header">
+        <div class="collapse navbar-toggleable-xs clearfix" id="navbar-header">
             <span class="nav navbar-nav">
-                <a  class="btn btn-primary btn-lg btn-diep diep-gradient-red" href="/">
+                <a class="btn btn-primary btn-lg btn-diep diep-gradient-red" href={{route('records')}}>
                       Records page
                 </a>
-                <a class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" href="/statistics">
+                <a class="btn btn-primary btn-lg btn-diep diep-gradient-yellow" href={{route('statistics')}}>
                       Statistics
                 </a>
                 </span>
+            <span class="float-xs-none">
+                <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
+                   href={{route('info')}}>
+                    api
+                </a>
+            </span>
             <span class="float-xs-right">
                 @if(Auth::guest())
                     <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue" data-toggle="modal"
-                            data-target="#managerlogin">Manager login
+                       data-target="#managerlogin">Manager login
                     </a>
                 @else
-                    <a  class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
-                            href="/submissions">
+                    <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
+                       href={{route('submissions')}}>
                         Submitted Records
                     </a>
                     <a class="btn btn-primary btn-lg btn-diep diep-gradient-red"
-                            onclick="$('#logout-form').submit()">
+                       onclick="$('#logout-form').submit()">
                         Logout
                     </a>
-                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{route('logout')}}" method="POST" style="display: none;">
                         {{ csrf_field() }}
                     </form>
                 @endif
@@ -62,21 +68,30 @@
     @yield('content')
 </div>
 
-
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', 'UA-86559510-1', 'auto');
-  ga('send', 'pageview');
+    ga('create', 'UA-86559510-1', 'auto');
+    ga('send', 'pageview');
 
 </script>
 
 <script src="{{  asset(elixir('js/app.js')) }}"></script>
 
 <script>
+
+    var DECIDESUBMISSIONURL="{{route('decidesubmission')}}"
+
 
     $(function () {
         $.ajaxSetup({
@@ -99,7 +114,6 @@
             alwaysShowClose: true,
         });
     });
-
 
 
 </script>

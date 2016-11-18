@@ -62,9 +62,15 @@
                     },
                     @endforeach
                 },
+                @if ($loop->first)
+                    dataset: {
+                        perPageDefault: 100,
+                    },
+                @else
                 dataset: {
-                    perPageDefault: 100,
-                }
+                    perPageDefault: 10,
+                },
+                @endif
             }).bind('dynatable:afterUpdate', function (e, dynatable) {
                 updateTableContents(){{-- we must run this again whenever the search function was used because it messes things up --}}
             });

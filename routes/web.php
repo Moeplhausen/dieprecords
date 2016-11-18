@@ -12,18 +12,22 @@
 */
 
 Route::get('/', 'RecordsController@showRecords')->name('records');
-Route::post('/submitrecord','RecordsController@submit')->name('submitrecord');
+Route::get('/info', function () {
+    return view('apiInfo');
+})->name('info');
+Route::post('/submitrecord', 'RecordsController@submit')->name('submitrecord');
 
 Route::get('/statistics', 'RecordsController@showBestTanks')->name('statistics');
 
-Route::post('/login','AuthController@login')->name('login');
+Route::post('/login', 'AuthController@login')->name('login');
 
-Route::get('/records/users/{name}','RecordsController@showRecordsByName');
 
-Route::group(['middleware'=>['redirectGuests','auth.basic']],function (){
-    Route::get('/submissions', 'SubmissionsController@show');
-    Route::post('/decidesubmission','SubmissionsController@decide');
-    Route::post('/logout','AuthController@logout');
+Route::get('/records/users/{name}', 'RecordsController@showRecordsByName');
+
+Route::group(['middleware' => ['redirectGuests', 'auth.basic']], function () {
+    Route::get('/submissions', 'SubmissionsController@show')->name('submissions');
+    Route::post('/decidesubmission', 'SubmissionsController@decide')->name('decidesubmission');
+    Route::post('/logout', 'AuthController@logout')->name('logout');
 });
 
 

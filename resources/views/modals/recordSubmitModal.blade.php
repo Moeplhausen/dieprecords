@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 {{-- Add a new world record form --}}
-                <form action="/submitrecord" id="recordsubmit" method="POST">
+                <form action={{route('submitrecord')}} id="recordsubmit" method="POST">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="inputname">Your name</label>

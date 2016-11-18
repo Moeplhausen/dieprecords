@@ -16,14 +16,14 @@ use Illuminate\Http\Request;
 /*Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');*/
-Route::get('/gamemodes', 'ApiController@gamemodes');
+Route::get('/gamemodes', 'ApiController@gamemodes')->name('apigamemodes');
 
-Route::get('/tanks', 'ApiController@tanks');
+Route::get('/tanks', 'ApiController@tanks')->name('apitanks');
 
-Route::get('/records', 'ApiController@records');
+Route::get('/records', 'ApiController@records')->name('apirecords');
 
 Route::get('/records/{method}', 'ApiController@records');
 
-Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:20,60');
+Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
 Route::post('/submit/recordtest', 'ApiController@submittest');
 

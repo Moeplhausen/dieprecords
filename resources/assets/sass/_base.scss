@@ -1,8 +1,11 @@
 @import "special-mixins";
 
+
 body {
   background-image: linear-gradient(rgba(0, 0, 0, 0.115), rgba(0, 0, 0, 0.115)), url("images/background.png");
 }
+
+
 
 .nodisplay {
   display: none;

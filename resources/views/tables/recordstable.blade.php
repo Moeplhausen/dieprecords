@@ -54,7 +54,7 @@
                                     Now we need to actually display the score and name. We use a link for that and open it when pressed with lightbox --}}
                                 <a href="{{$recordsbytankid[$pos]->submittedlink}}"
                                    data-toggle="lightbox"
-                                   data-remote="{{$recordsbytankid[$pos]->link}}"
+                                   data-remote="{{$recordsbytankid[$pos]->links[0]}}"
                                    data-gallery="hidden{{$recordsbytankid[$pos]->proof_id}}"
                                    class="{{$recordsbytankid[$pos]->cssExtra}}"> {{-- if the record is best by gamemode or overall, we want to add extra styles --}}
 

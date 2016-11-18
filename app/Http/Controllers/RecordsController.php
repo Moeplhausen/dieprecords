@@ -206,6 +206,8 @@ Be aware that for a records with multiple proof-links we get a result each
                 array_splice($records, $i + 1, 1);
             }
 
+            unset($record->link);
+
             $record->cssExtra = "";
 
             //Check if record is a gamemodewinner

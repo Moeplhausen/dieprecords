@@ -30,7 +30,7 @@ $(document).ready(function () {
 
             $.ajax({
                 type: 'POST',
-                url: '/decidesubmission',
+                url: DECIDESUBMISSIONURL,
                 data: {id: proof_id, answ: $(this).hasClass("approve-submission") | 0, score: scorenumber,name:name},
                 success: function (data, textStatus, xhr) {
                     //console.log(data);

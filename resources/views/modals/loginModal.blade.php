@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 {{-- Add login for managers form --}}
-                <form action="/login" method="POST">
+                <form action={{route('login')}} method="POST">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="inputname">email:</label>

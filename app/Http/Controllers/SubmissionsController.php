@@ -41,8 +41,7 @@ FROM   records
                ON gamemodes.id = records.gamemode_id 
        INNER JOIN prooflinks
                ON proofs.id=prooflinks.proof_id
-WHERE  proofs.approved = '0' 
-       AND proofs.decided = '0'
+WHERE   proofs.decided = '0'
         AND gamemodes.mobile='0'");
         $submissionsMobile = DB::select("
 SELECT proofs.id AS id, 
@@ -62,8 +61,7 @@ FROM   records
                ON gamemodes.id = records.gamemode_id 
        INNER JOIN prooflinks
                ON proofs.id=prooflinks.proof_id
-WHERE  proofs.approved = '0' 
-       AND proofs.decided = '0'
+WHERE  proofs.decided = '0'
         AND gamemodes.mobile='1'");
         $submissionsDesktop = collect($submissionsDesktop)->groupBy('id');
         $submissionsMobile = collect($submissionsMobile)->groupBy('id');
