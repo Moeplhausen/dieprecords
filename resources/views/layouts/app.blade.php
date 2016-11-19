@@ -39,10 +39,13 @@
             <span class="float-xs-none">
                 <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue"
                    href={{route('info')}}>
-                    api
+                    API
                 </a>
             </span>
             <span class="float-xs-right">
+                <a class="btn btn-primary btn-lg btn-diep diep-gradient-red"
+                        href={{route('rejections')}}>Rejections
+                </a>
                 @if(Auth::guest())
                     <a class="btn btn-primary btn-lg btn-diep diep-gradient-blue" data-toggle="modal"
                        data-target="#managerlogin">Manager login
@@ -90,7 +93,7 @@
 
 <script>
 
-    var DECIDESUBMISSIONURL="{{route('decidesubmission')}}"
+    var DECIDESUBMISSIONURL = "{{route('decidesubmission')}}"
 
 
     $(function () {

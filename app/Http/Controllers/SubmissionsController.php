@@ -71,6 +71,19 @@ WHERE  proofs.decided = '0'
         return view('submissions', ['submissionsDesktop' => $submissionsDesktop, 'submissionsMobile' => $submissionsMobile]);
     }
 
+    public function showRejections(){
+        //Get all records that aren't approved and haven't been decided by a manager yet.
+        $rejectionsDesktop = DB::select("select * from rejected_submissions_seven_days where mobile='0' ORDER  BY proof_updated_at");
+        $rejectionsMobile = DB::select("select * from rejected_submissions_seven_days where mobile='1' ORDER  BY proof_updated_at");
+
+        $rejectionsDesktop=collect($rejectionsDesktop)->groupBy('id');
+        $rejectionsMobile=collect($rejectionsMobile)->groupBy('id');
+
+        return view('rejections', ['rejectionsDesktop' => $rejectionsDesktop, 'rejectionsMobile' => $rejectionsMobile]);
+    }
+
+
+
     /**
      *
      * @param Request $request
