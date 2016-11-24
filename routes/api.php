@@ -23,6 +23,8 @@ Route::get('/tanks', 'ApiController@tanks')->name('apitanks');
 Route::get('/records', 'ApiController@records')->name('apirecords');
 
 Route::get('/records/{method}', 'ApiController@records');
+Route::get('/recordsByName/{name}', 'ApiController@recordsByName');
+
 
 Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
 Route::post('/submit/recordtest', 'ApiController@submittest');

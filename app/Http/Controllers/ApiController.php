@@ -39,6 +39,10 @@ class ApiController extends Controller
         }
     }
 
+    public function recordsByName(Request $request,$name="derp"){
+        return app('App\Http\Controllers\RecordsController')->getRecordsByName($name);
+    }
+
     public function submit(Request $request){
 
         return app('App\Http\Controllers\RecordsController')->submit($request, true,true);
@@ -48,6 +52,8 @@ class ApiController extends Controller
 
         return app('App\Http\Controllers\RecordsController')->submit($request, true,false);
     }
+
+
 
 
     /**

@@ -26,7 +26,7 @@
                 </td>
                 <td class="nodisplay">{{$rejection[0]->tankname}}</td> {{-- The column we use for sorting tank names --}}
                 <td>{{$rejection[0]->gamemode}}</td> {{-- gamemode name --}}
-                <td>{{$rejection[0]->score}}
+                <td>{{number_format($rejection[0]->score)}}
                 </td>
                 <td class="nodisplay">{{$rejection[0]->score}}</td> {{-- The column to sort scores --}}
                 <td><a href="{{$rejection[0]->submittedlink}}">link</a></td>

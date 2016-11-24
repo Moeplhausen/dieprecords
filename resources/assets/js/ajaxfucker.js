@@ -23,10 +23,10 @@ $(document).ready(function () {
             var proof_id = $(this).val();
             var element = $(this);
             var inputs=(element.closest("tr").find('input'));
-            console.log(inputs[0]);
             var name = inputs[0].value
             var scorenumber = inputs[1].value;
 
+            element.closest("tr").find('input,button').attr('disabled','true');
 
             $.ajax({
                 type: 'POST',

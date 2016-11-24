@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use DB;
 use App;
@@ -75,6 +76,58 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
 
         return (object)array('sumBestTanksDesktop' => $sumBestTanksDesktop, 'bestSubmittersDesktop' => $bestSubmittersDesktop);
+    }
+
+
+    private function filterRecords($allrecords,$filterids){
+        $records=$allrecords->filter(function($obj,$key) use ($filterids){
+            $obj->scorefull=$obj->score;
+            $obj->score=RecordsController::thousandsCurrencyFormat($obj->score);
+            $id=$obj->id;
+            return $filterids->contains($id);
+        });
+        return $records;
+    }
+
+    public function getRecordsByName($name)
+    {
+        $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name',$name)->get();
+
+
+        $formerWorldRecordsid=collect(DB::select("SELECT DISTINCT id from approvedrecords where name=:name AND id not in (:ids)",['name'=>$name,'ids'=>$currentWorldRecordsIds->implode('record_id',', ')]));
+
+        $allrecords=DB::table('records')->select('records.id as id',
+            'records.name as name','gamemodes.id as gamemode_id',
+            'gamemodes.name as gamemode','tanks.id as tank_id',
+            'tanks.tankname as tank',
+            'proofs.submittedlink as submittedlink',
+            'score')
+            ->join('proofs','proofs.id','=','records.id')
+            ->join('gamemodes','gamemodes.id','=','records.gamemode_id')
+            ->join('tanks','tanks.id','=','records.tank_id')
+            ->where('records.name','like',$name)->get();
+
+
+        $currentWorldRecordsIds=$currentWorldRecordsIds->pluck('record_id');
+        $formerWorldRecordsid=$formerWorldRecordsid->pluck('id');
+
+        $currentWorldRecords=$this->filterRecords($allrecords,$currentWorldRecordsIds);
+        $formerWorldRecord=$this->filterRecords($allrecords,$formerWorldRecordsid);
+
+
+/*        echo '<pre>';
+        print_r($currentWorldRecords);
+        echo '</pre>';*/
+
+        return ['current'=>$currentWorldRecords,'former'=>$formerWorldRecord,];
+
+    }
+
+
+    public function showRecordsByName($name)
+    {
+        $this->getRecordsByName($name);
+        return view('recordsbyname', ['name' => $name, 'userworldrecords' => array(), 'formeruserworldrecords' => array()]);
     }
 
 
@@ -227,7 +280,7 @@ Be aware that for a records with multiple proof-links we get a result each
     }
 
 
-    public function submit(Request $request, $apiRequest = false,$shouldwritetodatabase=true)
+    public function submit(Request $request, $apiRequest = false, $shouldwritetodatabase = true)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -418,11 +471,6 @@ Be aware that for a records with multiple proof-links we get a result each
             }
         }
         return $return;
-    }
-
-    public function showRecordsByName($name)
-    {
-        return view('recordsbyname', ['name' => $name, 'userworldrecords' => array(), 'formeruserworldrecords' => array()]);
     }
 
 
