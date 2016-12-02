@@ -12,13 +12,13 @@ class ApiController extends Controller
     public function gamemodes()
     {
         $gamemodes = \App\Gamemodes::orderBy('id', 'asc')->get();
-        return $gamemodes;
+        return \GuzzleHttp\json_encode($gamemodes);
     }
 
     public function tanks()
     {
         $tanks = \App\Tanks::orderBy('tankname', 'asc')->get();
-        return $tanks;
+        return \GuzzleHttp\json_encode($tanks);
     }
 
     public function records(Request $request, $method = "json")
@@ -40,7 +40,14 @@ class ApiController extends Controller
     }
 
     public function recordsByName(Request $request,$name="derp"){
-        return app('App\Http\Controllers\RecordsController')->getRecordsByName($name);
+        $data=app('App\Http\Controllers\RecordsController')->getRecordsByName($name);
+
+
+
+        return \GuzzleHttp\json_encode([
+           'current'=>$data['current'],
+            'former'=>$data['former']
+        ]);
     }
 
     public function submit(Request $request){

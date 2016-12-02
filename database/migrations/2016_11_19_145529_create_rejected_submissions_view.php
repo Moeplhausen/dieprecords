@@ -14,7 +14,7 @@ class CreateRejectedSubmissionsView extends Migration
     public function up()
     {
         DB::statement("DROP  VIEW IF EXISTS rejected_submissions_seven_days");
-        DB::statement("CREATE VIEW rejected_submissions_seven_days AS SELECT DISTINCT records.id           AS id, 
+        DB::statement("CREATE VIEW rejected_submissions_seven_days AS SELECT DISTINCT records.id AS id, 
                 records.name         AS name, 
                 records.score        AS score, 
                 tanks.tankname       AS tankname, 

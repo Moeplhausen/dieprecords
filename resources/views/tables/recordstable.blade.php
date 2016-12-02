@@ -26,7 +26,7 @@
                     <div class="tanksandname">
                         <span class="scoretanksimage {{str_replace(" ","-",strtolower($recordsbytankid[0]->tankname))}}">
                         </span>
-                        <span class="mobilehide">{{$recordsbytankid[0]->tankname}}
+                        <span class="mobilehideimportant">{{$recordsbytankid[0]->tankname}}
                         </span>
                     </div>
                 </td>

@@ -52,7 +52,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
             // Base URI is used with relative requests
             'base_uri' => 'https://discordapp.com/api/',
             // You can set any number of default request options.
-            'timeout' => 2.0,
+            'timeout' => 10.0,
         ]);
 
         $record = $this->record;

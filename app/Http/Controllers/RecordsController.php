@@ -79,11 +79,12 @@ ORDER BY numberOfRecords  DESC, name ASC");
     }
 
 
-    private function filterRecords($allrecords,$filterids){
-        $records=$allrecords->filter(function($obj,$key) use ($filterids){
-            $obj->scorefull=$obj->score;
-            $obj->score=RecordsController::thousandsCurrencyFormat($obj->score);
-            $id=$obj->id;
+    private function filterRecords($allrecords, $filterids)
+    {
+        $records = $allrecords->filter(function ($obj, $key) use ($filterids) {
+            // $obj->scorefull=$obj->score;
+            $obj->score = RecordsController::thousandsCurrencyFormat($obj->score);
+            $id = $obj->id;
             return $filterids->contains($id);
         });
         return $records;
@@ -91,35 +92,51 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
     public function getRecordsByName($name)
     {
-        $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name',$name)->get();
+        $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->get()->pluck('record_id');
 
 
-        $formerWorldRecordsid=collect(DB::select("SELECT DISTINCT id from approvedrecords where name=:name AND id not in (:ids)",['name'=>$name,'ids'=>$currentWorldRecordsIds->implode('record_id',', ')]));
+        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT id FROM approvedrecords WHERE name=? AND id NOT IN (SELECT record_id FROM besttanksview WHERE name=?)", [$name, $name]));
 
-        $allrecords=DB::table('records')->select('records.id as id',
-            'records.name as name','gamemodes.id as gamemode_id',
-            'gamemodes.name as gamemode','tanks.id as tank_id',
+        /*
+        echo '<pre>';
+        print_r($currentWorldRecordsIds);
+
+        print_r($formerWorldRecordsid);
+        echo '</pre>';
+        */
+
+        $allrecords = DB::table('records')->select('records.id as id',
+            'records.name as name',
+            'gamemodes.id as gamemode_id',
+            'gamemodes.name as gamemode',
+            'gamemodes.mobile as mobile',
+            'tanks.id as tank_id',
             'tanks.tankname as tank',
             'proofs.submittedlink as submittedlink',
-            'score')
-            ->join('proofs','proofs.id','=','records.id')
-            ->join('gamemodes','gamemodes.id','=','records.gamemode_id')
-            ->join('tanks','tanks.id','=','records.tank_id')
-            ->where('records.name','like',$name)->get();
+            'score as scorefull')
+            ->join('proofs', 'proofs.id', '=', 'records.id')
+            ->join('gamemodes', 'gamemodes.id', '=', 'records.gamemode_id')
+            ->join('tanks', 'tanks.id', '=', 'records.tank_id')
+            ->where('records.name', 'like', $name)->orderBy('tank')->get();
 
 
-        $currentWorldRecordsIds=$currentWorldRecordsIds->pluck('record_id');
-        $formerWorldRecordsid=$formerWorldRecordsid->pluck('id');
-
-        $currentWorldRecords=$this->filterRecords($allrecords,$currentWorldRecordsIds);
-        $formerWorldRecord=$this->filterRecords($allrecords,$formerWorldRecordsid);
+        foreach ($allrecords as $record) {
+            $record->score = RecordsController::thousandsCurrencyFormat($record->scorefull);
+        }
 
 
-/*        echo '<pre>';
-        print_r($currentWorldRecords);
-        echo '</pre>';*/
+        $formerWorldRecordsid = $formerWorldRecordsid->pluck('id');
 
-        return ['current'=>$currentWorldRecords,'former'=>$formerWorldRecord,];
+
+        $currentWorldRecords = $this->filterRecords($allrecords, $currentWorldRecordsIds);
+        $formerWorldRecord = $this->filterRecords($allrecords, $formerWorldRecordsid);
+
+
+        /*     echo '<pre>';
+             print_r($currentWorldRecords);
+             echo '</pre>';*/
+
+        return ['current' => $currentWorldRecords, 'former' => $formerWorldRecord,];
 
     }
 
@@ -295,7 +312,7 @@ Be aware that for a records with multiple proof-links we get a result each
         ]);
         if ($validator->fails()) {
             if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => $validator->getErrors()));
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => $validator->failed()));
             else
                 return redirect('/')
                     ->withInput()
@@ -414,11 +431,12 @@ Be aware that for a records with multiple proof-links we get a result each
                     $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
 
             });
-            if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
-            else
-                return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
         }
+        if ($apiRequest)
+            return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
+        else
+            return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
+
     }
 
 

@@ -17,6 +17,13 @@ body {
     display: none;
   }
 }
+/* Portrait phones and smaller */
+@media screen and (max-width: 767px) {
+  .mobilehideimportant {
+    display: none;
+  }
+}
+
 
 button, .tabletankscore, .tablebasicscore {
   font-weight: bold !important;
