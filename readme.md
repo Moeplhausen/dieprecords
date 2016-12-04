@@ -1,12 +1,12 @@
-# Diepreords
-This was a quick&dirty attempt to build a website to handle highscores for diep.io.
+# Dieprecords
+This was a quick & dirty attempt to build a website to handle highscores for http://diep.io.
 
 
 ## Demosite (for now)
 [Demo](https://dieprecords.moepl.eu/)
 
 ## Server Requirements
-* laravel and it's needed dependencies
+* laravel and its needed dependencies
 * composer
 * nodejs
 * gulp
@@ -24,7 +24,3 @@ gulp --production
 ```
 
 5. Point your webserver to the public subfolder
-
-
-
-
