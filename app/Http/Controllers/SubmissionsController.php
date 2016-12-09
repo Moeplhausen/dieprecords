@@ -137,8 +137,8 @@ WHERE  proofs.decided = '0'
             $proof->decided = true;
             $proof->approver_id = Auth::user()->id;
             $proof->save();
-            if (!App::isLocal() && !App::runningUnitTests())
-                $this->dispatch(new NotifyDiscordAboutSubmission($record, false));
+            if (!App::runningUnitTests())
+                $this->dispatch(new NotifyDiscordAboutSubmission($record, false,null));
 
         });
 

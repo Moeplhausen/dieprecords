@@ -359,9 +359,17 @@ Be aware that for a records with multiple proof-links we get a result each
             'records.tank_id' => $tankinfo->id,
             'records.gamemode_id' => $gamemodeinfo->id];
         $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
+        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where('score', $currentbestone)->get();
+
+        if ($currentbestone && count($currentbestone)>0)
+            $currentbestone=$currentbestone[0];
+        else
+            $currentbestone=null;
+
+
 
         //Deny if current record is higher or equal if exists
-        if ($currentbestone && $currentbestone >= $request->score)
+        if ($currentbestone && $currentbestone->score >= $request->score)
             if ($apiRequest)
                 return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"));
             else
@@ -404,7 +412,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
         //Everything seems fine, let us add them
         if ($shouldwritetodatabase) {
-            DB::transaction(function () use ($request, $orgProof) {
+            DB::transaction(function () use ($request, $orgProof,$currentbestone) {
 
 
                 $record = new Records();
@@ -427,8 +435,8 @@ Be aware that for a records with multiple proof-links we get a result each
                     $prooflink->save();
                 }
 
-                if (!App::isLocal() && !App::runningUnitTests())
-                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true));
+                if (!App::runningUnitTests())
+                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true,$currentbestone));
 
             });
         }
