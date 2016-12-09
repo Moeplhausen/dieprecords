@@ -100,7 +100,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
                 }
 
 
-                $embedinfo1=['title'=>'Submission by __'.$submittername.'__',
+                $embedinfo1=['title'=>'Submission by __'.$submittername.'__ (id: '.$id.')',
                     'fields'=>$fields,
                     'image'=>['url'=>$image],
                 ];
