@@ -17,6 +17,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
 
 
     protected $record;
+    protected $video;
     protected $newsubmitted;
     protected $currentbestone;
     protected $client;
@@ -33,9 +34,10 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
      * @param $newsubmitted
      *
      */
-    public function __construct(Records $record, $newsubmitted,$currentbestone)
+    public function __construct(Records $record,$video, $newsubmitted,$currentbestone)
     {
         $this->record = $record;
+        $this->video = $video;
         $this->newsubmitted = $newsubmitted;
         $this->currentbestone=$currentbestone;
 
@@ -68,6 +70,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
 
             $proof = $this->record->proof;
 
+
             $id = $record->id;
             $submittername = str_replace(array('|', '*', '^', '_', '#', '[', ']', '(', ')'), array('\|', '\*', '\^', '\_', '\#', '\[', '\]', '\(', '\)'), $record->name);
             $score = number_format($record->score);
@@ -75,7 +78,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
             $gamemode = $record->gamemode->name;
 
             $link = $proof->submittedlink;
-            $image=$proof->links[0]->proof_link;
+            $proof_link=$proof->links[0]->proof_link;
 
             $manager = $proof->user->name;
             $approved = $proof->approved;
@@ -93,22 +96,29 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
                     ['name'=>'Score','value'=>$score,'inline'=>true],
                 ];
 
+
                 if ($this->currentbestone)
                 {
                     array_push($fields,['name'=>'Current Holder','value'=>$this->currentbestone->name,'inline'=>true]);
                     array_push($fields,['name'=>'Current Score','value'=>number_format($this->currentbestone->score),'inline'=>true]);
                 }
 
+                if ($this->video)
+                    array_push($fields,['name'=>'Proof','value'=>$proof_link,'inline'=>false]);
+
 
                 $embedinfo1=['title'=>'Submission by __'.$submittername.'__ (id: '.$id.')',
                     'fields'=>$fields,
-                    'image'=>['url'=>$image],
-                    'color'=>16776960
+                    'color'=>16776960,
+                    'image'=>['url'=>$proof_link],
                 ];
+
+
+
 
                 array_push($embeds,$embedinfo1);
 
-                $postcontent=['embeds'=>$embeds];
+                $postcontent=['embeds'=>$embeds,];
 
 
             } else {
@@ -133,6 +143,9 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
             }
 
             $response = $this->client->request('POST', "webhooks/$this->webhook_id/$this->webhook_token", ['json' => $postcontent]);
+
+
+
         }
     }
 }

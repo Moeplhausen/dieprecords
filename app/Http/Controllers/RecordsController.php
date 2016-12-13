@@ -321,6 +321,13 @@ Be aware that for a records with multiple proof-links we get a result each
         $request->proof = str_replace("http://", "https://", $request->proof);
 
 
+        //Check if proof is video or not
+        $video=false;
+        if (preg_match("~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?~x", $request->proof)) {
+            $video=true;
+        }
+
+
         //make sure the tank actually exists and not just believe the user
         $tank = Tanks::where('id', '=', $request->selectclass)->get();
         //same with gamemode
@@ -412,7 +419,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
         //Everything seems fine, let us add them
         if ($shouldwritetodatabase) {
-            DB::transaction(function () use ($request, $orgProof,$currentbestone) {
+            DB::transaction(function () use ($request, $orgProof,$currentbestone,$video) {
 
 
                 $record = new Records();
@@ -436,7 +443,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 }
 
                 if (!App::runningUnitTests())
-                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, true,$currentbestone));
+                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record,$video, true,$currentbestone));
 
             });
         }
