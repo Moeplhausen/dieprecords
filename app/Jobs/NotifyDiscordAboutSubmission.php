@@ -24,7 +24,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
     protected $webhook_id;
     protected $webhook_token;
 
-    private $numberOfMaxRecordsPerHourDiscordSpam = 60;
+    private $numberOfMaxRecordsPerHourDiscordSpam = 10;
 
 
     /**
@@ -103,6 +103,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
                 $embedinfo1=['title'=>'Submission by __'.$submittername.'__ (id: '.$id.')',
                     'fields'=>$fields,
                     'image'=>['url'=>$image],
+                    'color'=>16776960
                 ];
 
                 array_push($embeds,$embedinfo1);
@@ -116,13 +117,14 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
                 $fields=[['name'=>'Submission id','value'=>$id,'inline'=>true],
                     ['name'=>'Action','value'=>$action,'inline'=>true],
                     ['name'=>'Gamemode','value'=>$gamemode,'inline'=>true],
-                    ['name'=>'Mobile','value'=>$mobile,'inline'=>true],
+                    ['name'=>'Tank','value'=>$tank,'inline'=>true],
                     ['name'=>'Score','value'=>$score,'inline'=>true],
                     ['name'=>'Manager','value'=>$manager,'inline'=>true],
                 ];
 
                 $embedinfo1=['title'=>'Submission by __'.$submittername.'__',
                     'fields'=>$fields,
+                    'color' =>$approved?65280:16711680
                 ];
                 array_push($embeds,$embedinfo1);
                 $postcontent=['embeds'=>$embeds];
