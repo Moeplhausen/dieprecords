@@ -116,7 +116,19 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
 
 
 
+
+
+
                 array_push($embeds,$embedinfo1);
+
+
+                if (count($proof->links)>1){
+                    array_push($embeds,[
+                        'color'=>16776960,
+                        'image'=>['url'=>$proof->links[count($proof->links)-1]->proof_link,
+                    ]]);
+                }
+
 
                 $postcontent=['embeds'=>$embeds,];
 
