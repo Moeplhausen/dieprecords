@@ -23,10 +23,11 @@ class ApiController extends Controller
 
     public function records(Request $request, $method = "json")
     {
-        if ($method == "json")
+        if ($method == "json"){
             return \GuzzleHttp\json_encode([
                 'desktop'=>RecordsController::getBestRecords(true),
                 'mobile'=>RecordsController::getBestRecords(false)]);
+        }
         elseif ($method == "markdown") {
             $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>false])->get();
             $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile'=>true])->get();
@@ -41,8 +42,6 @@ class ApiController extends Controller
 
     public function recordsByName(Request $request,$name="derp"){
         $data=app('App\Http\Controllers\RecordsController')->getRecordsByName($name);
-
-
 
         return \GuzzleHttp\json_encode([
            'current'=>$data['current'],

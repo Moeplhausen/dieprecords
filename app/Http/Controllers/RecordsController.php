@@ -82,8 +82,6 @@ ORDER BY numberOfRecords  DESC, name ASC");
     private function filterRecords($allrecords, $filterids)
     {
         $records = $allrecords->filter(function ($obj, $key) use ($filterids) {
-            // $obj->scorefull=$obj->score;
-            $obj->score = RecordsController::thousandsCurrencyFormat($obj->score);
             $id = $obj->id;
             return $filterids->contains($id);
         });
