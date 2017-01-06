@@ -305,7 +305,7 @@ Be aware that for a records with multiple proof-links we get a result each
             'proof' => [
                 'required',
                 'url',
-                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org|i\.gyazo\.com)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|giant\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org|i\.gyazo\.com)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
@@ -376,9 +376,9 @@ Be aware that for a records with multiple proof-links we get a result each
         //Deny if current record is higher or equal if exists
         if ($currentbestone && $currentbestone->score >= $request->score)
             if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"));
+                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"));
             else
-                return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone"]]);
+                return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"]]);
 
 
         //save original submitted proof url
@@ -448,7 +448,7 @@ Be aware that for a records with multiple proof-links we get a result each
         if ($apiRequest)
             return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
         else
-            return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.', $currentbestone]]);
+            return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.']]);
 
     }
 
