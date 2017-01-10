@@ -19,6 +19,7 @@ $(document).ready(function () {
     });
 
     function decideSubmission() {
+        $(".decisionbtnfucker").unbind('click');
         $('.decisionbtnfucker').click(function () {
             var proof_id = $(this).val();
             var element = $(this);
@@ -31,7 +32,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 url: DECIDESUBMISSIONURL,
-                data: {id: proof_id, answ: $(this).hasClass("approve-submission") | 0, score: scorenumber,name:name},
+                data: {id: proof_id, answ: $(this).hasClass("approve-submission") | 0, score: scorenumber,name:name,decided:1},
                 success: function (data, textStatus, xhr) {
                     //console.log(data);
                     console.log(xhr);

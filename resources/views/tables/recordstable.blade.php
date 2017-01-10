@@ -38,10 +38,15 @@
 
                 @foreach($gamemodes as $gamemode)
                     @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
-                        <td> {{-- Okay, we have a record for the gamemode. We wrap the other stuff (score and name) around a span to
+                        <td class="record-entry-table-td"> {{-- Okay, we have a record for the gamemode. We wrap the other stuff (score and name) around a span to
                                  display a tooltip which shows the score, who approved the record and when it was approved.
                                  If we don't know when it was approved, we only display the name
                               --}}
+                            @if(Auth::check())
+                                <input class="button-x-corner" score="{{$recordsbytankid[$pos]->scorefull}}"
+                                       submittername="{{$recordsbytankid[$pos]->name}}"
+                                       submission="{{$recordsbytankid[$pos]->proof_id}}" type="button" value="X">
+                            @endif
                             <span data-toggle="tooltip"
                                   data-html="true"
                                   data-placement="top"
@@ -73,7 +78,6 @@
                                          data-remote="{{$recordsbytankid[$pos]->links[$i]}}"></div>
                                 @endfor
                                 @endif
-
                             </span>
                         </td>
                         <td class="nodisplay">{{$recordsbytankid[$pos]->scorefull}}</td>

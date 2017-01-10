@@ -68,7 +68,12 @@ WHERE  proofs.decided = '0'
 
         //echo '<pre>'; print_r($submissions); echo '</pre>';
 
-        return view('submissions', ['submissionsDesktop' => $submissionsDesktop, 'submissionsMobile' => $submissionsMobile]);
+
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
+
+
+
+        return view('submissions', ['submissionsDesktop' => $submissionsDesktop, 'submissionsMobile' => $submissionsMobile,'tanks'=>$tanks]);
     }
 
     public function showRejections(){
@@ -101,6 +106,7 @@ WHERE  proofs.decided = '0'
 
         //make sure the manager actually sends a request as expected
         $validator = Validator::make($request->all(), [
+            'decided'=>'required|boolean',
             'answ' => 'required|boolean',
             'id' => 'required|integer',
             'score' => 'required|integer|between:0,999999999',
@@ -134,10 +140,10 @@ WHERE  proofs.decided = '0'
             $record->name = trim(strip_tags($request->input('name')));
             $record->save();
             $proof->approved = $request->input('answ');
-            $proof->decided = true;
+            $proof->decided = $request->input('decided');
             $proof->approver_id = Auth::user()->id;
             $proof->save();
-            if (!App::runningUnitTests())
+            if (!App::runningUnitTests()&& $proof->decided)
                 $this->dispatch(new NotifyDiscordAboutSubmission($record,false, false,null));
 
         });

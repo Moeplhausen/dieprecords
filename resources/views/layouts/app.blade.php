@@ -95,7 +95,6 @@
 
     var DECIDESUBMISSIONURL = "{{route('decidesubmission')}}"
 
-
     $(function () {
         $.ajaxSetup({
             headers: {

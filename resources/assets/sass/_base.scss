@@ -5,6 +5,16 @@ body {
   background-image: linear-gradient(rgba(0, 0, 0, 0.115), rgba(0, 0, 0, 0.115)), url("images/background.png");
 }
 
+.button-x-corner{
+  display:inline;
+  float:right;
+  top:0;
+  right:0;
+
+  color:red;
+  background-color: transparent;
+  border-color: transparent;
+}
 
 
 .nodisplay {
@@ -54,6 +64,7 @@ button, .tabletankscore, .tablebasicscore {
   text-shadow: none !important;
   color: black !important;
   font-weight: normal !important;
+  background-color:white !important;
 
 }
 

@@ -28,7 +28,9 @@
             data-target="#sbmrecord">Submit your record
     </div>
 </p>
+    <div id="alertsContainer">
 
+    </div>
 <p class="center diep-title-small">Desktop</p>
 {{-- Put the table with the Desktop records by gamemode here --}}
 @include('tables.recordstable',['tablename'=>'scoretableDesktop','allrecords'=>$allrecordsDesktop,'gamemodes'=>$gamemodesDesktop])
@@ -45,7 +47,37 @@
 
         function updateTableContents() {
             $('[data-toggle="tooltip"]').tooltip();
+            $(".button-x-corner").unbind('click');
+            $('.button-x-corner').click(function () {
+                console.log("click");
+                $(this).attr('disabled','true');
+                var proof_id = $(this).attr('submission');
+                var score=$(this).attr('submission');
+                var name=$(this).attr('submittername');
+
+                $.ajax({
+                    type: 'POST',
+                    url: DECIDESUBMISSIONURL,
+                    data: {id: proof_id, answ: 0, score: score,name:name,decided:0},
+                    success: function (data, textStatus, xhr) {
+                        //console.log(data);
+                        console.log(xhr);
+                        if (xhr.status == '200') {
+                            $('#alertsContainer').append("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" + data['msg'] + "<strong></div>")
+                        }
+                        else {
+                            $('#alertsContainer').append("<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" + data['msg'] + "<strong></div>")
+                        }
+                    }
+                });
+            })
+
+
         }
+
+
+
+
 
         $(document).ready(function () {
 

@@ -29,3 +29,5 @@ Route::get('/recordsByName/{name}', 'ApiController@recordsByName');
 Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
 Route::post('/submit/recordtest', 'ApiController@submittest');
 
+
+
