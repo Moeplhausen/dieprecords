@@ -11,6 +11,7 @@
             </th>{{-- The score is interpreted as a string on default. So we use an extra field for sorting --}}
             <th class="nodisplay">sortsubmissionscore</th>
             <th>Submitted link</th>
+            <th>Manager</th>
             <th>Submission Date</th>
 
         </tr>
@@ -18,7 +19,14 @@
         <tbody id="submissions-list" name="submissions-list">
         @foreach ($rejections as $rejection)
             <tr>
-                <td>{{$rejection[0]->name}}</td>{{-- Display the name of the submitter --}}
+                <td>
+                    @if(Auth::check())
+                        <input class="button-x-corner" score="{{$rejection[0]->score}}"
+                               submittername="{{$rejection[0]->name}}"
+                               submission="{{$rejection[0]->id}}" type="button" value="X">
+                    @endif
+                    {{$rejection[0]->name}}
+                </td>{{-- Display the name of the submitter --}}
                 <td><span style="white-space:nowrap">
                         <div class="scoretanksimage {{str_replace(" ","-",strtolower($rejection[0]->tankname))}}"></div> {{-- Display the image of the tank --}}
                         <span class="mobilehide">{{$rejection[0]->tankname}}</span> {{-- small devices should only show the image of the tank and not the name to save space --}}
@@ -30,6 +38,7 @@
                 </td>
                 <td class="nodisplay">{{$rejection[0]->score}}</td> {{-- The column to sort scores --}}
                 <td><a href="{{$rejection[0]->submittedlink}}">link</a></td>
+                <td>{{$rejection[0]->manager}}</td>
                 <td>{{$rejection[0]->submitted_at}}</td>
             </tr>
         @endforeach

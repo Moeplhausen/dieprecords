@@ -21,6 +21,7 @@
 @section('customscripts')
     <script>        $(document).ready(function () {
 
+
             {{--Initialize dynatable and make sure the columns we declared to use for sorting, interpret the scores as numbers and not as text --}}
                @foreach(array(
                 [$rejectionsDesktop,'#rejections-table-desktop'],
@@ -41,7 +42,10 @@
                     perPageDefault: 10,
                 },
                 @endif
+            }).bind('dynatable:afterUpdate', function (e, dynatable) {
+                updateTableContents(){{-- we must run this again whenever the search function was used because it messes things up --}}
             });
+            updateTableContents()
             @endforeach
 
             $('#recordsubmit').submit(function (event) {

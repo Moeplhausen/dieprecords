@@ -26,9 +26,11 @@ Route::get('/records/users/{name}', 'RecordsController@showRecordsByName');
 
 Route::get('/rejections', 'SubmissionsController@showrejections')->name('rejections');
 
+Route::get('/submissions', 'SubmissionsController@show')->name('submissions');
+
 
 Route::group(['middleware' => ['redirectGuests', 'auth.basic']], function () {
-    Route::get('/submissions', 'SubmissionsController@show')->name('submissions');
+
     Route::post('/decidesubmission', 'SubmissionsController@decide')->name('decidesubmission');
     Route::post('/logout', 'AuthController@logout')->name('logout');
 });

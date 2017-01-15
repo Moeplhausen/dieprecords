@@ -11,7 +11,9 @@
             </th>{{-- The score is interpreted as a string on default. So we use an extra field for sorting --}}
             <th class="nodisplay">sortsubmissionscore</th>
             <th>Proof</th>
-            <th>Actions</th>
+            @if(Auth::check())
+                <th>Actions</th>
+            @endif
         </tr>
         </thead>
         <tbody id="submissions-list" name="submissions-list">
@@ -52,14 +54,16 @@
                     @endfor
                     @endif
                 </td>
-                <td><span style="white-space:nowrap">
+                @if(Auth::check())
+                    <td><span style="white-space:nowrap">
                     <button class="btn btn-success btn-xs btn-detail decisionbtnfucker approve-submission"
                             value="{{$submission[0]->id}}">Approve
                     </button>
                     <button class="btn btn-danger btn-xs btn-delete decisionbtnfucker deny-submission"
                             value="{{$submission[0]->id}}">Deny
                     </button></span>
-                </td>
+                    </td>
+                @endif
             </tr>
         @endforeach
         </tbody>
