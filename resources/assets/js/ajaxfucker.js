@@ -22,11 +22,11 @@ $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         $(".button-x-corner").unbind('click');
         $('.button-x-corner').click(function () {
-            console.log("click");
             $(this).attr('disabled','true');
             var proof_id = $(this).attr('submission');
-            var score=$(this).attr('submission');
+            var score=$(this).attr('score');
             var name=$(this).attr('submittername');
+            console.log(score)
 
             $.ajax({
                 type: 'POST',
