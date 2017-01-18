@@ -18,10 +18,11 @@
 
 <p class="center diep-title-small">Mobile</p>
 @include('tables.submissionTable',['table_id'=>'submission-table-mobile','submissions'=>$submissionsMobile])
-
-<div class="exporter">
-    <a class="btn btn-xs btn-diep diep-gradient-red" href="{{route('apirecords')}}/markdown">Reddit Markdown</a>
-</div>
+@if(Auth::check())
+    <div class="exporter">
+        <a class="btn btn-xs btn-diep diep-gradient-red" href="{{route('apirecords')}}/markdown">Reddit Markdown</a>
+    </div>
+@endif
 
 
 @endsection
