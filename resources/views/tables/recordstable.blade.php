@@ -51,8 +51,8 @@
                                   data-html="true"
                                   data-placement="top"
                                   title="Submitted by: {{$recordsbytankid[$pos]->name}}<br>Score: {{number_format($recordsbytankid[$pos]->scorefull)}}<br>Approved by: {{$recordsbytankid[$pos]->approvername}}
-                                  @if(isset($recordsbytankid[$pos]->approvedDate))
-                                          <br>Date: <span class='approvedDateTooltip'>{{$recordsbytankid[$pos]->approvedDate}}</span>
+                                  @if(isset($recordsbytankid[$pos]->submittedDate))
+                                          <br>Date: <span class='approvedDateTooltip'>{{$recordsbytankid[$pos]->submittedDate}}</span>
                                   @endif
                                           ">
                                     {{--Okay, we got the tooltip done.
