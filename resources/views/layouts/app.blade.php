@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="_token" content="{{ csrf_token() }}">
     <meta name="description"
-          content="Unofficial World Records site for the browsergame http://diep.io. Submit your World Record here!">
+          content="World Records site for the browsergame http://diep.io. Submit your World Record here!">
     <meta name="keywords" content="diep.io, records, world records, WR">
     <meta name="rating" content="safe for kids">
     <meta name="no-email-collection" content="http://www.metatags.nl/nospamharvesting">

@@ -17,7 +17,6 @@ $(document).ready(function () {
             decideSubmission()// we must run this again whenever the search function was used because it messes things up or we go to another page
         });
     });
-
     function updateTableContents() {
         $('[data-toggle="tooltip"]').tooltip();
         $(".button-x-corner").unbind('click');
