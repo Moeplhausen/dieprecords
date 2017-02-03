@@ -25,6 +25,7 @@
 </head>
 <body>
 <div class="container">
+    <div class="alert alert-dismissible alert-warning" role="alert">Please make sure to read the <strong>new</strong> rules for your proof when submitting a record.<button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button></div>
     <nav class="navbar navbar-light">
         <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header"
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
@@ -101,7 +102,7 @@
             console.log("click");
             $(this).attr('disabled','true');
             var proof_id = $(this).attr('submission');
-            var score=$(this).attr('submission');
+            var score=$(this).attr('score');
             var name=$(this).attr('submittername');
 
             $.ajax({

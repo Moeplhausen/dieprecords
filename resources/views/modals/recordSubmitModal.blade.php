@@ -55,14 +55,12 @@
                                placeholder="http://imgur.com/a/euVO7"
                                aria-describedby="urlHelpBlock">
                         <p id="urlHelpBlock" class="form-text text-muted">
-                            Your proof (<strong>death screen & imgur gallery for tanks like Auto 3, "Trappers" and
-                                Triple Shot</strong>, which shows the score in regular intervals) must be a <strong>direct
-                                link</strong> to an <strong>uncropped</strong> image (or link to youtube.com or just an
-                            imgur-link). This
-                            means <strong>for images the link must end in .jpg, .png or .webm</strong> (Exception:
-                            Imgur-links)
+                            <strong>ALL SUBMISSIONS MUST NOW BE FULL RECORDINGS (uploaded to youtube or another video site) OR
+                            AN ALBUM OF SCREENSHOTS TAKEN AT VARIOUS INTERVALS ON THE ROAD TO A RECORD (e.g. one at 100K
+                                200K, 300K, 400K, or further spaced apart if it is a bigger record).</strong>
                             <br>Only the following hosts are allowed: youtube, i.redd.it, imgur, discordapp, zippy.gfycat, i.gyazo.com
-                            or sX.postimg.
+-                            or sX.postimg.
+
                         </p>
                     </div>
                     <button type="submit" id="recordsubmitbtn" class="btn btn-primary">Submit</button>
