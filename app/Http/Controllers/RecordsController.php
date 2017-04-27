@@ -371,14 +371,24 @@ Be aware that for a records with multiple proof-links we get a result each
         else
             $currentbestone=null;
 
-
-
         //Deny if current record is higher or equal if exists
         if ($currentbestone && $currentbestone->score >= $request->score)
             if ($apiRequest)
                 return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"));
             else
                 return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"]]);
+
+
+
+
+        //Deny if there are too many open submission for this ip
+        $matchThese = [
+            'proofs.approved' => '0',
+            'records.ip_address' => $request->ip()];
+        $currentopensubsbyip=DB::table('records')->join('proofs','records.id', '=', 'proofs.id')->select('*')->where($matchThese)->count();
+        if ($currentopensubsbyip>15){
+            return redirect('/')->withInput()->withErrors(array('message' => 'Too many open submissions from you :('));
+        }
 
 
         //save original submitted proof url
