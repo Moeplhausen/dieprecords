@@ -27,6 +27,9 @@
     <div class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
             data-target="#sbmrecord">Submit your record
     </div>
+    <div class="discord-lini">
+        <div class="discord-widget"></div>
+    </div>
 </p>
     <div id="alertsContainer">
 
@@ -47,6 +50,7 @@
 
 
         $(document).ready(function () {
+
 
             {{--Initialize dynatable and make sure the columns we declared to use for sorting, interpret the scores as numbers and not as text --}}
                         @foreach(array(
