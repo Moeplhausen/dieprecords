@@ -383,7 +383,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
         //Deny if there are too many open submission for this ip
         $matchThese = [
-            'proofs.approved' => '0',
+            'proofs.decided' => '0',
             'records.ip_address' => $request->ip()];
         $currentopensubsbyip=DB::table('records')->join('proofs','records.id', '=', 'proofs.id')->select('*')->where($matchThese)->count();
         if ($currentopensubsbyip>15){
