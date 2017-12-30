@@ -455,6 +455,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
             });
         }
+
         if ($apiRequest)
             return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
         else
@@ -499,19 +500,37 @@ Be aware that for a records with multiple proof-links we get a result each
     function getImgurDirectLinks($id)
     {
 
-        $imageApi = $this->imgur->getApi("AlbumOrImage");
+        $imageApi = $this->imgur->getApi("albumOrImage");
 
         $return = array();
         $imglinkarray = $imageApi->find($id);
 
-        if (0 === strpos($imglinkarray['link'], 'http://i.')) {//directimage
+        var_dump($imglinkarray);
+
+        $isAlbum=false;
+
+
+        try {
+            $test=$this->imgur->getApi("album")->album($id);
+            $imglinkarray=$test;
+            $isAlbum=true;
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+
+
+        if (!$isAlbum) {//directimage
             array_push($return, str_replace("http://", "https://", $imglinkarray['link']));
         } else {
             for ($i = 0; $i < count($imglinkarray['images']); $i++) {
                 array_push($return, str_replace("http://", "https://", $imglinkarray['images'][$i]['link']));
             }
         }
-        return $return;
+         return $return;
     }
 
 
