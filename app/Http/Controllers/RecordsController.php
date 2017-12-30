@@ -256,7 +256,7 @@ Afterwards we join the result with scores again to get the other collumns of the
 Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
 Be aware that for a records with multiple proof-links we get a result each
 */
-        $records = DB::select('SELECT * FROM besttanksview WHERE mobile=' . ($desktop ? '0' : 1) . ' ORDER BY tankname,gamemode_id, prooflink_id');
+        $records = DB::select('SELECT * FROM besttanksview WHERE mobile=' . ($desktop ? '0' : 1) . ' AND tank_enabled=1 ORDER BY tankname,gamemode_id, prooflink_id');
         /*
  * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
  */
@@ -504,8 +504,6 @@ Be aware that for a records with multiple proof-links we get a result each
 
         $return = array();
         $imglinkarray = $imageApi->find($id);
-
-        var_dump($imglinkarray);
 
         $isAlbum=false;
 
