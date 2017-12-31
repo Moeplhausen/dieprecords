@@ -149,9 +149,11 @@ SELECT record.id, record.name,record.score,tanks.tankname AS tank,record.created
        INNER JOIN tanks
                ON record.tank_id = tanks.id $gamemodeMobileSQLClase
                
-ORDER  BY score DESC
+ORDER  BY score ASC
           ");
-
+        foreach ($tankhistory as $record) {
+            $record->scorefull = RecordsController::thousandsCurrencyFormat($record->score);
+        }
 
 
         return ['input'=>['tankid'=>$tankid,'gamemodeid'=>$gamemodeid,'desktop'=>$desktop],'data'=>$tankhistory,'test'=>count($tankhistory)];
