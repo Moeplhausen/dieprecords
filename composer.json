@@ -15,7 +15,8 @@
         "drmonty/ekko-lightbox": "^5.0",
         "j0k3r/php-imgur-api-client": "^3.0.0",
         "guzzlehttp/guzzle": "^6.2",
-        "barryvdh/laravel-cors": "^0.10.0"
+        "barryvdh/laravel-cors": "^0.10.0",
+	"moeplhausen/imgurlaravel": "^1.0.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

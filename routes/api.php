@@ -26,6 +26,8 @@ Route::get('/records/{method}', 'ApiController@records');
 Route::get('/recordsByName/{name}', 'ApiController@recordsByName');
 
 
+Route::get('/history/{tankid}/{gamemode}/{desktop}', 'ApiController@history');
+
 Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
 Route::post('/submit/recordtest', 'ApiController@submittest');
 

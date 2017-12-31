@@ -49,6 +49,15 @@ class ApiController extends Controller
         ]);
     }
 
+    public function history(Request $request,$tankid=1,$gamemode=4,$desktop=true){
+        $data=app('App\Http\Controllers\RecordsController')->getTankHistory($tankid,$gamemode,$desktop);
+
+        return \GuzzleHttp\json_encode([
+            'tankhistory'=>$data,
+        ]);
+    }
+
+
     public function submit(Request $request){
 
         return app('App\Http\Controllers\RecordsController')->submit($request, true,true);

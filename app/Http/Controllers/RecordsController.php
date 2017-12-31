@@ -138,6 +138,25 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
     }
 
+    public function getTankHistory($tankid,$gamemodeid,$desktop){
+
+        $gamemodeMobileSQLClase = ' WHERE gamemodes.mobile=' . ($desktop ? '0' : 1) . ' ';
+        $tankhistory = DB::select("
+SELECT record.id, record.name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
+        FROM   (SELECT records.*,proofs.submittedlink FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid) AS record 
+       INNER JOIN gamemodes 
+               ON record.gamemode_id = gamemodes.id 
+       INNER JOIN tanks
+               ON record.tank_id = tanks.id $gamemodeMobileSQLClase
+               
+ORDER  BY score DESC
+          ");
+
+
+
+        return ['input'=>['tankid'=>$tankid,'gamemodeid'=>$gamemodeid,'desktop'=>$desktop],'data'=>$tankhistory,'test'=>count($tankhistory)];
+    }
+
 
     public function showRecordsByName($name)
     {
