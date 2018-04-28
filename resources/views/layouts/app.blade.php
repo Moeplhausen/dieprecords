@@ -42,7 +42,7 @@
                    href={{route('info')}}>
                     API
                 </a>
-                                <a class="btn btn-primary btn-lg btn-diep diep-gradient-yellow"
+                                <a class="btn btn-primary btn-lg btn-diep diep-gradient-green"
                                    href={{route('top100')}}>
                     TOP100
                 </a>

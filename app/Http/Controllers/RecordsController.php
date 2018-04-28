@@ -183,10 +183,7 @@ ORDER  BY score ASC
 
     public function showTOP100Records()
     {
-        //we need all tank names and ids to show them in the form where to submit a new score
-        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
-        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 0])->get();
-        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
+
 
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
             return Cache::remember('top100', 10, function () {
@@ -199,7 +196,10 @@ ORDER  BY score ASC
             });
         }
         $data = $this->getTOP100Records();
-
+        //we need all tank names and ids to show them in the form where to submit a new score
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
+        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 0])->get();
+        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
 
         return view('top100', ['tanknames' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'topRecords' => $data->data]);
 
@@ -213,7 +213,7 @@ ORDER  BY score ASC
         /*
 * Get Best Tanks when you sum the gamemodes up
 */
-        $topRecords = DB::select("SELECT validrecordsview.id, validrecordsview.name,users.name as approvername,validrecordsview.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM validrecordsview inner join proofs on validrecordsview.id=proofs.id INNER JOIN tanks on validrecordsview.tank_id=tanks.id INNER JOIN gamemodes ON validrecordsview.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY score DESC LIMIT 100");
+        $topRecords = DB::select("SELECT approvedrecords.id, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`id`  DESC LIMIT 100");
         for ($i = 0; $i < count($topRecords); $i++) {
             $record = $topRecords[$i];
             $record->row = $i + 1;
@@ -451,7 +451,7 @@ Be aware that for a records with multiple proof-links we get a result each
         if ($worldRecordSubmission && $currentbestone && $currentbestone->score >= $request->score) {
             $worldRecordSubmission = false;
 
-            $top100Record = DB::select("SELECT validrecordsview.name,validrecordsview.score,gamemodes.name as gamemode,tanks.tankname as tank FROM validrecordsview inner join proofs on validrecordsview.id=proofs.id INNER JOIN tanks on validrecordsview.tank_id=tanks.id INNER JOIN gamemodes ON validrecordsview.gamemode_id=gamemodes.id WHERE gamemodes.mobile=0 AND validrecordsview.world_record=1 ORDER BY score DESC LIMIT 99,1");
+            $top100Record = DB::select("SELECT approvedrecords.id, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`id`  DESC LIMIT 99,1");
 
             if ($gamemodeinfo->mobile == true or ($top100Record && $request->score < $top100Record[0]->score))
                 if ($apiRequest)
