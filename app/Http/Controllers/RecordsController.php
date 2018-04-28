@@ -189,7 +189,11 @@ ORDER  BY score ASC
         $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
 
         if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
-            return Cache::remember('statistics', 10, function () {
+            return Cache::remember('top100', 10, function () {
+                //we need all tank names and ids to show them in the form where to submit a new score
+                $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
+                $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 0])->get();
+                $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
                 $data = $this->getTOP100Records();
                 return view('top100', ['tanknames' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'topRecords' => $data->data])->render();
             });
@@ -451,7 +455,7 @@ Be aware that for a records with multiple proof-links we get a result each
 
             if ($gamemodeinfo->mobile == true or ($top100Record && $request->score < $top100Record[0]->score))
                 if ($apiRequest)
-                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the 100 list."));
+                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the Top 100 list."));
                 else
                     return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the 100 list."]]);
 
