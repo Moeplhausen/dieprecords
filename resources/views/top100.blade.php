@@ -1,15 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Diep.io TOP100 Recods')
+@section('title', 'Diep.io TOP100 Records')
 
 
 @section('content')
     @include('errors.common')
 
-
-
-    {{--  To make this file a bit more readable. The actual modal to submit records is in another file --}}
-    @include('modals.recordSubmitModal',['gamemodesDesktop'=>$gamemodesDesktop,'gamemodesMobile'=>$gamemodesMobile,'tanknames'=>$tanknames])
 
 
     <p class="center diep-title">Diep.io Top 100 Records</p>
@@ -24,12 +20,7 @@
 
 
     <p>
-    <div class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
-         data-target="#sbmrecord">Submit your score
-    </div>
-    <div class="discord-lini">
-        <div class="discord-widget"></div>
-    </div>
+
     </p>
     <div id="alertsContainer">
 
