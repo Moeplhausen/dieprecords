@@ -65,7 +65,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
             'ip_address' => $record->ip_address])->get()->count();
 
 
-        if ($recordsnumber <= $this->numberOfMaxRecordsPerHourDiscordSpam && $this->webhook_id && $this->webhook_token) {
+        if ($recordsnumber <= $this->numberOfMaxRecordsPerHourDiscordSpam && $this->webhook_id && $this->webhook_token && $record->world_record==1) {
             $postcontent = null;
 
             $proof = $this->record->proof;

@@ -127,13 +127,13 @@ WHERE  proofs.decided = '0'
 
 
         $record = Records::find($proof->id);
-
+/*
 
         $oldrecord = Records::join('proofs', 'proofs.id', '=', 'records.id')->where([['proofs.approved', 1], ['records.score', $request->input('score')], ['records.tank_id', $record->tank_id], ['records.gamemode_id', $record->gamemode_id], ['records.id', '<>', $record->id]])->first();
         if ($oldrecord && $request->input('answ')) {
             return response()->json(array('msg' => 'There already is an record with the same score. I cannot approve this!', 'err' => $validator->messages()->toJson(), 'input' => $input), 202);
         }
-
+*/
         //The proof has been decided and will be saved.
         DB::transaction(function () use ($proof, $request, $record) {
             $record->score = $request->input('score');

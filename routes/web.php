@@ -12,6 +12,10 @@
 */
 
 Route::get('/', 'RecordsController@showRecords')->name('records');
+
+Route::get('/top100', 'RecordsController@showTOP100Records')->name('top100');
+
+
 Route::get('/info', function () {
     return view('apiInfo');
 })->name('info');

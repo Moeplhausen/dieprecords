@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
-use DB;
 use App;
-use App\Tanks;
 use App\Gamemodes;
+use App\Http\Requests;
 use App\Proofs;
 use App\Records;
+use App\Tanks;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
-
-use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 use Kurt\Imgur\Imgur;
 
 class RecordsController extends Controller
@@ -44,6 +42,7 @@ class RecordsController extends Controller
         $data = $this->getBestTanksAndUsersData();
 
         return view('statistics', ['bestTanksDestkop' => $data->sumBestTanksDesktop, 'bestSubmittersDesktop' => $data->bestSubmittersDesktop]);
+
     }
 
 
@@ -53,7 +52,7 @@ class RecordsController extends Controller
         /*
         * Get Best Tanks when you sum the gamemodes up
         */
-        $sumBestTanksDesktop = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT besttanksview.record_id AS record_id,besttanksview.tankname AS tankname,besttanksview.tank_id AS tank_id,besttanksview.score AS score FROM besttanksview WHERE besttanksview.mobile='0') best GROUP BY tankname  ORDER BY totalScore DESC ");
+        $sumBestTanksDesktop = DB::select("SELECT best.tankname,sum(best.score) AS totalScore FROM (SELECT DISTINCT besttanksview.record_id AS record_id,besttanksview.tankname AS tankname,besttanksview.tank_id AS tank_id,besttanksview.score AS score FROM besttanksview WHERE besttanksview.world_record=1 AND besttanksview.mobile='0') best GROUP BY tankname   ORDER BY totalScore DESC ");
         for ($i = 0; $i < count($sumBestTanksDesktop); $i++) {
             $record = $sumBestTanksDesktop[$i];
             $record->row = $i + 1;
@@ -63,7 +62,7 @@ class RecordsController extends Controller
 
         $bestSubmittersDesktop = DB::select("
 SELECT recordholders.name AS name,COUNT(recordholders.name) AS numberOfRecords,MAX(recordholders.score) AS maxScore 
-FROM (SELECT DISTINCT record_id,name,score FROM besttanksview WHERE besttanksview.mobile='0') recordholders
+FROM (SELECT DISTINCT record_id,name,score FROM besttanksview WHERE besttanksview.world_record=1 AND besttanksview.mobile='0') recordholders
 GROUP BY recordholders.name
 ORDER BY numberOfRecords  DESC, name ASC");
 
@@ -93,7 +92,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
         $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->get()->pluck('record_id');
 
 
-        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT id FROM approvedrecords WHERE name=? AND id NOT IN (SELECT record_id FROM besttanksview WHERE name=?)", [$name, $name]));
+        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT id FROM approvedrecords WHERE name=? AND id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
 
         /*
         echo '<pre>';
@@ -138,12 +137,13 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
     }
 
-    public function getTankHistory($tankid,$gamemodeid,$desktop){
+    public function getTankHistory($tankid, $gamemodeid, $desktop)
+    {
 
         $gamemodeMobileSQLClase = ' WHERE gamemodes.mobile=' . ($desktop ? '0' : 1) . ' ';
         $tankhistory = DB::select("
 SELECT record.id, record.name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
-        FROM   (SELECT records.*,proofs.submittedlink FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid) AS record 
+        FROM   (SELECT records.*,proofs.submittedlink FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid AND records.world_record=1) AS record 
        INNER JOIN gamemodes 
                ON record.gamemode_id = gamemodes.id 
        INNER JOIN tanks
@@ -156,7 +156,7 @@ ORDER  BY score ASC
         }
 
 
-        return ['input'=>['tankid'=>$tankid,'gamemodeid'=>$gamemodeid,'desktop'=>$desktop],'data'=>$tankhistory,'test'=>count($tankhistory)];
+        return ['input' => ['tankid' => $tankid, 'gamemodeid' => $gamemodeid, 'desktop' => $desktop], 'data' => $tankhistory, 'test' => count($tankhistory)];
     }
 
 
@@ -178,6 +178,48 @@ ORDER  BY score ASC
 
 
         return view('records', ["tanknames" => $recordsdata->tanks, "allrecordsDesktop" => $recordsdata->recordsDesktop, "allrecordsMobile" => $recordsdata->recordsMobile, 'gamemodesDesktop' => $recordsdata->gamemodesDesktop, 'gamemodesMobile' => $recordsdata->gamemodesMobile]);
+    }
+
+
+    public function showTOP100Records()
+    {
+        //we need all tank names and ids to show them in the form where to submit a new score
+        $tanks = \App\Tanks::orderBy('tankname', 'asc')->where(['enabled' => 1])->get();
+        $gamemodesDesktop = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 0])->get();
+        $gamemodesMobile = \App\Gamemodes::orderBy('id', 'asc')->where(['mobile' => 1])->get();
+
+        if (Auth::guest() && !App::isLocal() && !App::runningUnitTests()) {
+            return Cache::remember('statistics', 10, function () {
+                $data = $this->getTOP100Records();
+                return view('top100', ['tanknames' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'topRecords' => $data->data])->render();
+            });
+        }
+        $data = $this->getTOP100Records();
+
+
+        return view('top100', ['tanknames' => $tanks, 'gamemodesDesktop' => $gamemodesDesktop, 'gamemodesMobile' => $gamemodesMobile, 'topRecords' => $data->data]);
+
+    }
+
+
+    private function getTOP100Records()
+    {
+
+
+        /*
+* Get Best Tanks when you sum the gamemodes up
+*/
+        $topRecords = DB::select("SELECT validrecordsview.id, validrecordsview.name,users.name as approvername,validrecordsview.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM validrecordsview inner join proofs on validrecordsview.id=proofs.id INNER JOIN tanks on validrecordsview.tank_id=tanks.id INNER JOIN gamemodes ON validrecordsview.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY score DESC LIMIT 100");
+        for ($i = 0; $i < count($topRecords); $i++) {
+            $record = $topRecords[$i];
+            $record->row = $i + 1;
+            $record->scorefull = $record->score;
+            $record->score = $this->thousandsCurrencyFormat($record->score);
+        }
+
+
+        return (object)array('data' => $topRecords);
+
     }
 
 
@@ -242,13 +284,13 @@ SELECT DISTINCT
                 sortedrecords.score AS score, 
                 gamemodes.name    AS gamemode
 FROM   (SELECT record.* 
-        FROM   (SELECT records.* FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1') record 
+        FROM   (SELECT records.* FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1' AND records.world_record=1) record 
                INNER JOIN (SELECT DISTINCT gamemode_id, 
                                   Max(score) AS score 
                            FROM   records 
                                   INNER JOIN proofs 
                                           ON records.id = proofs.id 
-                           WHERE  proofs.approved = '1' 
+                           WHERE  proofs.approved = '1' AND records.world_record=1
                            GROUP  BY
                                      gamemode_id) grouprecord 
                        ON record.gamemode_id = grouprecord.gamemode_id 
@@ -277,10 +319,12 @@ Afterwards we join the result with scores again to get the other collumns of the
 Now we only join them with the other tables to get infos like the actual name of the tank, gamemode and proof-link
 Be aware that for a records with multiple proof-links we get a result each
 */
-        $records = DB::select('SELECT * FROM besttanksview WHERE mobile=' . ($desktop ? '0' : 1) . ' AND tank_enabled=1 ORDER BY tankname,gamemode_id, prooflink_id');
+        $records = DB::select('SELECT * FROM besttanksview WHERE mobile=' . ($desktop ? '0' : 1) . ' AND tank_enabled=1 AND world_record=1 ORDER BY tankname,gamemode_id, prooflink_id');
         /*
  * To easily display them on a page, we want to format the score and make sure that we only have x submissions for x gamemodes in a row
  */
+
+
         for ($i = 0; $i < count($records); $i++) {
             $record = $records[$i];
 
@@ -312,11 +356,18 @@ Be aware that for a records with multiple proof-links we get a result each
         //echo '<pre>'; print_r($records); echo '</pre>';
         //now group this array by tank_id to make it simply to put it in a table.
         $records = collect($records)->groupBy('tank_id');
+
+
+/*        echo '<pre>';
+        print_r($records);
+        echo '</pre>';*/
+
+
         return $records;
     }
 
 
-    public function submit(Request $request, $apiRequest = false, $shouldwritetodatabase = true)
+    public function submit(Request $request, $apiRequest = false, $shouldWriteToDatabase = true, $worldRecordSubmission = true)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -341,9 +392,9 @@ Be aware that for a records with multiple proof-links we get a result each
 
 
         //Check if proof is video or not
-        $video=false;
+        $video = false;
         if (preg_match("~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?~x", $request->proof)) {
-            $video=true;
+            $video = true;
         }
 
 
@@ -387,27 +438,32 @@ Be aware that for a records with multiple proof-links we get a result each
         $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
         $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where('score', $currentbestone)->get();
 
-        if ($currentbestone && count($currentbestone)>0)
-            $currentbestone=$currentbestone[0];
+        if ($currentbestone && count($currentbestone) > 0)
+            $currentbestone = $currentbestone[0];
         else
-            $currentbestone=null;
+            $currentbestone = null;
 
         //Deny if current record is higher or equal if exists
-        if ($currentbestone && $currentbestone->score >= $request->score)
-            if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"));
-            else
-                return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score"]]);
+        if ($worldRecordSubmission && $currentbestone && $currentbestone->score >= $request->score) {
+            $worldRecordSubmission = false;
 
+            $top100Record = DB::select("SELECT validrecordsview.name,validrecordsview.score,gamemodes.name as gamemode,tanks.tankname as tank FROM validrecordsview inner join proofs on validrecordsview.id=proofs.id INNER JOIN tanks on validrecordsview.tank_id=tanks.id INNER JOIN gamemodes ON validrecordsview.gamemode_id=gamemodes.id WHERE gamemodes.mobile=0 AND validrecordsview.world_record=1 ORDER BY score DESC LIMIT 99,1");
 
+            if ($gamemodeinfo->mobile == true or ($top100Record && $request->score < $top100Record[0]->score))
+                if ($apiRequest)
+                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the 100 list."));
+                else
+                    return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the 100 list."]]);
+
+        }
 
 
         //Deny if there are too many open submission for this ip
         $matchThese = [
             'proofs.decided' => '0',
             'records.ip_address' => $request->ip()];
-        $currentopensubsbyip=DB::table('records')->join('proofs','records.id', '=', 'proofs.id')->select('*')->where($matchThese)->count();
-        if ($currentopensubsbyip>15){
+        $currentopensubsbyip = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->count();
+        if ($currentopensubsbyip > 15) {
             return redirect('/')->withInput()->withErrors(array('message' => 'Too many open submissions from you :('));
         }
 
@@ -447,8 +503,8 @@ Be aware that for a records with multiple proof-links we get a result each
 
 
         //Everything seems fine, let us add them
-        if ($shouldwritetodatabase) {
-            DB::transaction(function () use ($request, $orgProof,$currentbestone,$video) {
+        if ($shouldWriteToDatabase) {
+            DB::transaction(function () use ($request, $orgProof, $currentbestone, $video, $worldRecordSubmission) {
 
 
                 $record = new Records();
@@ -457,6 +513,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 $record->tank_id = $request->selectclass;
                 $record->gamemode_id = $request->gamemode_id;
                 $record->ip_address = $request->ip();
+                $record->world_record = $worldRecordSubmission ? 1 : 0;
                 $record->save();
 
                 $proof = new Proofs();
@@ -472,7 +529,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 }
 
                 if (!App::runningUnitTests())
-                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record,$video, true,$currentbestone));
+                    $this->dispatch(new App\Jobs\NotifyDiscordAboutSubmission($record, $video, true, $currentbestone));
 
             });
         }
@@ -526,20 +583,16 @@ Be aware that for a records with multiple proof-links we get a result each
         $return = array();
         $imglinkarray = $imageApi->find($id);
 
-        $isAlbum=false;
+        $isAlbum = false;
 
 
         try {
-            $test=$this->imgur->getApi("album")->album($id);
-            $imglinkarray=$test;
-            $isAlbum=true;
+            $test = $this->imgur->getApi("album")->album($id);
+            $imglinkarray = $test;
+            $isAlbum = true;
         } catch (\Exception $e) {
 
         }
-
-
-
-
 
 
         if (!$isAlbum) {//directimage
@@ -549,7 +602,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 array_push($return, str_replace("http://", "https://", $imglinkarray['images'][$i]['link']));
             }
         }
-         return $return;
+        return $return;
     }
 
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBestTanksView extends Migration
+class AddWorldRecordFlag extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,17 @@ class CreateBestTanksView extends Migration
      */
     public function up()
     {
+        Schema::table('records', function (Blueprint $table) {
+            $table->integer('world_record')->default(1)->after('name');
+        });
+
+        DB::statement("DROP  VIEW IF EXISTS besttanksview");
+        DB::statement("DROP  VIEW IF EXISTS validrecordsview");
+        DB::statement("DROP  VIEW IF EXISTS validrecordsviewbasicmax");
+        DB::statement("DROP  VIEW IF EXISTS approvedrecords");
 
 
         DB::statement("CREATE VIEW approvedrecords as SELECT distinct records.* from records inner join proofs on records.id=proofs.id where proofs.approved='1'");
-
         DB::statement("CREATE VIEW validrecordsviewbasicmax AS SELECT DISTINCT gamemode_id, 
                                   tank_id, 
                                   Max(score) AS score 
@@ -25,9 +32,8 @@ class CreateBestTanksView extends Migration
                                           ON records.id = proofs.id 
                            WHERE  proofs.approved = '1' 
                            GROUP  BY tank_id, 
-                                     gamemode_id");
-
-
+                                     gamemode_id, 
+                                     world_record");
         DB::statement("CREATE VIEW validrecordsview AS select record.* from approvedrecords record 
                INNER JOIN validrecordsviewbasicmax grouprecord 
                        ON record.gamemode_id = grouprecord.gamemode_id 
@@ -35,17 +41,22 @@ class CreateBestTanksView extends Migration
                           AND record.score = grouprecord.score");
 
 
-        DB::statement("CREATE VIEW bestTanksView AS SELECT DISTINCT 
+        DB::statement("CREATE VIEW besttanksview AS SELECT DISTINCT 
                 sortedrecords.id AS record_id,
                 sortedrecords.name AS name, 
                 sortedrecords.score AS score, 
-                sortedrecords.tank_id AS tank_id, 
+                sortedrecords.tank_id AS tank_id,
                 tanks.tankname AS tankname, 
+                tanks.enabled AS tank_enabled,
                 sortedrecords.gamemode_id AS gamemode_id, 
                 gamemodes.name    AS gamemode, 
+                gamemodes.mobile AS mobile,
+                sortedrecords.world_record AS world_record,
                 users.name AS approvername,
                 proofs.id AS proof_id,
+                proofs.submittedlink as submittedlink,
                 proofs.updated_at AS approvedDate,
+                proofs.created_at AS submittedDate,
                 prooflinks.id AS prooflink_id,
                 prooflinks.proof_link AS link
 FROM   validrecordsview AS sortedrecords 
@@ -59,11 +70,13 @@ FROM   validrecordsview AS sortedrecords
                ON proofs.approver_id = users.id
        INNER JOIN prooflinks
                ON proofs.id=prooflinks.proof_id
-ORDER  BY tank_id, 
+ORDER  BY tanks.tankname, 
           gamemode_id,
           prooflink_id");
-    }
 
+
+
+    }
 
     /**
      * Reverse the migrations.
@@ -72,10 +85,15 @@ ORDER  BY tank_id,
      */
     public function down()
     {
-        DB::statement("DROP  VIEW IF EXISTS bestTanksView");
+
+        DB::statement("DROP  VIEW IF EXISTS besttanksview");
         DB::statement("DROP  VIEW IF EXISTS validrecordsview");
         DB::statement("DROP  VIEW IF EXISTS validrecordsviewbasicmax");
         DB::statement("DROP  VIEW IF EXISTS approvedrecords");
 
+
+        Schema::table('records', function (Blueprint $table) {
+            $table->dropColumn('world_record');
+        });
     }
 }

@@ -34,10 +34,18 @@
                     As a consequence, we need to initialize a counter to make sure we print the records we have into the correct column.
                     If we don't have a record for the gamemode, we create two empty columns.
                 --}}
-                <?php $pos = 0 ?>
+                <?php $pos = 0; $lastGamemodeId = -1; ?>
+
 
                 @foreach($gamemodes as $gamemode)
+                    {{--
+                        If there are multiple records with the same score (same gamemode, tank), we skip the ones after the first
+                    --}}
+                    @while($recordsbytankid[$pos]->gamemode_id==$lastGamemodeId)
+                        <?php  $pos++  ?>
+                    @endwhile
                     @if( isset($recordsbytankid[$pos]) and $recordsbytankid[$pos]->gamemode_id==$gamemode->id)
+                        <?php $lastGamemodeId = $gamemode->id; ?>
                         <td class="record-entry-table-td"> {{-- Okay, we have a record for the gamemode. We wrap the other stuff (score and name) around a span to
                                  display a tooltip which shows the score, who approved the record and when it was approved.
                                  If we don't know when it was approved, we only display the name
