@@ -89,7 +89,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
     public function getRecordsByName($name)
     {
-        $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->get()->pluck('record_id');
+        $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->where('world_record',1)->get()->pluck('record_id');
 
 
         $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT id FROM approvedrecords WHERE name=? AND id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
@@ -114,7 +114,8 @@ ORDER BY numberOfRecords  DESC, name ASC");
             ->join('proofs', 'proofs.id', '=', 'records.id')
             ->join('gamemodes', 'gamemodes.id', '=', 'records.gamemode_id')
             ->join('tanks', 'tanks.id', '=', 'records.tank_id')
-            ->where('records.name', 'like', $name)->orderBy('tank')->get();
+            ->where('records.name', 'like', $name)
+            ->where('records.world_record',1)->orderBy('tank')->get();
 
 
         foreach ($allrecords as $record) {
