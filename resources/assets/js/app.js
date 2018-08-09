@@ -1,3 +1,4 @@
+window.Popper = require('popper.js').default;
 window.$ = window.jQuery = require('expose?$!expose?jQuery!jquery');
 window.Tether =  require('expose?Tether!tether');
 

@@ -5,14 +5,15 @@
     "dev": "gulp watch"
   },
   "devDependencies": {
-    "bootstrap": "=4.0.0-alpha.4",
-    "bootstrap-select": "^1.12.4",
-    "expose-loader": "^0.7.4",
-    "gulp": "^3.9.1",
-    "jquery": "^3.2.1",
+    "bootstrap": "^=3.3.7",
+    "bootstrap-select": "^1.13.1",
+    "popper.js": "^1.14.4",
+    "expose-loader": "=0.7.4",
+    "gulp": "=3.9.1",
+    "jquery": "=3.2.1",
     "laravel-elixir": "^6.0.0-17",
     "laravel-elixir-webpack-official": "^1.0.2",
-    "tether": "^1.4.3"
+    "tether": "=1.4.3"
   },
   "dependencies": {}
 }
