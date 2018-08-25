@@ -522,6 +522,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 $record->save();
 
                 $proof = new Proofs();
+                $proof->id = $record->id;
                 $proof->submittedlink = $orgProof;
                 $proof->approved = false;
                 $proof->save();
