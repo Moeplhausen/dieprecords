@@ -214,7 +214,7 @@ ORDER  BY score ASC
         /*
 * Get Best Tanks when you sum the gamemodes up
 */
-        $topRecords = DB::select("SELECT approvedrecords.id, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`score`  DESC LIMIT 100");
+        $topRecords = DB::select("SELECT approvedrecords.id, approvedrecords.world_record, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`score`  DESC LIMIT 100");
         for ($i = 0; $i < count($topRecords); $i++) {
             $record = $topRecords[$i];
             $record->row = $i + 1;

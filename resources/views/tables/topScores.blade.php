@@ -25,7 +25,7 @@
                 --}}
                 <td>
                     <div class="tanksandname">
-                        <span class="scoretanksimage {{str_replace(" ","-",strtolower($besttank->tank))}}">
+                        <span class="scoretanksimage {{str_replace(" ","-",strtolower($besttank->tank))}}{{$besttank->world_record?'-tier5':''}}">
                         </span>
                         <span class="mobilehide">{{$besttank->tank}}
                         </span>
