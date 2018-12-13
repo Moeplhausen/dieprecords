@@ -25,7 +25,7 @@
                            required>{{--  Display the name of the submitter To allow managers to easily change the name because the submitter typed some garbage --}}
                 </td>{{-- Display the name of the submitter --}}
                 <td><span style="white-space:nowrap">
-                        <div class="scoretanksimage {{str_replace(" ","-",strtolower($submission[0]->tankname))}}"></div> {{-- Display the image of the tank --}}
+                        <div class="scoretanksimage {{str_replace(" ","-",strtolower($submission[0]->tankname))}}{{$submission[0]->world_record?'-tier5':''}}"></div> {{-- Display the image of the tank --}}
                         <span class="mobilehide">{{$submission[0]->tankname}}</span> {{-- small devices should only show the image of the tank and not the name to save space --}}
                     </span>
                 </td>

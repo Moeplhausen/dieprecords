@@ -15,5 +15,7 @@
     "laravel-elixir-webpack-official": "^1.0.2",
     "tether": "=1.4.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "dev": "^0.1.3"
+  }
 }

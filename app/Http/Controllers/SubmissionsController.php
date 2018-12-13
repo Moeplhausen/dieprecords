@@ -26,7 +26,8 @@ class SubmissionsController extends Controller
         $submissionsDesktop = DB::select("
 SELECT proofs.id AS id, 
        proofs.submittedlink as submittedlink,
-       records.name AS name, 
+       records.name AS name,
+       records.world_record as world_record,  
        records.score AS score, 
        tanks.id       AS tank_id, 
        tanks.tankname AS tankname, 
@@ -46,7 +47,7 @@ WHERE   proofs.decided = '0'
         $submissionsMobile = DB::select("
 SELECT proofs.id AS id, 
        proofs.submittedlink as submittedlink,
-       records.name AS name, 
+       records.name AS name,
        records.score AS score, 
        tanks.id       AS tank_id, 
        tanks.tankname AS tankname, 
