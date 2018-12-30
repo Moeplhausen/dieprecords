@@ -458,7 +458,7 @@ Be aware that for a records with multiple proof-links we get a result each
                 if ($apiRequest)
                     return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the Top 100 list."));
                 else
-                    return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the 100 list."]]);
+                    return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the Top 100 list."]]);
 
         }
 
