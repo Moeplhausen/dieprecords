@@ -94,7 +94,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
         $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->where('world_record',1)->get()->pluck('record_id');
 
 
-        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT id FROM approvedrecords WHERE name=? AND id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
+        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT approvedrecords.id FROM approvedrecords INNER JOIN names on names.id=approvedrecords.nameId WHERE names.name=? AND approvedrecords.id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
 
         /*
         echo '<pre>';
