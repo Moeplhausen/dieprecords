@@ -146,8 +146,8 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
         $gamemodeMobileSQLClase = ' WHERE gamemodes.mobile=' . ($desktop ? '0' : 1) . ' ';
         $tankhistory = DB::select("
-SELECT record.id, names.name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
-        FROM   (SELECT records.*,proofs.submittedlink,names.* FROM records INNER JOIN proofs ON records.id=proofs.id INNER JOIN names on names.id=records.nameId WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid AND records.world_record=1) AS record 
+SELECT record.id, namey as name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
+        FROM   (SELECT records.*,proofs.submittedlink,names.name as namey FROM records INNER JOIN proofs ON records.id=proofs.id INNER JOIN names on names.id=records.nameId WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid AND records.world_record=1) AS record 
        INNER JOIN gamemodes 
                ON record.gamemode_id = gamemodes.id 
        INNER JOIN tanks
