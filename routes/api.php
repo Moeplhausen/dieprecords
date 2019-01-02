@@ -28,8 +28,15 @@ Route::get('/recordsByName/{name}', 'ApiController@recordsByName');
 
 Route::get('/history/{tankid}/{gamemode}/{desktop}', 'ApiController@history');
 
-Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
-Route::post('/submit/recordtest', 'ApiController@submittest');
+
+Route::get('/names/edit/{discord_user}/{newName}', 'ApiController@editDiscordName');
+Route::get('/names/manage/{token}/{discord_user}/{mayEdit}/{newName}', 'ApiController@setEditRightDiscordName');
+Route::get('/names/add/{token}/{discord_user}/{request_name}', 'ApiController@setDiscordNameConnection');
+
+
+
+//Route::post('/submit/record', 'ApiController@submit')->middleware('throttle:6,10');
+//Route::post('/submit/recordtest', 'ApiController@submittest');
 
 
 

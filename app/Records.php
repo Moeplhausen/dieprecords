@@ -16,6 +16,11 @@ class Records extends Model
         return  $this->hasOne('App\Proofs','id');
     }
 
+    public function name(){
+        return $this->belongsTo('App\Names','nameId');
+    }
+
+
 
 
 }

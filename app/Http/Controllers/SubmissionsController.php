@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\NotifyDiscordAboutSubmission;
 use App\Proofs;
 use App\Records;
+use App\Names;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -26,7 +27,7 @@ class SubmissionsController extends Controller
         $submissionsDesktop = DB::select("
 SELECT proofs.id AS id, 
        proofs.submittedlink as submittedlink,
-       records.name AS name,
+       names.name AS name,
        records.world_record as world_record,  
        records.score AS score, 
        tanks.id       AS tank_id, 
@@ -42,12 +43,14 @@ FROM   records
                ON gamemodes.id = records.gamemode_id 
        INNER JOIN prooflinks
                ON proofs.id=prooflinks.proof_id
+       INNER JOIN names
+               ON names.id=records.nameId    
 WHERE   proofs.decided = '0'
         AND gamemodes.mobile='0'");
         $submissionsMobile = DB::select("
 SELECT proofs.id AS id, 
        proofs.submittedlink as submittedlink,
-       records.name AS name,
+       names.name AS name,
        records.score AS score,
        records.world_record AS world_record,
        tanks.id       AS tank_id, 
@@ -62,7 +65,9 @@ FROM   records
        INNER JOIN gamemodes 
                ON gamemodes.id = records.gamemode_id 
        INNER JOIN prooflinks
-               ON proofs.id=prooflinks.proof_id
+               ON proofs.id=prooflinks.proof_id    
+       INNER JOIN names
+               ON names.id=records.nameId 
 WHERE  proofs.decided = '0'
         AND gamemodes.mobile='1'");
         $submissionsDesktop = collect($submissionsDesktop)->groupBy('id');
@@ -127,8 +132,12 @@ WHERE  proofs.decided = '0'
             return response()->json(array('msg' => 'Record not found'), 202);
         }
 
-
         $record = Records::find($proof->id);
+
+
+        $name=Names::find($record->nameId);
+
+
 /*
 
         $oldrecord = Records::join('proofs', 'proofs.id', '=', 'records.id')->where([['proofs.approved', 1], ['records.score', $request->input('score')], ['records.tank_id', $record->tank_id], ['records.gamemode_id', $record->gamemode_id], ['records.id', '<>', $record->id]])->first();
@@ -137,9 +146,20 @@ WHERE  proofs.decided = '0'
         }
 */
         //The proof has been decided and will be saved.
-        DB::transaction(function () use ($proof, $request, $record) {
+        DB::transaction(function () use ($proof, $request, $record,$name) {
+
             $record->score = $request->input('score');
-            $record->name = trim(strip_tags($request->input('name')));
+
+            if ($name->name!=trim(strip_tags($request->input('name')))){
+                $newName=Names::where('name',trim(strip_tags($request->input('name'))))->first();
+                if ($newName==null){
+                    $newName=new Names;
+                    $newName->name=trim(strip_tags($request->input('name')));
+                    $newName->save();
+                }
+                $record->nameId=$newName->id;
+            }
+
             $record->save();
             $proof->approved = $request->input('answ');
             $proof->decided = $request->input('decided');

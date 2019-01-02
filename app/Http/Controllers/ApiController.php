@@ -57,15 +57,33 @@ class ApiController extends Controller
         ]);
     }
 
+    public function editDiscordName(Request $request,$discord_user,$newName){
+        $data=app('App\Http\Controllers\RecordsController')->editDiscordName($request,$discord_user,$newName);
 
-    public function submit(Request $request){
+        return $data;
 
-        return app('App\Http\Controllers\RecordsController')->submit($request, true,true);
     }
+    public function setEditRightDiscordName(Request $request,$token,$discord_user,$mayEdit,$newName=''){
 
-    public function submittest(Request $request){
+        $tokenCor=\Config::get('values.discord_manager_token');
 
-        return app('App\Http\Controllers\RecordsController')->submit($request, true,false);
+        if ($token!=$tokenCor)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, something went wrong."));
+
+
+        $data=app('App\Http\Controllers\RecordsController')->setEditRightDiscordName($request,$discord_user,$mayEdit,$newName='');
+
+        return $data;
+
+    }
+    public function setDiscordNameConnection(Request $request,$token,$discord_user,$request_name){
+        $tokenCor=\Config::get('values.discord_manager_token');
+        if ($token!=$tokenCor)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, something went wrong."));
+
+        $data=app('App\Http\Controllers\RecordsController')->setDiscordNameConnection($request,$discord_user,$request_name);
+
+        return $data;
     }
 
 

@@ -72,7 +72,7 @@ class NotifyDiscordAboutSubmission implements ShouldQueue
 
 
             $id = $record->id;
-            $submittername = str_replace(array('|', '*', '^', '_', '#', '[', ']', '(', ')'), array('\|', '\*', '\^', '\_', '\#', '\[', '\]', '\(', '\)'), $record->name);
+            $submittername = str_replace(array('|', '*', '^', '_', '#', '[', ']', '(', ')'), array('\|', '\*', '\^', '\_', '\#', '\[', '\]', '\(', '\)'), $record->name->name);
             $score = number_format($record->score);
             $tank = $record->tank->tankname;
             $gamemode = $record->gamemode->name;

@@ -6,8 +6,10 @@ use App;
 use App\Gamemodes;
 use App\Http\Requests;
 use App\Proofs;
+use App\Names;
 use App\Records;
 use App\Tanks;
+use App\DiscordNames;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -103,7 +105,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
         */
 
         $allrecords = DB::table('records')->select('records.id as id',
-            'records.name as name',
+            'names.name as name',
             'gamemodes.id as gamemode_id',
             'gamemodes.name as gamemode',
             'gamemodes.mobile as mobile',
@@ -114,7 +116,8 @@ ORDER BY numberOfRecords  DESC, name ASC");
             ->join('proofs', 'proofs.id', '=', 'records.id')
             ->join('gamemodes', 'gamemodes.id', '=', 'records.gamemode_id')
             ->join('tanks', 'tanks.id', '=', 'records.tank_id')
-            ->where('records.name', 'like', $name)
+            ->join('names','names.id','=','records.nameId')
+            ->where('names.name', 'like', $name)
             ->where('records.world_record',1)->orderBy('tank')->get();
 
 
@@ -143,8 +146,8 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
         $gamemodeMobileSQLClase = ' WHERE gamemodes.mobile=' . ($desktop ? '0' : 1) . ' ';
         $tankhistory = DB::select("
-SELECT record.id, record.name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
-        FROM   (SELECT records.*,proofs.submittedlink FROM records INNER JOIN proofs ON records.id=proofs.id WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid AND records.world_record=1) AS record 
+SELECT record.id, names.name,record.score,tanks.tankname AS tank,record.created_at,record.updated_at, gamemodes.name AS gamemode,record.submittedlink AS proof
+        FROM   (SELECT records.*,proofs.submittedlink,names.* FROM records INNER JOIN proofs ON records.id=proofs.id INNER JOIN names on names.id=records.nameId WHERE proofs.approved='1' and records.tank_id=$tankid and records.gamemode_id=$gamemodeid AND records.world_record=1) AS record 
        INNER JOIN gamemodes 
                ON record.gamemode_id = gamemodes.id 
        INNER JOIN tanks
@@ -161,12 +164,88 @@ ORDER  BY score ASC
     }
 
 
+    public function editDiscordName(Request $request,$discord_user,$newName,$forceUpdate=false){
+
+
+
+        $reqNewName=trim(strip_tags($newName));
+
+        if ($reqNewName==''||strlen($reqNewName)>25)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, but that name is not allowed."));
+
+        $name=Names::where('name','=',$reqNewName)->get();
+        if (!$name->isEmpty())
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, that name is already in use."));
+
+        $discordUserLink=DiscordNames::where('discordId','=',$discord_user)->first();
+
+        if ($discordUserLink==null)
+        return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, but you have no registered name."));
+
+
+        if ($discordUserLink->mayUpdate||$forceUpdate) {
+            $discordUserLink->name->name = $reqNewName;
+            $discordUserLink->name->save();
+        }else{
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, you are not allowed to change your name."));
+        }
+
+        return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your name has been changed to: ".$reqNewName));
+
+
+    }
+    public function setEditRightDiscordName(Request $request,$discord_user,$mayEdit,$newName=''){
+
+        $discordUserLink=DiscordNames::where('discordId','=',$discord_user)->first();
+        if ($discordUserLink==null)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Discord user has no registered name"));
+        $discordUserLink->mayUpdate=$mayEdit;
+        $discordUserLink->save();
+        if ($newName!='')
+            return $this->editDiscordName($request,$discord_user,$newName,true);
+        return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "User updated."));
+
+
+    }
+    public function setDiscordNameConnection(Request $request,$discord_user,$request_name){
+        $reqName=trim(strip_tags($request_name));
+
+        $name=Names::where('name','=',$reqName)->get();
+        if ($name->isEmpty())
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "No record with that name found."));
+
+        $name=$name[0];
+
+        $discordUserLinkUsername=DiscordNames::where('nameId','=',$name->id)->get();
+        $discordUserLinkDiscord=DiscordNames::where('discordId','=',$discord_user)->get();
+
+
+        if (!$discordUserLinkUsername->isEmpty()){
+            $discordUserLinkUsername=$discordUserLinkUsername[0];
+            $discordUserLinkUsername->discordId = $discord_user;
+            $discordUserLinkUsername->save();
+        }elseif (!$discordUserLinkDiscord->isEmpty()){
+            $discordUserLinkDiscord=$discordUserLinkDiscord[0];
+            $discordUserLinkDiscord->nameId = $name->id;
+            $discordUserLinkDiscord->save();
+        }
+        else {
+           $con=new DiscordNames;
+           $con->discordId=$discord_user;
+           $con->nameId=$name->id;
+           $con->save();
+        }
+        return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "User registered."));
+
+
+    }
+
+
     public function showRecordsByName($name)
     {
         $this->getRecordsByName($name);
         return view('recordsbyname', ['name' => $name, 'userworldrecords' => array(), 'formeruserworldrecords' => array()]);
     }
-
 
     /**
      * This function returns the default records view.
@@ -214,7 +293,7 @@ ORDER  BY score ASC
         /*
 * Get Best Tanks when you sum the gamemodes up
 */
-        $topRecords = DB::select("SELECT approvedrecords.id, approvedrecords.world_record, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`score`  DESC LIMIT 100");
+        $topRecords = DB::select("SELECT approvedrecords.id, approvedrecords.world_record, names.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id INNER JOIN names on names.id=approvedrecords.nameId WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`score`  DESC LIMIT 100");
         for ($i = 0; $i < count($topRecords); $i++) {
             $record = $topRecords[$i];
             $record->row = $i + 1;
@@ -372,7 +451,7 @@ Be aware that for a records with multiple proof-links we get a result each
     }
 
 
-    public function submit(Request $request, $apiRequest = false, $shouldWriteToDatabase = true, $worldRecordSubmission = true)
+    public function submit(Request $request, $shouldWriteToDatabase = true, $worldRecordSubmission = true)
     {
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
@@ -386,9 +465,6 @@ Be aware that for a records with multiple proof-links we get a result each
             ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
-            if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => $validator->failed()));
-            else
                 return redirect('/')
                     ->withInput()
                     ->withErrors($validator);
@@ -409,9 +485,6 @@ Be aware that for a records with multiple proof-links we get a result each
         $gamemode = Gamemodes::where('id', '=', $request->gamemode_id)->get();
 
         if ($gamemode->isEmpty() || $tank->isEmpty())
-            if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => 'No gamemode/tank'));
-            else
                 return redirect('/');
 
         $tankinfo = $tank[0];
@@ -425,12 +498,9 @@ Be aware that for a records with multiple proof-links we get a result each
             'records.tank_id' => $tankinfo->id,
             'records.gamemode_id' => $gamemodeinfo->id,
             'records.score' => $request->score];
-        $samescore = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->get();
+        $samescore = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->join('names','names.id','=','records.nameId')->select('*')->where($matchThese)->get();
         if (!$samescore->isEmpty()) {
             $name = $samescore[0]->name;
-            if ($apiRequest)
-                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but there already is an undecided submission from $name for the same score"));
-            else
                 return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but there already is an undecided submission from $name for the same score "]]);
         }
 
@@ -441,7 +511,7 @@ Be aware that for a records with multiple proof-links we get a result each
             'records.tank_id' => $tankinfo->id,
             'records.gamemode_id' => $gamemodeinfo->id];
         $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where($matchThese)->max('score');
-        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->select('*')->where('score', $currentbestone)->get();
+        $currentbestone = DB::table('records')->join('proofs', 'records.id', '=', 'proofs.id')->join('names','names.id','=','records.nameId')->select('*')->where('score', $currentbestone)->get();
 
         if ($currentbestone && count($currentbestone) > 0)
             $currentbestone = $currentbestone[0];
@@ -455,9 +525,6 @@ Be aware that for a records with multiple proof-links we get a result each
             $top100Record = DB::select("SELECT approvedrecords.id, approvedrecords.name,users.name as approvername,approvedrecords.score,gamemodes.name as gamemode,tanks.tankname as tank,proofs.submittedlink,proofs.created_at FROM approvedrecords inner join proofs on approvedrecords.id=proofs.id INNER JOIN tanks on approvedrecords.tank_id=tanks.id INNER JOIN gamemodes ON approvedrecords.gamemode_id=gamemodes.id INNER JOIN users ON proofs.approver_id=users.id WHERE gamemodes.mobile=0 ORDER BY `approvedrecords`.`score`  DESC LIMIT 99,1");
 
             if ($gamemodeinfo->mobile == true or ($top100Record && $request->score < $top100Record[0]->score))
-                if ($apiRequest)
-                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the Top 100 list."));
-                else
                     return redirect('/')->with('status', [(object)['status' => 'alert-warning', 'message' => "Sorry but the current record for $tankinfo->tankname on $gamemodeinfo->name is $currentbestone->score and you do not qualify for the Top 100 list."]]);
 
         }
@@ -487,17 +554,10 @@ Be aware that for a records with multiple proof-links we get a result each
                     for ($i = 0; $i < count($output); $i++) {
                         $request->proof = $this->getImgurDirectLinks($output[$i]);
                         if (count($request->proof) == 0)
-                            if ($apiRequest)
-                                return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links!"));
-                            else
                                 return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links!'));
                     }
                 }
             } catch (Exception $e) {
-                //echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
-                if ($apiRequest)
-                    return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Could not parse imgur links! Try a direct image link"));
-                else
                     return redirect('/')->withInput()->withErrors(array('message' => 'Could not parse imgur links! Try a direct image link'));
             } finally {
 
@@ -511,9 +571,18 @@ Be aware that for a records with multiple proof-links we get a result each
         if ($shouldWriteToDatabase) {
             DB::transaction(function () use ($request, $orgProof, $currentbestone, $video, $worldRecordSubmission) {
 
+                $newName=Names::where('name',trim(strip_tags($request->inputname)))->first();
+
+                    if ($newName==null){
+                        $newName=new Names;
+                        $newName->name=trim(strip_tags($request->inputname));
+                        $newName->save();
+                    }
+
+
 
                 $record = new Records();
-                $record->name = trim(strip_tags($request->inputname));
+                $record->nameId = $newName->id;
                 $record->score = $request->score;
                 $record->tank_id = $request->selectclass;
                 $record->gamemode_id = $request->gamemode_id;
@@ -540,9 +609,6 @@ Be aware that for a records with multiple proof-links we get a result each
             });
         }
 
-        if ($apiRequest)
-            return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => "Your submission will be handled shortly"));
-        else
             return redirect('/')->with('status', [(object)['status' => 'alert-success', 'message' => 'Your submission will be handled shortly.']]);
 
     }
