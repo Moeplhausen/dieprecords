@@ -57,7 +57,13 @@ class ApiController extends Controller
         ]);
     }
 
-    public function editDiscordName(Request $request,$discord_user,$newName){
+    public function editDiscordName(Request $request,$token,$discord_user,$newName){
+
+        $tokenCor=\Config::get('values.discord_manager_token');
+
+        if ($token!=$tokenCor)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, something went wrong."));
+
         $data=app('App\Http\Controllers\RecordsController')->editDiscordName($request,$discord_user,$newName);
 
         return $data;
