@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d66c9e9199d263a3ee08e53fde98de39",
+    "content-hash": "c4a006d1caef542f511cb8f29610f24d",
     "packages": [
         {
             "name": "barryvdh/laravel-cors",
@@ -318,6 +318,63 @@
                 "modal"
             ],
             "time": "2017-10-16T06:31:38+00:00"
+        },
+        {
+            "name": "fideloper/proxy",
+            "version": "3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fideloper/TrustedProxy.git",
+                "reference": "9cdf6f118af58d89764249bbcc7bb260c132924f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/9cdf6f118af58d89764249bbcc7bb260c132924f",
+                "reference": "9cdf6f118af58d89764249bbcc7bb260c132924f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "illuminate/http": "~5.0",
+                "mockery/mockery": "~0.9.3",
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fideloper\\Proxy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Fidao",
+                    "email": "fideloper@gmail.com"
+                }
+            ],
+            "description": "Set trusted proxies for Laravel",
+            "keywords": [
+                "load balancing",
+                "proxy",
+                "trusted proxy"
+            ],
+            "time": "2017-06-15T17:19:42+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1170,55 +1227,6 @@
                 "imgur"
             ],
             "time": "2017-02-04T11:26:19+00:00"
-        },
-        {
-            "name": "molayli/laravel-cloudflare-real-ip",
-            "version": "0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/molayli/laravel-cloudflare-real-ip.git",
-                "reference": "860d4aa5bc41d3e3827ed78345ec0bdef5eb830d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/molayli/laravel-cloudflare-real-ip/zipball/860d4aa5bc41d3e3827ed78345ec0bdef5eb830d",
-                "reference": "860d4aa5bc41d3e3827ed78345ec0bdef5eb830d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Molayli\\CloudflareRealIpServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Molayli\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Billal",
-                    "email": "hello@molayli.com"
-                }
-            ],
-            "description": "Get the real ip for laravel applications behind cloudflare's reverse proxy",
-            "homepage": "https://github.com/molayli/laravel-cloudflare-real-ip",
-            "keywords": [
-                "cloudflare",
-                "laravel",
-                "real ip address"
-            ],
-            "time": "2018-01-19T16:51:42+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3100,6 +3108,55 @@
                 "testing"
             ],
             "time": "2018-11-13T20:50:16+00:00"
+        },
+        {
+            "name": "molayli/laravel-cloudflare-real-ip",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/molayli/laravel-cloudflare-real-ip.git",
+                "reference": "860d4aa5bc41d3e3827ed78345ec0bdef5eb830d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/molayli/laravel-cloudflare-real-ip/zipball/860d4aa5bc41d3e3827ed78345ec0bdef5eb830d",
+                "reference": "860d4aa5bc41d3e3827ed78345ec0bdef5eb830d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Molayli\\CloudflareRealIpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Molayli\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Billal",
+                    "email": "hello@molayli.com"
+                }
+            ],
+            "description": "Get the real ip for laravel applications behind cloudflare's reverse proxy",
+            "homepage": "https://github.com/molayli/laravel-cloudflare-real-ip",
+            "keywords": [
+                "cloudflare",
+                "laravel",
+                "real ip address"
+            ],
+            "time": "2018-01-19T16:51:42+00:00"
         },
         {
             "name": "myclabs/deep-copy",
