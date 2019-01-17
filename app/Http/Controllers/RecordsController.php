@@ -164,6 +164,17 @@ ORDER  BY score ASC
     }
 
 
+
+    public function getUserName(Request $request,$discord_user){
+        $discordUserLink=DiscordNames::where('discordId','=',$discord_user)->first();
+        if ($discordUserLink==null)
+            return \GuzzleHttp\json_encode(array('status' => 'error', 'content' => "Sorry, no name was found."));
+
+        return \GuzzleHttp\json_encode(array('status' => 'success', 'content' => $discordUserLink->name->name));
+
+    }
+
+
     public function editDiscordName(Request $request,$discord_user,$newName,$forceUpdate=false){
 
 

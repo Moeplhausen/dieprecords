@@ -57,6 +57,14 @@ class ApiController extends Controller
         ]);
     }
 
+
+    public function getUserName(Request $request,$discordId="derp"){
+        $data=app('App\Http\Controllers\RecordsController')->getUserName($request,$discordId);
+        return $data;
+
+    }
+
+
     public function editDiscordName(Request $request,$token,$discord_user,$newName){
 
         $tokenCor=\Config::get('values.discord_manager_token');

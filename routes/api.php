@@ -28,7 +28,7 @@ Route::get('/recordsByName/{name}', 'ApiController@recordsByName');
 
 Route::get('/history/{tankid}/{gamemode}/{desktop}', 'ApiController@history');
 
-
+Route::get('/names/showUsername/{discord_user}', 'ApiController@getUserName');
 Route::get('/names/edit/{token}/{discord_user}/{newName}', 'ApiController@editDiscordName');
 Route::get('/names/manage/{token}/{discord_user}/{mayEdit}/{newName}', 'ApiController@setEditRightDiscordName');
 Route::get('/names/add/{token}/{discord_user}/{request_name}', 'ApiController@setDiscordNameConnection');
