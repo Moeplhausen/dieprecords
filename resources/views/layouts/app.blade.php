@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="alert alert-dismissible alert-warning" role="alert">Please be aware that the <strong>first of april (2019)</strong> will be the last day to submit a record on this site.<button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button></div>
+    <div class="alert alert-dismissible alert-warning" role="alert">Please be aware that the <strong>first of April (2019)</strong> will be the last day to submit a record on this site.<button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button></div>
     <nav class="navbar navbar-light">
         <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header"
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
