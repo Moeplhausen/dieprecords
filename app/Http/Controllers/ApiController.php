@@ -45,7 +45,8 @@ class ApiController extends Controller
 
         return \GuzzleHttp\json_encode([
            'current'=>$data['current'],
-            'former'=>$data['former']
+            'former'=>$data['former'],
+            'scores'=>$data['scores']
         ]);
     }
 

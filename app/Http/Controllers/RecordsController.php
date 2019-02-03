@@ -80,11 +80,11 @@ ORDER BY numberOfRecords  DESC, name ASC");
     }
 
 
-    private function filterRecords($allrecords, $filterids)
+    private function filterRecords($allrecords, $filterids,$inverted=false)
     {
-        $records = $allrecords->filter(function ($obj, $key) use ($filterids) {
+        $records = $allrecords->filter(function ($obj, $key) use ($filterids,$inverted) {
             $id = $obj->id;
-            return $filterids->contains($id);
+            return $filterids->contains($id) xor $inverted;
         });
         return $records;
     }
@@ -94,7 +94,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
         $currentWorldRecordsIds = DB::table('besttanksview')->select('record_id')->distinct()->where('name', $name)->where('world_record',1)->get()->pluck('record_id');
 
 
-        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT approvedrecords.id FROM approvedrecords INNER JOIN names on names.id=approvedrecords.nameId WHERE names.name=? AND approvedrecords.id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
+        $formerWorldRecordsid = collect(DB::select("SELECT DISTINCT approvedrecords.id FROM approvedrecords INNER JOIN names on names.id=approvedrecords.nameId WHERE names.name=? AND approvedrecords.world_record=1 AND approvedrecords.id NOT IN (SELECT record_id FROM besttanksview WHERE world_record=1 AND name=?)", [$name, $name]));
 
         /*
         echo '<pre>';
@@ -118,7 +118,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
             ->join('tanks', 'tanks.id', '=', 'records.tank_id')
             ->join('names','names.id','=','records.nameId')
             ->where('names.name', 'like', $name)
-            ->where('records.world_record',1)->orderBy('tank')->get();
+            ->orderBy('tank')->get();
 
 
         foreach ($allrecords as $record) {
@@ -128,16 +128,20 @@ ORDER BY numberOfRecords  DESC, name ASC");
 
         $formerWorldRecordsid = $formerWorldRecordsid->pluck('id');
 
+        $worldRecords=$this->filterRecords($allrecords,$currentWorldRecordsIds->merge($formerWorldRecordsid));
 
-        $currentWorldRecords = $this->filterRecords($allrecords, $currentWorldRecordsIds);
-        $formerWorldRecord = $this->filterRecords($allrecords, $formerWorldRecordsid);
+
+        $currentWorldRecords = $this->filterRecords($worldRecords, $currentWorldRecordsIds);
+        $formerWorldRecord = $this->filterRecords($worldRecords, $formerWorldRecordsid);
+
+        $justHighScores=$this->filterRecords($allrecords,$currentWorldRecordsIds->merge($formerWorldRecordsid),true);
 
 
         /*     echo '<pre>';
              print_r($currentWorldRecords);
              echo '</pre>';*/
 
-        return ['current' => $currentWorldRecords, 'former' => $formerWorldRecord,];
+        return ['current' => $currentWorldRecords, 'former' => $formerWorldRecord,'scores'=>$justHighScores];
 
     }
 
@@ -254,7 +258,11 @@ ORDER  BY score ASC
 
     public function showRecordsByName($name)
     {
-        $this->getRecordsByName($name);
+
+/*                echo '<pre>';
+        print_r($this->getRecordsByName($name));
+        echo '</pre>';*/
+
         return view('recordsbyname', ['name' => $name, 'userworldrecords' => array(), 'formeruserworldrecords' => array()]);
     }
 

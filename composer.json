@@ -19,7 +19,7 @@
     "j0k3r/php-imgur-api-client": "^3.0.0",
     "guzzlehttp/guzzle": "^6.2",
     "barryvdh/laravel-cors": "^0.10.0",
-    "moeplhausen/imgurlaravel": "^1.0.7",
+    "ozankurt/imgur-laravel": "*",
     "fideloper/proxy": "^3.3"
   },
   "require-dev": {
