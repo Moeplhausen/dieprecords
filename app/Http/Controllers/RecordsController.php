@@ -118,6 +118,7 @@ ORDER BY numberOfRecords  DESC, name ASC");
             ->join('tanks', 'tanks.id', '=', 'records.tank_id')
             ->join('names','names.id','=','records.nameId')
             ->where('names.name', 'like', $name)
+            ->where('proofs.approved','=',1)
             ->orderBy('tank')->get();
 
 
