@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="alert alert-dismissible alert-warning" role="alert">Please be aware that since the <strong>first of April (2019)</strong> this site is no longer maintained and submissions has been disabled.<button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button></div>
+    <div class="alert alert-dismissible alert-warning" role="alert">Please be aware that since the <strong>first of April (2019)</strong> this site is no longer maintained and submitting new records is no longer possible.<button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button></div>
     <nav class="navbar navbar-light">
         <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navbar-header"
                 aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation"></button>
