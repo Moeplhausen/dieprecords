@@ -473,6 +473,10 @@ Be aware that for a records with multiple proof-links we get a result each
 
     public function submit(Request $request, $shouldWriteToDatabase = true, $worldRecordSubmission = true)
     {
+
+        return redirect('/')->withInput()->withErrors(array('message' => 'submissions has been disabled:('));
+
+
         $validator = Validator::make($request->all(), [
             'inputname' => 'required|max:25',
             'gamemode_id' => 'required|integer|max:256',
