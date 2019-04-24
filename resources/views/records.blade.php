@@ -24,12 +24,12 @@
 
 
 <p>
-    <div class="btn btn-primary btn-lg btn-diep diep-gradient-green disabled" data-toggle="modal">
-            <!--data-target="#sbmrecord"-->Submit your record
+    <div class="btn btn-primary btn-lg btn-diep diep-gradient-green" data-toggle="modal"
+            data-target="#sbmrecord">Submit your record
     </div>
-<!--    <div class="discord-lini">
+    <div class="discord-lini">
         <div class="discord-widget"></div>
-    </div>-->
+    </div>
 </p>
     <div id="alertsContainer">
 
