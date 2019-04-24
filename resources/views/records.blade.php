@@ -36,11 +36,11 @@
     </div>
 <p class="center diep-title-small">Desktop</p>
 {{-- Put the table with the Desktop records by gamemode here --}}
-@include('tables.recordstable',['tablename'=>'scoretableDesktop','allrecords'=>$allrecordsDesktop,'gamemodes'=>$gamemodesDesktop])
+ @include('tables.recordstable',['tablename'=>'scoretableDesktop','allrecords'=>$allrecordsDesktop,'gamemodes'=>$gamemodesDesktop])
 
 <p class="center diep-title-small">Mobile</p>
 {{-- Put the table with the Desktop records by gamemode here --}}
-@include('tables.recordstable',['tablename'=>'scoretableMobile','allrecords'=>$allrecordsMobile,'gamemodes'=>$gamemodesMobile])
+{{-- @include('tables.recordstable',['tablename'=>'scoretableMobile','allrecords'=>$allrecordsMobile,'gamemodes'=>$gamemodesMobile]) --}}
 
 
 @endsection
