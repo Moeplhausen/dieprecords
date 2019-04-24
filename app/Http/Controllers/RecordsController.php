@@ -478,7 +478,11 @@ Be aware that for a records with multiple proof-links we get a result each
             'gamemode_id' => 'required|integer|max:256',
             'selectclass' => 'required|integer|max:256',
             'score' => 'required|integer|between:40000,999999999',
-
+            'proof' => [
+                'required',
+                'url',
+                'regex:~^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|(?:https?:\/\/)(?:www\.)?(?:(?:cdn\.discordapp\.com|images\-\d+\.discordapp\.net|i\.redd\.it|i\.imgur\.com|zippy\.gfycat\.com|giant\.gfycat\.com|fat\.gfycat\.com|s\d+\.postimg\.org|i\.gyazo\.com)(.*\.png|.*\.jpg|.*\.PNG|.*\.JPG|.*\.webm|.*\.WEBM)|imgur\.com|m\.imgur\.com).*~x'
+            ]//In theory also the youtube ending will also be accepted for the other sites. Shouldn't be a problem though.
         ]);
         if ($validator->fails()) {
                 return redirect('/')
